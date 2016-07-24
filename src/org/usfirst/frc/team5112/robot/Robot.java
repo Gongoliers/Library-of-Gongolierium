@@ -34,8 +34,10 @@ public class Robot extends SampleRobot {
 	private Camera cam;
 
 	public Robot() {
-		cam = new Camera.CameraBuilder().setCamera(new MicrosoftLifeCam("cam0")).setLEDColor(LEDColor.GREEN)
-				.setNormalBrightness(50).build();
+		cam = new Camera.CameraBuilder()
+				.setCamera(new MicrosoftLifeCam("cam0"))
+				.setLEDColor(LEDColor.GREEN)
+				.build();
 
 	}
 

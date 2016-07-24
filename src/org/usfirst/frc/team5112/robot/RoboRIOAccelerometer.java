@@ -3,11 +3,11 @@ package org.usfirst.frc.team5112.robot;
 import edu.wpi.first.wpilibj.BuiltInAccelerometer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-public class Accelerometer {
+public class RoboRIOAccelerometer implements AccelerometerInterface {
 	private BuiltInAccelerometer accelerometer = new BuiltInAccelerometer();
 
 	public double getTilt() {
-		double y = accelerometer.getY();
+		double y = getY();
 		y = Math.min(1, y);
 		y = Math.max(-1, y);
 		return Math.toDegrees(Math.asin(y));
@@ -27,5 +27,7 @@ public class Accelerometer {
 
 	public void display() {
 		SmartDashboard.putNumber("Accelerometer Y", getY());
+		SmartDashboard.putNumber("Accelerometer X", getX());
+		SmartDashboard.putNumber("Accelerometer X", getZ());
 	}
 }
