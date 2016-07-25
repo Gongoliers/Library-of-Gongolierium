@@ -61,7 +61,7 @@ public class Camera {
 	}
 
 	/**
-	 * This method returns the camera’s exposure level to auto.
+	 * This method returns the cameras exposure level to auto.
 	 */
 	public void setAutoExposure() {
 		camera.setExposureAuto();
@@ -81,7 +81,7 @@ public class Camera {
 	/**
 	 * This method enables the target mode of the camera to allow it to see the
 	 * retroreflection target. (exposure and brightness were set in
-	 * CameraBuilder – default=0).
+	 * CameraBuilder default=0).
 	 */
 	public void enableTargetMode() {
 		setBrightness(targetBrightness);
@@ -92,7 +92,7 @@ public class Camera {
 	/**
 	 * This method disables the target mode of the camera to allow it to take
 	 * normal pictures (exposure auto, brightness was specified in CameraBuilder
-	 * – default=50).
+	 * default=50).
 	 */
 	public void disableTargetMode() {
 		setBrightness(normalBrightness);
@@ -111,7 +111,7 @@ public class Camera {
 	}
 
 	/**
-	 * This method locates the largest object in the camera’s view that is
+	 * This method locates the largest object in the cameras view that is
 	 * within the custom HSV range. This will return a Target object which
 	 * contains details about the target including its center location,
 	 * distance, and angle to the camera.
