@@ -1,4 +1,4 @@
-package com.thegongoliers.util;
+package com.thegongoliers.output;
 
 import java.util.ArrayList;
 import java.util.Collections;

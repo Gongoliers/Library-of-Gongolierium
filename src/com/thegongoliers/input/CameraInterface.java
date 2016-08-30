@@ -1,4 +1,4 @@
-package com.thegongoliers.util;
+package com.thegongoliers.input;
 
 import com.ni.vision.NIVision.Image;
 

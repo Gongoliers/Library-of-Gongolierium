@@ -1,4 +1,4 @@
-package com.thegongoliers.util;
+package com.thegongoliers.input;
 
 import edu.wpi.first.wpilibj.BuiltInAccelerometer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;

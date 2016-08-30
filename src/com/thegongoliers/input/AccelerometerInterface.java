@@ -1,4 +1,4 @@
-package com.thegongoliers.util;
+package com.thegongoliers.input;
 
 public interface AccelerometerInterface {
 	public double getTilt();

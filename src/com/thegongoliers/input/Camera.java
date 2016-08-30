@@ -1,4 +1,4 @@
-package com.thegongoliers.util;
+package com.thegongoliers.input;
 
 import java.util.Comparator;
 import java.util.Vector;
