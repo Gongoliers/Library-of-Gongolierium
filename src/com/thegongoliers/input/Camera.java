@@ -178,7 +178,6 @@ public class Camera {
 	 * 
 	 */
 	private double computeRobotAngle(Image image, double centerX, double cameraDistance) {
-		NIVision.GetImageSizeResult size = NIVision.imaqGetImageSize(image);
 		double distance = computeRobotDistance(cameraDistance, computeAngle(image, centerX));
 		return Math.toDegrees(Math
 				.acos(Math.pow(camera.getHorizontalOffset(), 2) - Math.pow(cameraDistance, 2) + Math.pow(distance, 2))
