@@ -111,10 +111,10 @@ public class Camera {
 	}
 
 	/**
-	 * This method locates the largest object in the cameras view that is
-	 * within the custom HSV range. This will return a Target object which
-	 * contains details about the target including its center location,
-	 * distance, and angle to the camera.
+	 * This method locates the largest object in the cameras view that is within
+	 * the custom HSV range. This will return a Target object which contains
+	 * details about the target including its center location, distance, and
+	 * angle to the camera.
 	 * 
 	 * @param width
 	 *            The width of the actual target.
@@ -137,6 +137,8 @@ public class Camera {
 		target.width = Math.abs(particleReport.BoundingRectRight - particleReport.BoundingRectLeft);
 		target.height = Math.abs(particleReport.BoundingRectBottom - particleReport.BoundingRectTop);
 		target.percentArea = particleReport.PercentAreaToImageArea;
+		target.experimentalDistance = computeRobotDistance(target.distance, rawX);
+		target.experimentalAngle = computeRobotAngle(binaryFilteredImage, rawX, target.experimentalDistance);
 		return target;
 	}
 
@@ -146,13 +148,41 @@ public class Camera {
 
 		size = NIVision.imaqGetImageSize(image);
 		normalizedWidth = 2 * (report.BoundingRectRight - report.BoundingRectLeft) / size.width;
-		return width / (normalizedWidth * 12 * Math.tan(camera.getViewAngle() * Math.PI / (180 * 2)));
+		return width / (normalizedWidth * 12 * Math.tan(Math.toRadians(camera.getViewAngle() / 2)));
 	}
 
 	private double computeAngle(Image image, double centerX) {
 		NIVision.GetImageSizeResult size = NIVision.imaqGetImageSize(image);
 		double aimingCoordinate = (centerX / size.width) * 2 - 1;
-		return aimingCoordinate * camera.getViewAngle();
+		return aimingCoordinate * camera.getViewAngle() / 2;
+	}
+
+	/**
+	 * @author FRC Team #125, NUtrons
+	 * 
+	 */
+	private double computeRobotDistance(double cameraDistance, double cameraXAngle) {
+		double angle = 90 + Math.abs(cameraXAngle);
+		double cameraOffset = camera.getHorizontalOffset();
+		if (cameraOffset == 0.0) {
+			return cameraDistance;
+		}
+
+		return Math.sqrt(Math.pow(cameraOffset, 2) + Math.pow(cameraDistance, 2)
+				- (2 * Math.abs(cameraOffset) * cameraDistance * Math.cos(Math.toRadians(angle))));
+
+	}
+
+	/**
+	 * @author FRC Team #125, NUtrons
+	 * 
+	 */
+	private double computeRobotAngle(Image image, double centerX, double cameraDistance) {
+		NIVision.GetImageSizeResult size = NIVision.imaqGetImageSize(image);
+		double distance = computeRobotDistance(cameraDistance, computeAngle(image, centerX));
+		return Math.toDegrees(Math
+				.acos(Math.pow(camera.getHorizontalOffset(), 2) - Math.pow(cameraDistance, 2) + Math.pow(distance, 2))
+				/ (2 * distance * Math.abs(camera.getHorizontalOffset()))) - 90.0;
 	}
 
 	private Image filterRetroreflective() {
@@ -219,6 +249,16 @@ public class Camera {
 		private double width;
 		private double height;
 		private double percentArea;
+		private double experimentalDistance;
+		private double experimentalAngle;
+
+		public double getExperimentalDistance() {
+			return experimentalDistance;
+		}
+
+		public double getExperimentalAngle() {
+			return experimentalAngle;
+		}
 
 		public double getPercentArea() {
 			return percentArea;

@@ -12,6 +12,7 @@ public class MicrosoftLifeCam implements CameraInterface {
 	private Image frame;
 	private boolean cameraStarted;
 	private USBCamera camera;
+	private double offset = 0.0;
 
 	public MicrosoftLifeCam(String cameraName) {
 		frame = NIVision.imaqCreateImage(NIVision.ImageType.IMAGE_RGB, 0);
@@ -72,6 +73,14 @@ public class MicrosoftLifeCam implements CameraInterface {
 			return size.width;
 		else
 			return size.height;
+	}
+
+	public double getHorizontalOffset() {
+		return offset;
+	}
+
+	public void setHorizontalOffset(double hOffset) {
+		this.offset = hOffset;
 	}
 
 }

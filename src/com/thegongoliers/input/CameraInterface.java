@@ -81,4 +81,12 @@ public interface CameraInterface {
 	 * @return The resolution of the axis in pixels.
 	 */
 	public int getResolution(Axis axis);
+
+	/**
+	 * Get the horizontal offset of the camera from the center of the robot.
+	 * 
+	 * @return The horizontal offset of the camera.
+	 */
+	public double getHorizontalOffset();
+
 }
