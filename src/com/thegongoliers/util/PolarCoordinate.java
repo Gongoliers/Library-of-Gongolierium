@@ -1,8 +1,8 @@
 package com.thegongoliers.util;
 
-public class PolarCoordinates extends Position {
+public class PolarCoordinate extends Position {
 
-	public PolarCoordinates(double magnitude, double angle) {
+	public PolarCoordinate(double magnitude, double angle) {
 		super(magnitude, angle);
 	}
 

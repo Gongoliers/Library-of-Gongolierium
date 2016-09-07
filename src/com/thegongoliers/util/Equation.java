@@ -51,9 +51,9 @@ public class Equation {
 		equation = equation.replace("-", "+-");
 		for (int i = 0; i < equation.length(); i++) {
 			char current = equation.charAt(i);
-			if (AdvancedMath.isPartOfNumber(current)) {
+			if (MathExt.isPartOfNumber(current)) {
 
-			} else if (i >= 1 && AdvancedMath.isPartOfNumber(equation.charAt(i - 1))) {
+			} else if (i >= 1 && MathExt.isPartOfNumber(equation.charAt(i - 1))) {
 				parsedTerms.add(Double.valueOf(equation.substring(startPos, i)));
 				startPos = i + 1;
 			} else {
@@ -69,7 +69,7 @@ public class Equation {
 			}
 		}
 
-		if (AdvancedMath.isOdd(parsedTerms.size())) {
+		if (MathExt.isOdd(parsedTerms.size())) {
 			parsedTerms.add(0.0);
 		}
 

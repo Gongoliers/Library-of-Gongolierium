@@ -1,5 +1,6 @@
 package com.thegongoliers.util;
 
+
 public class Position {
 	private double x, y;
 
@@ -22,5 +23,10 @@ public class Position {
 
 	public void setY(double y) {
 		this.y = y;
+	}
+	
+	@Override
+	public String toString() {
+		return "(" + getX() + ", " + getY() + ")";
 	}
 }
