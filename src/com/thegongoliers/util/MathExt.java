@@ -222,4 +222,10 @@ public class MathExt {
 		return value % divisor == 0;
 	}
 
+	public static boolean spike(double[] values, double threshold) {
+		double min = min(values);
+		double max = max(values);
+		return (max - min) >= threshold;
+	}
+
 }
