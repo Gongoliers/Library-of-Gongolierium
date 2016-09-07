@@ -14,7 +14,7 @@ public class MathExt {
 	 * @return
 	 */
 	public static boolean isOdd(int value) {
-		return value % 2 == 1;
+		return divisibleBy(value, 2);
 	}
 
 	/**
@@ -198,4 +198,28 @@ public class MathExt {
 		}
 		return max;
 	}
+
+	public static double toRange(double value, double min, double max) {
+		double newVal = Math.max(min, value);
+		newVal = Math.min(newVal, max);
+		return newVal;
+	}
+
+	public static int roundToInt(double value) {
+		return (int) Math.round(value);
+	}
+
+	public static double roundPlaces(double value, int numPlaces) {
+		double multiplier = Math.pow(10, numPlaces);
+		return snap(value, 1 / multiplier);
+	}
+
+	public static double snap(double value, double nearest) {
+		return Math.round(value / nearest) * nearest;
+	}
+
+	public static boolean divisibleBy(int value, int divisor) {
+		return value % divisor == 0;
+	}
+
 }
