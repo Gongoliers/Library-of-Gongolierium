@@ -228,4 +228,16 @@ public class MathExt {
 		return (max - min) >= threshold;
 	}
 
+	public static double meanSquaredError(double[] actual, double[] target) {
+		double sum = 0;
+		for (int i = 0; i < actual.length; i++) {
+			sum += square(target[i] - actual[i]);
+		}
+		return sum / actual.length;
+	}
+
+	public static boolean approxEqual(double value, double compare, double precision) {
+		return Math.abs(value - compare) <= precision;
+	}
+
 }
