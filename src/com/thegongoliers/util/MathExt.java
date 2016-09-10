@@ -240,4 +240,18 @@ public class MathExt {
 		return Math.abs(value - compare) <= precision;
 	}
 
+	public static double[] simpleMovingAverage(double[] values, int windowSize) {
+		double[] ma = new double[values.length - windowSize + 1];
+		if (values.length % windowSize != 0)
+			return ma;
+		for (int i = windowSize - 1; i < values.length; i++) {
+			double sum = 0;
+			for (int j = 0; j < windowSize; j++) {
+				sum += values[i - windowSize + 1 + j];
+			}
+			ma[i - windowSize + 1] = sum / windowSize;
+		}
+		return ma;
+	}
+
 }
