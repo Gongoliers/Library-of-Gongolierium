@@ -9,5 +9,7 @@ public abstract class Flywheel extends Subsystem {
 	public abstract void stop();
 
 	public abstract void spinToSpeed(double speed);
+	
+	public abstract double getSpeed();
 
 }
