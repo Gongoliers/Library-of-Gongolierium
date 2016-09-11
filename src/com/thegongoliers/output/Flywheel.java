@@ -1,15 +1,13 @@
 package com.thegongoliers.output;
 
-import edu.wpi.first.wpilibj.command.Subsystem;
+public interface Flywheel {
 
-public abstract class Flywheel extends Subsystem {
+	public void spinUp(double speed);
 
-	public abstract void spinUp(double speed);
+	public void stop();
 
-	public abstract void stop();
-
-	public abstract void spinToSpeed(double speed);
+	public void spinToSpeed(double speed);
 	
-	public abstract double getSpeed();
+	public double getSpeed();
 
 }
