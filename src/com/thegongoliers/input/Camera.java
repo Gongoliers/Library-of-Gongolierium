@@ -6,6 +6,8 @@ import java.util.Vector;
 import com.ni.vision.NIVision;
 import com.ni.vision.NIVision.Image;
 import com.ni.vision.NIVision.ImageType;
+import com.thegongoliers.input.CameraInterface.Axis;
+import com.thegongoliers.util.Position;
 
 /**
  * Allows for abstract use of the camera.
@@ -133,6 +135,7 @@ public class Camera {
 		target.distance = computeDistance(binaryFilteredImage, particleReport, width);
 		target.centerX = rawX;
 		target.centerY = rawY;
+		target.aimingCoordinates = toAimingCoordinates(new Position(rawX, rawY));
 		target.angle = computeAngle(binaryFilteredImage, rawX);
 		target.width = Math.abs(particleReport.BoundingRectRight - particleReport.BoundingRectLeft);
 		target.height = Math.abs(particleReport.BoundingRectBottom - particleReport.BoundingRectTop);
@@ -142,13 +145,19 @@ public class Camera {
 		return target;
 	}
 
+	private Position toAimingCoordinates(Position pixels) {
+		double aimingX = (pixels.getX() - camera.getResolution(Axis.X) / 2.0) / (camera.getResolution(Axis.X) / 2.0);
+		double aimingY = (pixels.getY() - camera.getResolution(Axis.Y) / 2.0) / (camera.getResolution(Axis.Y) / 2.0);
+		return new Position(aimingX, aimingY);
+	}
+
 	private double computeDistance(Image image, ParticleReport report, double width) {
 		double normalizedWidth;
 		NIVision.GetImageSizeResult size;
 
 		size = NIVision.imaqGetImageSize(image);
 		normalizedWidth = 2 * (report.BoundingRectRight - report.BoundingRectLeft) / size.width;
-		return width / (normalizedWidth * 12 * Math.tan(Math.toRadians(camera.getViewAngle() / 2)));
+		return width / (normalizedWidth * Math.tan(Math.toRadians(camera.getViewAngle() / 2)));
 	}
 
 	private double computeAngle(Image image, double centerX) {
@@ -250,6 +259,11 @@ public class Camera {
 		private double percentArea;
 		private double experimentalDistance;
 		private double experimentalAngle;
+		private Position aimingCoordinates;
+
+		public Position getAimingCoordinates() {
+			return aimingCoordinates;
+		}
 
 		public double getExperimentalDistance() {
 			return experimentalDistance;
