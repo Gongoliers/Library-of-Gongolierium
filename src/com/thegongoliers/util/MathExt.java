@@ -1,5 +1,9 @@
 package com.thegongoliers.util;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 public class MathExt {
 
 	private MathExt() {
@@ -127,30 +131,27 @@ public class MathExt {
 
 	public static double[] normalize(double[] values) {
 		double max = max(values);
-		Function fn = new Function() {
-
-			@Override
-			public double function(double x) {
-				return x / max;
-			}
-
-		};
-		return map(values, fn);
+		return toPrimitiveArray(toArrayList(values).stream().map(x -> x / max).collect(Collectors.toList()));
 	}
 
-	public static double[] map(double[] values, Function function) {
-		double[] mappedValues = new double[values.length];
+	public static ArrayList<Double> toArrayList(double[] values) {
+		ArrayList<Double> arrVals = new ArrayList<>();
 		for (int i = 0; i < values.length; i++) {
-			mappedValues[i] = function.function(values[i]);
+			arrVals.add(values[i]);
 		}
-		return mappedValues;
+		return arrVals;
+	}
+
+	public static double[] toPrimitiveArray(List<Double> values) {
+		double[] primValues = new double[values.size()];
+		for (int i = 0; i < primValues.length; i++) {
+			primValues[i] = values.get(i);
+		}
+		return primValues;
 	}
 
 	public static double average(double[] values) {
-		if (values.length == 0) {
-			return Double.POSITIVE_INFINITY;
-		}
-		return sum(values) / values.length;
+		return toArrayList(values).stream().mapToDouble(x -> x).average().getAsDouble();
 	}
 
 	public static double first(double[] values) {
@@ -252,6 +253,10 @@ public class MathExt {
 			ma[i - windowSize + 1] = sum / windowSize;
 		}
 		return ma;
+	}
+
+	public static double[] sort(double[] values) {
+		return toPrimitiveArray(toArrayList(values).stream().sorted().collect(Collectors.toList()));
 	}
 
 }

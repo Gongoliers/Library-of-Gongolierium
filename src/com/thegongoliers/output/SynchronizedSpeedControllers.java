@@ -8,103 +8,91 @@ import edu.wpi.first.wpilibj.SpeedController;
 
 public class SynchronizedSpeedControllers implements SpeedController {
 
-    private List<SpeedController> mSpeedControllers;
-    private boolean mIsInverted = false;
+	private List<SpeedController> mSpeedControllers;
+	private boolean mIsInverted = false;
 
-    public SynchronizedSpeedControllers() {
-        mSpeedControllers = new ArrayList<>();
-    }
+	public SynchronizedSpeedControllers() {
+		mSpeedControllers = new ArrayList<>();
+	}
 
-    public SynchronizedSpeedControllers(SpeedController... speedControllers) {
-        mSpeedControllers = new ArrayList<>();
-        Collections.addAll(mSpeedControllers, speedControllers);
-    }
+	public SynchronizedSpeedControllers(SpeedController... speedControllers) {
+		mSpeedControllers = new ArrayList<>();
+		Collections.addAll(mSpeedControllers, speedControllers);
+	}
 
-    public SynchronizedSpeedControllers(List<SpeedController> speedControllers) {
-        mSpeedControllers = speedControllers;
-    }
+	public SynchronizedSpeedControllers(List<SpeedController> speedControllers) {
+		mSpeedControllers = speedControllers;
+	}
 
-    public void add(SpeedController speedController) {
-        mSpeedControllers.add(speedController);
-    }
+	public void add(SpeedController speedController) {
+		mSpeedControllers.add(speedController);
+	}
 
-    public void remove(SpeedController speedController) {
-        mSpeedControllers.remove(speedController);
-    }
+	public void remove(SpeedController speedController) {
+		mSpeedControllers.remove(speedController);
+	}
 
-    public void remove(int speedControllerIndex) {
-        mSpeedControllers.remove(speedControllerIndex);
-    }
+	public void remove(int speedControllerIndex) {
+		mSpeedControllers.remove(speedControllerIndex);
+	}
 
-    public SpeedController getSpeedController(int speedControllerIndex) {
-        return mSpeedControllers.get(speedControllerIndex);
-    }
+	public SpeedController getSpeedController(int speedControllerIndex) {
+		return mSpeedControllers.get(speedControllerIndex);
+	}
 
-    public int getSpeedControllerIndex(SpeedController speedController) {
-        return mSpeedControllers.indexOf(speedController);
-    }
+	public int getSpeedControllerIndex(SpeedController speedController) {
+		return mSpeedControllers.indexOf(speedController);
+	}
 
-    @Override
-    public void pidWrite(double output) {
-        for (SpeedController speedController : mSpeedControllers) {
-            speedController.pidWrite(output);
-        }
-    }
+	@Override
+	public void pidWrite(double output) {
+		mSpeedControllers.forEach(controller -> controller.pidWrite(output));
+	}
 
-    public int getNumSpeedControllers() {
-        return mSpeedControllers.size();
-    }
+	public int getNumSpeedControllers() {
+		return mSpeedControllers.size();
+	}
 
-    @Override
-    public double get() {
-        if (getNumSpeedControllers() == 0) {
-            return 0;
-        }
-        return mSpeedControllers.get(0).get();
-    }
+	@Override
+	public double get() {
+		if (getNumSpeedControllers() == 0) {
+			return 0;
+		}
+		return mSpeedControllers.get(0).get();
+	}
 
-    @Override
-    public void set(double speed, byte syncGroup) {
-        for (SpeedController speedController : mSpeedControllers) {
-            speedController.set(speed, syncGroup);
-        }
-    }
+	@Override
+	public void set(double speed, byte syncGroup) {
+		mSpeedControllers.forEach(controller -> controller.set(speed, syncGroup));
+	}
 
-    @Override
-    public void set(double speed) {
-        for (SpeedController speedController : mSpeedControllers) {
-            speedController.set(speed);
-        }
-    }
+	@Override
+	public void set(double speed) {
+		mSpeedControllers.forEach(controller -> controller.set(speed));
+	}
 
-    @Override
-    public void setInverted(boolean isInverted) {
-        mIsInverted = isInverted;
-        for (SpeedController speedController : mSpeedControllers) {
-            speedController.setInverted(!speedController.getInverted());
-        }
-    }
+	@Override
+	public void setInverted(boolean isInverted) {
+		mIsInverted = isInverted;
+		mSpeedControllers.forEach(controller -> controller.setInverted(!controller.getInverted()));
+	}
 
-    public void setInverted(boolean isInverted, int speedControllerIndex) {
-        mSpeedControllers.get(speedControllerIndex).setInverted(isInverted);
-    }
+	public void setInverted(boolean isInverted, int speedControllerIndex) {
+		mSpeedControllers.get(speedControllerIndex).setInverted(isInverted);
+	}
 
-    @Override
-    public boolean getInverted() {
-        return mIsInverted;
-    }
+	@Override
+	public boolean getInverted() {
+		return mIsInverted;
+	}
 
-    @Override
-    public void disable() {
-        for (SpeedController speedController : mSpeedControllers) {
-            speedController.disable();
-        }
-    }
+	@Override
+	public void disable() {
+		mSpeedControllers.forEach(SpeedController::disable);
+	}
 
-    public void stopMotor() {
-        for (SpeedController speedController : mSpeedControllers) {
-            speedController.stopMotor();
-        }
-    }
+	public void stopMotor() {
+		mSpeedControllers.forEach(SpeedController::stopMotor);
+	}
 
 }
