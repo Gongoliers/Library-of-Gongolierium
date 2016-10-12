@@ -1,8 +1,12 @@
 package com.thegongoliers.util;
+
 import java.util.Arrays;
-import java.util.regex.Matcher;
 
 public class LinearAlgebra {
+	
+	public static final Vector i = new Vector(1, 0, 0);
+	public static final Vector j = new Vector(0, 1, 0);
+	public static final Vector k = new Vector(0, 0, 1);
 
 	public static class Vector {
 
@@ -26,7 +30,7 @@ public class LinearAlgebra {
 
 		public Vector plus(Vector v) {
 			if (v.dimension() != dimension())
-				return this;
+				throw new RuntimeException("Vectors were of different lengths");
 			Vector vect = new Vector();
 			vect.mCoords = new double[dimension()];
 			for (int i = 0; i < dimension(); i++) {
@@ -53,6 +57,17 @@ public class LinearAlgebra {
 			for (double coord : mCoords)
 				sum += MathExt.square(coord);
 			return Math.sqrt(sum);
+		}
+		
+		public Vector crossProduct(Vector v) {
+			if(dimension() != v.dimension() & dimension() != 3){
+				throw new RuntimeException("Vectors were not both 3 dimensional");
+			}
+			Vector cross = new Vector(0, 0, 0);
+			cross.set(0, get(1) * v.get(2) - get(1) * v.get(2));
+			cross.set(1, get(0) * v.get(2) - get(2) * v.get(0));
+			cross.set(2, get(0) * v.get(1) - get(1) * v.get(0));
+			return cross;
 		}
 
 		public Vector normalized() {
@@ -125,5 +140,6 @@ public class LinearAlgebra {
 			return true;
 		}
 	}
+	
 
 }

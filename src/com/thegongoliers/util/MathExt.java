@@ -69,8 +69,8 @@ public class MathExt {
 	 * @return
 	 */
 	public static Position toCartesian(PolarCoordinate polar) {
-		double x = Math.cos(polar.getAngle()) * polar.getMagnitude();
-		double y = Math.sin(polar.getAngle()) * polar.getMagnitude();
+		double x = polar.getXComponent();
+		double y = polar.getYComponent();
 		return new Position(x, y);
 	}
 
