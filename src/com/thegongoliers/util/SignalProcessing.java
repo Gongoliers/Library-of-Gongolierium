@@ -2,26 +2,26 @@ package com.thegongoliers.util;
 
 public class SignalProcessing {
 
-	public static double nextIRR(double pastIrr, double newVal) {
-		return (newVal + pastIrr) / 2.0;
+	public static double nextIIR(double pastIir, double newVal) {
+		return (newVal + pastIir) / 2.0;
 	}
 
-	public static double nextIRR(double[] pastIrrs, double newVal) {
-		if (pastIrrs.length == 0)
+	public static double nextIIR(double[] pastIirs, double newVal) {
+		if (pastIirs.length == 0)
 			return newVal;
-		return nextIRR(pastIrrs[pastIrrs.length - 1], newVal);
+		return nextIIR(pastIirs[pastIirs.length - 1], newVal);
 	}
 
-	public static double[] IRR(double[] values) {
+	public static double[] IIR(double[] values) {
 		if (values.length == 0) {
 			return new double[0];
 		}
-		double[] irrVals = new double[values.length];
-		irrVals[0] = values[0];
+		double[] iirVals = new double[values.length];
+		iirVals[0] = values[0];
 		for (int i = 1; i < values.length; i++) {
-			irrVals[i] = values[i] / 2.0 + irrVals[i - 1] / 2.0;
+			iirVals[i] = values[i] / 2.0 + iirVals[i - 1] / 2.0;
 		}
-		return irrVals;
+		return iirVals;
 	}
 
 	public static double[] FIR(double[] values) {
