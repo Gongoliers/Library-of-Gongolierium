@@ -61,9 +61,8 @@ public class SynchronizedSpeedControllers implements SpeedController {
 		return mSpeedControllers.get(0).get();
 	}
 
-	@Override
 	public void set(double speed, byte syncGroup) {
-		mSpeedControllers.forEach(controller -> controller.set(speed, syncGroup));
+		set(speed);
 	}
 
 	@Override

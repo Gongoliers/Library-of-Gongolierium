@@ -1,7 +1,5 @@
 package com.thegongoliers.output;
 
-import java.util.function.Function;
-
 import edu.wpi.first.wpilibj.RobotDrive;
 
 public class RobotDrivingUtils {
