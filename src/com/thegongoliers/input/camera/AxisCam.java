@@ -1,71 +1,82 @@
-package com.thegongoliers.input;
+package com.thegongoliers.input.camera;
 
 import com.ni.vision.NIVision;
 import com.ni.vision.NIVision.GetImageSizeResult;
 import com.ni.vision.NIVision.Image;
+import com.ni.vision.NIVision.ImageType;
+import com.thegongoliers.input.camera.CameraInterface.Axis;
 
 import edu.wpi.first.wpilibj.CameraServer;
+import edu.wpi.first.wpilibj.image.RGBImage;
+import edu.wpi.first.wpilibj.vision.AxisCamera;
 import edu.wpi.first.wpilibj.vision.USBCamera;
+import edu.wpi.first.wpilibj.vision.AxisCamera.ExposureControl;
 
-public class MicrosoftLifeCam implements CameraInterface {
+public class AxisCam implements CameraInterface {
 
+	private AxisCamera camera;
 	private Image frame;
-	private boolean cameraStarted;
-	private USBCamera camera;
 	private double offset = 0.0;
-
-	public MicrosoftLifeCam(String cameraName) {
+	
+	public AxisCam(String host) {
 		frame = NIVision.imaqCreateImage(NIVision.ImageType.IMAGE_RGB, 0);
-		cameraStarted = false;
-		camera = new USBCamera(cameraName);
-		camera.openCamera();
+		camera = new AxisCamera(host);
 	}
 
+	@Override
 	public double getViewAngle() {
-		return 60;
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
+	@Override
 	public void setBrightness(int brightness) {
-		camera.setBrightness(brightness);
+		camera.writeBrightness(brightness);
 	}
 
+	@Override
 	public int getBrightness() {
 		return camera.getBrightness();
 	}
 
+	@Override
 	public void setExposureManual(int exposure) {
-		camera.setExposureManual(exposure);
+		// TODO
+		camera.writeExposureControl(ExposureControl.kHold);
 	}
 
+	@Override
 	public void setExposureAuto() {
-		camera.setExposureAuto();
+		camera.writeExposureControl(ExposureControl.kAutomatic);
 	}
 
+	@Override
 	public Image getImage() {
-		if (!cameraStarted)
-			start();
 		camera.getImage(frame);
 		return frame;
 	}
 
+	@Override
 	public void start() {
-		camera.startCapture();
-		cameraStarted = true;
+		// TODO
 	}
 
+	@Override
 	public void stop() {
-		camera.stopCapture();
-		cameraStarted = false;
+		// TODO
 	}
 
+	@Override
 	public void setFPS(int fps) {
-		camera.setFPS(fps);
+		camera.writeMaxFPS(fps);
 	}
 
+	@Override
 	public void display() {
 		CameraServer.getInstance().setImage(getImage());
 	}
 
+	@Override
 	public int getResolution(Axis axis) {
 		Image currentImage = getImage();
 		GetImageSizeResult size = NIVision.imaqGetImageSize(currentImage);
@@ -75,10 +86,12 @@ public class MicrosoftLifeCam implements CameraInterface {
 			return size.height;
 	}
 
+	@Override
 	public double getHorizontalOffset() {
-		return offset;
+		return 0;
 	}
-
+	
+	@Override
 	public void setHorizontalOffset(double hOffset) {
 		this.offset = hOffset;
 	}

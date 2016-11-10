@@ -1,4 +1,4 @@
-package com.thegongoliers.input;
+package com.thegongoliers.input.camera;
 
 import com.ni.vision.NIVision.Image;
 
@@ -88,5 +88,13 @@ public interface CameraInterface {
 	 * @return The horizontal offset of the camera.
 	 */
 	public double getHorizontalOffset();
+
+	/**
+	 * Set the horizontal offset of the camera from the center of the robot.
+	 * 
+	 * @param hOffset
+	 *            The horizontal offset of the camera.
+	 */
+	public void setHorizontalOffset(double hOffset);
 
 }

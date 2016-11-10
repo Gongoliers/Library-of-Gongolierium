@@ -1,4 +1,4 @@
-package com.thegongoliers.input;
+package com.thegongoliers.input.camera;
 
 import java.util.Comparator;
 import java.util.Vector;
@@ -6,7 +6,7 @@ import java.util.Vector;
 import com.ni.vision.NIVision;
 import com.ni.vision.NIVision.Image;
 import com.ni.vision.NIVision.ImageType;
-import com.thegongoliers.input.CameraInterface.Axis;
+import com.thegongoliers.input.camera.CameraInterface.Axis;
 import com.thegongoliers.util.Position;
 
 /**
