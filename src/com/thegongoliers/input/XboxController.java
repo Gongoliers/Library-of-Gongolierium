@@ -37,7 +37,7 @@ public class XboxController extends Joystick {
 
 		@Override
 		public boolean get() {
-			return getPOV() == 0;
+			return getPOV() == DPAD.NORTH.getDirection();
 		}
 	};
 
@@ -45,7 +45,7 @@ public class XboxController extends Joystick {
 
 		@Override
 		public boolean get() {
-			return getPOV() == 180;
+			return getPOV() == DPAD.SOUTH.getDirection();
 		}
 	};
 
@@ -53,7 +53,7 @@ public class XboxController extends Joystick {
 
 		@Override
 		public boolean get() {
-			return getPOV() == 90;
+			return getPOV() == DPAD.EAST.getDirection();
 		}
 	};
 
@@ -61,7 +61,7 @@ public class XboxController extends Joystick {
 
 		@Override
 		public boolean get() {
-			return getPOV() == 270;
+			return getPOV() == DPAD.WEST.getDirection();
 		}
 	};
 
@@ -89,19 +89,28 @@ public class XboxController extends Joystick {
 		return getRawAxis(3);
 	}
 
+	public DPAD getPOVDirection() {
+		return DPAD.values()[getPOV() / 45];
+	}
+
 	public void rumble(float value) {
 		setRumble(RumbleType.kLeftRumble, value);
 		setRumble(RumbleType.kRightRumble, value);
 	}
 
-	public static final int DPAD_NORTH = 0;
-	public static final int DPAD_NORTHEAST = 45;
-	public static final int DPAD_EAST = 90;
-	public static final int DPAD_SOUTHEAST = 135;
-	public static final int DPAD_SOUTH = 180;
-	public static final int DPAD_SOUTHWEST = 225;
-	public static final int DPAD_WEST = 270;
-	public static final int DPAD_NORTHWEST = 315;
+	public static enum DPAD {
+		NORTH(0), NORTHEAST(45), EAST(90), SOUTHEAST(135), SOUTH(180), SOUTHWEST(225), WEST(270), NORTHWEST(315);
+
+		private final int direction;
+
+		DPAD(int direction) {
+			this.direction = direction;
+		}
+
+		public int getDirection() {
+			return direction;
+		}
+	}
 
 	public XboxController(int port) {
 		super(port);
