@@ -1,21 +1,16 @@
 package com.thegongoliers.input.camera;
 
-import com.ni.vision.NIVision;
-import com.ni.vision.NIVision.GetImageSizeResult;
 import com.ni.vision.NIVision.Image;
 
-import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.vision.USBCamera;
 
-public class MicrosoftLifeCam implements CameraInterface {
+public class MicrosoftLifeCam extends AbstractCamera {
 
-	private Image frame;
 	private boolean cameraStarted;
 	private USBCamera camera;
-	private double offset = 0.0;
 
 	public MicrosoftLifeCam(String cameraName) {
-		frame = NIVision.imaqCreateImage(NIVision.ImageType.IMAGE_RGB, 0);
+		super();
 		cameraStarted = false;
 		camera = new USBCamera(cameraName);
 		camera.openCamera();
@@ -60,27 +55,6 @@ public class MicrosoftLifeCam implements CameraInterface {
 
 	public void setFPS(int fps) {
 		camera.setFPS(fps);
-	}
-
-	public void display() {
-		CameraServer.getInstance().setImage(getImage());
-	}
-
-	public int getResolution(Axis axis) {
-		Image currentImage = getImage();
-		GetImageSizeResult size = NIVision.imaqGetImageSize(currentImage);
-		if (axis.equals(Axis.X))
-			return size.width;
-		else
-			return size.height;
-	}
-
-	public double getHorizontalOffset() {
-		return offset;
-	}
-
-	public void setHorizontalOffset(double hOffset) {
-		this.offset = hOffset;
 	}
 
 }
