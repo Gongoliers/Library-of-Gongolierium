@@ -1,6 +1,6 @@
 package com.thegongoliers.output;
 
-public interface Flywheel {
+public interface FlywheelInterface {
 
 	public void spinUp(double speed);
 
