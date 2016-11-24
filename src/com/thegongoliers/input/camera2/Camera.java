@@ -1,15 +1,19 @@
-package com.thegongoliers.input.camera;
+package com.thegongoliers.input.camera2;
 
+import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.Vector;
+import java.util.List;
 
-import com.ni.vision.NIVision;
-import com.ni.vision.NIVision.Image;
-import com.ni.vision.NIVision.ImageType;
-import com.thegongoliers.input.camera.CameraInterface.Axis;
+import org.opencv.core.Core;
+import org.opencv.core.Mat;
+import org.opencv.core.MatOfPoint;
+import org.opencv.core.Range;
+import org.opencv.core.Rect;
+import org.opencv.core.Scalar;
+import org.opencv.core.Size;
+import org.opencv.imgproc.Imgproc;
+
 import com.thegongoliers.util.Position;
-
-import edu.wpi.first.wpilibj.CameraServer;
 
 /**
  * Allows for abstract use of the camera.
@@ -21,11 +25,11 @@ public class Camera {
 
 	private CameraInterface camera;
 	private int targetExposure, targetBrightness, normalBrightness;
-	private NIVision.Range hue, saturation, value;
+	private Range hue, saturation, value;
 	private Mode cameraMode;
 
-	Camera(CameraInterface camera, int targetExposure, int targetBrightness, int normalBrightness, NIVision.Range hue,
-			NIVision.Range saturation, NIVision.Range value) {
+	Camera(CameraInterface camera, int targetExposure, int targetBrightness, int normalBrightness, Range hue,
+			Range saturation, Range value) {
 		this.camera = camera;
 		this.targetBrightness = targetBrightness;
 		this.targetExposure = targetExposure;
@@ -33,6 +37,7 @@ public class Camera {
 		this.hue = hue;
 		this.saturation = saturation;
 		this.value = value;
+		camera.start();
 		disableTargetMode();
 	}
 
@@ -41,7 +46,7 @@ public class Camera {
 	 * 
 	 * @return The current frame.
 	 */
-	public Image getImage() {
+	public Mat getImage() {
 		return camera.getImage();
 	}
 
@@ -127,43 +132,45 @@ public class Camera {
 	 * @return The target information.
 	 */
 	public Target findTarget(double width, double height) {
-		Image binaryFilteredImage = filterRetroreflective();
-		ParticleReport particleReport = generateParticleReport(binaryFilteredImage);
+		Mat binaryFilteredImage = filterRetroreflective();
+		ParticleReport particleReport = generateParticleReport(binaryFilteredImage, findBlob(binaryFilteredImage));
 		if (particleReport == null)
 			return new Target();
-		double rawX = (particleReport.BoundingRectLeft + particleReport.BoundingRectRight) / 2;
-		double rawY = (particleReport.BoundingRectBottom + particleReport.BoundingRectTop) / 2;
+		double rawX = (particleReport.boundingRectLeft + particleReport.boundingRectRight) / 2;
+		double rawY = (particleReport.boundingRectBottom + particleReport.boundingRectTop) / 2;
 		Target target = new Target();
+		target.boundingRectangle = particleReport.boundingRect;
 		target.distance = computeDistance(binaryFilteredImage, particleReport, width);
 		target.centerX = rawX;
 		target.centerY = rawY;
 		target.aimingCoordinates = toAimingCoordinates(new Position(rawX, rawY));
 		target.angle = computeAngle(binaryFilteredImage, rawX);
-		target.width = Math.abs(particleReport.BoundingRectRight - particleReport.BoundingRectLeft);
-		target.height = Math.abs(particleReport.BoundingRectBottom - particleReport.BoundingRectTop);
-		target.percentArea = particleReport.PercentAreaToImageArea;
+		target.width = Math.abs(particleReport.boundingRectRight - particleReport.boundingRectLeft);
+		target.height = Math.abs(particleReport.boundingRectBottom - particleReport.boundingRectTop);
+		target.percentArea = particleReport.percentAreaToImageArea;
+		target.targetArea = particleReport.blobArea;
 		target.experimentalDistance = computeRobotDistance(target.distance, rawX);
 		target.experimentalAngle = computeRobotAngle(binaryFilteredImage, rawX, target.experimentalDistance);
 		return target;
 	}
 
 	private Position toAimingCoordinates(Position pixels) {
-		double aimingX = (pixels.getX() - camera.getResolution(Axis.X) / 2.0) / (camera.getResolution(Axis.X) / 2.0);
-		double aimingY = (pixels.getY() - camera.getResolution(Axis.Y) / 2.0) / (camera.getResolution(Axis.Y) / 2.0);
+		double aimingX = (pixels.getX() - camera.getResolution(CameraInterface.Axis.X) / 2.0)
+				/ (camera.getResolution(CameraInterface.Axis.X) / 2.0);
+		double aimingY = (pixels.getY() - camera.getResolution(CameraInterface.Axis.Y) / 2.0)
+				/ (camera.getResolution(CameraInterface.Axis.Y) / 2.0);
 		return new Position(aimingX, aimingY);
 	}
 
-	private double computeDistance(Image image, ParticleReport report, double width) {
+	private double computeDistance(Mat image, ParticleReport report, double width) {
 		double normalizedWidth;
-		NIVision.GetImageSizeResult size;
-
-		size = NIVision.imaqGetImageSize(image);
-		normalizedWidth = 2 * (report.BoundingRectRight - report.BoundingRectLeft) / size.width;
+		Size size = image.size();
+		normalizedWidth = 2 * (report.boundingRectRight - report.boundingRectLeft) / size.width;
 		return width / (normalizedWidth * Math.tan(Math.toRadians(camera.getViewAngle() / 2)));
 	}
 
-	private double computeAngle(Image image, double centerX) {
-		NIVision.GetImageSizeResult size = NIVision.imaqGetImageSize(image);
+	private double computeAngle(Mat image, double centerX) {
+		Size size = image.size();
 		double aimingCoordinate = (centerX / size.width) * 2 - 1;
 		return aimingCoordinate * camera.getViewAngle() / 2;
 	}
@@ -188,59 +195,88 @@ public class Camera {
 	 * @author FRC Team #125, NUtrons
 	 * 
 	 */
-	private double computeRobotAngle(Image image, double centerX, double cameraDistance) {
+	private double computeRobotAngle(Mat image, double centerX, double cameraDistance) {
 		double distance = computeRobotDistance(cameraDistance, computeAngle(image, centerX));
 		return Math.toDegrees(Math
 				.acos(Math.pow(camera.getHorizontalOffset(), 2) - Math.pow(cameraDistance, 2) + Math.pow(distance, 2))
 				/ (2 * distance * Math.abs(camera.getHorizontalOffset()))) - 90.0;
 	}
 
-	private Image filterRetroreflective() {
-		Image binaryFrame = NIVision.imaqCreateImage(ImageType.IMAGE_U8, 0);
-		NIVision.imaqColorThreshold(binaryFrame, getImage(), 255, NIVision.ColorMode.HSV, hue, saturation, value);
-		return binaryFrame;
+	private Mat filterRetroreflective() {
+		Mat rawCameraImage = getImage();
+		Mat hsvCameraImage = new Mat();
+		Imgproc.cvtColor(rawCameraImage, hsvCameraImage, Imgproc.COLOR_BGR2HSV);
+		Scalar minRange = new Scalar(hue.start, saturation.start, value.start);
+		Scalar maxRange = new Scalar(hue.end, saturation.end, value.end);
+		Mat binaryImage = new Mat();
+		Core.inRange(hsvCameraImage, minRange, maxRange, binaryImage);
+		return binaryImage;
 	}
 
-	private ParticleReport generateParticleReport(Image binaryFilteredImage) {
-		int numParticles = NIVision.imaqCountParticles(binaryFilteredImage, 1);
-		if (numParticles > 0) {
-			Vector<ParticleReport> particles = new Vector<ParticleReport>();
-			for (int particleIndex = 0; particleIndex < numParticles; particleIndex++) {
-				ParticleReport par = new ParticleReport();
-				par.PercentAreaToImageArea = NIVision.imaqMeasureParticle(binaryFilteredImage, particleIndex, 0,
-						NIVision.MeasurementType.MT_AREA_BY_IMAGE_AREA);
-				par.Area = NIVision.imaqMeasureParticle(binaryFilteredImage, particleIndex, 0,
-						NIVision.MeasurementType.MT_AREA);
-				par.BoundingRectTop = NIVision.imaqMeasureParticle(binaryFilteredImage, particleIndex, 0,
-						NIVision.MeasurementType.MT_BOUNDING_RECT_TOP);
-				par.BoundingRectLeft = NIVision.imaqMeasureParticle(binaryFilteredImage, particleIndex, 0,
-						NIVision.MeasurementType.MT_BOUNDING_RECT_LEFT);
-				par.BoundingRectBottom = NIVision.imaqMeasureParticle(binaryFilteredImage, particleIndex, 0,
-						NIVision.MeasurementType.MT_BOUNDING_RECT_BOTTOM);
-				par.BoundingRectRight = NIVision.imaqMeasureParticle(binaryFilteredImage, particleIndex, 0,
-						NIVision.MeasurementType.MT_BOUNDING_RECT_RIGHT);
-				particles.add(par);
+	private Rect findBlob(Mat binaryFilteredImage) {
+		List<MatOfPoint> contours = new ArrayList<MatOfPoint>();
+		Mat hierarchy = new Mat();
+		Imgproc.findContours(binaryFilteredImage, contours, hierarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
+		double largest = 0;
+		int largestIdx = 0;
+		if (contours.isEmpty())
+			return null;
+		for (int idx = 0; idx < contours.size(); idx++) {
+			double area = Imgproc.boundingRect(contours.get(idx)).area();
+			if (area > largest) {
+				largest = area;
+				largestIdx = idx;
 			}
-			particles.sort(null);
-			return particles.elementAt(0);
 		}
-		return null;
+
+		Rect bounding = Imgproc.boundingRect(contours.get(largestIdx));
+		return bounding;
+	}
+
+	private ParticleReport generateParticleReport(Mat binaryImage, Rect boundingRect) {
+		ParticleReport report = new ParticleReport();
+		if (boundingRect == null)
+			return null;
+		report.area = boundingRect.area();
+		int sum = 0;
+		for (int i = (int) boundingRect.tl().x; i < boundingRect.br().x; i++) {
+			for (int j = (int) boundingRect.tl().y; j < boundingRect.br().y; j++) {
+				double[] vals = binaryImage.get(j, i);
+				int s = 0;
+				for (double val : vals) {
+					s += val;
+				}
+				if (s > 0) {
+					sum++;
+				}
+			}
+		}
+		report.boundingRect = boundingRect;
+		report.blobArea = sum;
+		report.percentAreaToImageArea = report.area / binaryImage.size().area() * 100;
+		report.boundingRectBottom = boundingRect.br().y;
+		report.boundingRectLeft = boundingRect.tl().x;
+		report.boundingRectRight = boundingRect.br().x;
+		report.boundingRectTop = boundingRect.tl().y;
+		return report;
 	}
 
 	private class ParticleReport implements Comparator<ParticleReport>, Comparable<ParticleReport> {
-		double PercentAreaToImageArea;
-		double Area;
-		double BoundingRectLeft;
-		double BoundingRectTop;
-		double BoundingRectRight;
-		double BoundingRectBottom;
+		double percentAreaToImageArea;
+		double blobArea;
+		double area;
+		double boundingRectLeft;
+		double boundingRectTop;
+		double boundingRectRight;
+		double boundingRectBottom;
+		Rect boundingRect;
 
 		public int compareTo(ParticleReport r) {
-			return (int) (r.Area - this.Area);
+			return (int) (r.area - this.area);
 		}
 
 		public int compare(ParticleReport r1, ParticleReport r2) {
-			return (int) (r1.Area - r2.Area);
+			return (int) (r1.area - r2.area);
 		}
 	};
 
@@ -259,8 +295,10 @@ public class Camera {
 		private double width;
 		private double height;
 		private double percentArea;
+		private double targetArea;
 		private double experimentalDistance;
 		private double experimentalAngle;
+		private Rect boundingRectangle;
 		private Position aimingCoordinates;
 
 		public Position getAimingCoordinates() {
@@ -271,12 +309,20 @@ public class Camera {
 			return experimentalDistance;
 		}
 
+		public Rect getBoundingRectangle() {
+			return boundingRectangle;
+		}
+
 		public double getExperimentalAngle() {
 			return experimentalAngle;
 		}
 
 		public double getPercentArea() {
 			return percentArea;
+		}
+
+		public double getTargetArea() {
+			return targetArea;
 		}
 
 		public double getWidth() {
@@ -307,7 +353,7 @@ public class Camera {
 	public static class CameraBuilder {
 		private CameraInterface camera;
 		private int targetExposure, targetBrightness, normalBrightness = 50;
-		private NIVision.Range hue, saturation, value;
+		private Range hue, saturation, value;
 
 		/**
 		 * This method sets the HSV range of the findTarget method of the Camera
@@ -321,9 +367,9 @@ public class Camera {
 		public CameraBuilder setLEDColor(LEDColor color) {
 			switch (color) {
 			case GREEN:
-				hue = new NIVision.Range(75, 125);
-				saturation = new NIVision.Range(175, 255);
-				value = new NIVision.Range(65, 255);
+				hue = new Range(75, 125);
+				saturation = new Range(175, 255);
+				value = new Range(65, 255);
 				break;
 			}
 			return this;
@@ -398,7 +444,7 @@ public class Camera {
 		 *            The value range.
 		 * @return The CameraBuilder object
 		 */
-		public CameraBuilder setManualHSVRange(NIVision.Range hue, NIVision.Range saturation, NIVision.Range value) {
+		public CameraBuilder setManualHSVRange(Range hue, Range saturation, Range value) {
 			this.hue = hue;
 			this.saturation = saturation;
 			this.value = value;
@@ -415,7 +461,7 @@ public class Camera {
 			if (hue == null)
 				this.setLEDColor(LEDColor.GREEN);
 			if (camera == null)
-				this.setCamera(new MicrosoftLifeCam("cam0"));
+				throw new RuntimeException("Camera can not be null");
 			return new Camera(camera, targetExposure, targetBrightness, normalBrightness, hue, saturation, value);
 		}
 	}

@@ -2,7 +2,7 @@ package com.thegongoliers.input.camera;
 
 import com.ni.vision.NIVision.Image;
 
-import edu.wpi.first.wpilibj.vision.USBCamera;
+import edu.wpi.first.wpilibj.CameraServer;
 
 public class MicrosoftLifeCam extends AbstractCamera {
 
