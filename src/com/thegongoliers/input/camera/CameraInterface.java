@@ -1,6 +1,5 @@
 package com.thegongoliers.input.camera;
-
-import com.ni.vision.NIVision.Image;
+import org.opencv.core.Mat;
 
 public interface CameraInterface {
 
@@ -48,7 +47,7 @@ public interface CameraInterface {
 	 * 
 	 * @return The current image.
 	 */
-	public Image getImage();
+	public Mat getImage();
 
 	/**
 	 * Start the camera.

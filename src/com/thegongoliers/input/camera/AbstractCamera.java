@@ -1,31 +1,32 @@
 package com.thegongoliers.input.camera;
 
-import com.ni.vision.NIVision;
-import com.ni.vision.NIVision.GetImageSizeResult;
-import com.ni.vision.NIVision.Image;
 
-import edu.wpi.first.wpilibj.CameraServer;
+
+import org.opencv.core.Mat;
+import org.opencv.core.Size;
+
+//import edu.wpi.first.wpilibj.CameraServer;
 
 public abstract class AbstractCamera implements CameraInterface {
 
 	private double offset = 0.0;
-	protected Image frame;
+	protected Mat frame;
 
 	public AbstractCamera() {
-		frame = NIVision.imaqCreateImage(NIVision.ImageType.IMAGE_RGB, 0);
+		frame = new Mat();
 	}
 
 	public void display() {
-		CameraServer.getInstance().setImage(getImage());
+//		CameraServer.getInstance().setImage(getImage());
 	}
 
 	public int getResolution(Axis axis) {
-		Image currentImage = getImage();
-		GetImageSizeResult size = NIVision.imaqGetImageSize(currentImage);
+		Mat currentImage = getImage();
+		Size size = currentImage.size();
 		if (axis.equals(Axis.X))
-			return size.width;
+			return (int) size.width;
 		else
-			return size.height;
+			return (int) size.height;
 	}
 
 	public double getHorizontalOffset() {

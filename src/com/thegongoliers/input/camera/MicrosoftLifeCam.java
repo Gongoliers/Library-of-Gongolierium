@@ -1,7 +1,9 @@
 package com.thegongoliers.input.camera;
 
-import com.ni.vision.NIVision.Image;
+import org.opencv.core.Mat;
 
+import edu.wpi.cscore.CvSink;
+import edu.wpi.cscore.USBCamera;
 import edu.wpi.first.wpilibj.CameraServer;
 
 public class MicrosoftLifeCam extends AbstractCamera {
@@ -9,11 +11,10 @@ public class MicrosoftLifeCam extends AbstractCamera {
 	private boolean cameraStarted;
 	private USBCamera camera;
 
-	public MicrosoftLifeCam(String cameraName) {
+	public MicrosoftLifeCam(int port) {
 		super();
 		cameraStarted = false;
-		camera = new USBCamera(cameraName);
-		camera.openCamera();
+		camera = new USBCamera("cam", port);
 	}
 
 	public double getViewAngle() {
@@ -36,20 +37,20 @@ public class MicrosoftLifeCam extends AbstractCamera {
 		camera.setExposureAuto();
 	}
 
-	public Image getImage() {
+	public Mat getImage() {
 		if (!cameraStarted)
 			start();
-		camera.getImage(frame);
+		CvSink cvSink = CameraServer.getInstance().getVideo();
+		cvSink.grabFrame(frame);
 		return frame;
 	}
 
 	public void start() {
-		camera.startCapture();
+		CameraServer.getInstance().startAutomaticCapture(camera);
 		cameraStarted = true;
 	}
 
 	public void stop() {
-		camera.stopCapture();
 		cameraStarted = false;
 	}
 
