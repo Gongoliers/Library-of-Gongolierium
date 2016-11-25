@@ -149,16 +149,12 @@ public class Camera {
 		target.height = Math.abs(particleReport.boundingRectBottom - particleReport.boundingRectTop);
 		target.percentArea = particleReport.percentAreaToImageArea;
 		target.targetArea = particleReport.blobArea;
-		target.experimentalDistance = computeRobotDistance(target.distance, rawX);
-		target.experimentalAngle = computeRobotAngle(binaryFilteredImage, rawX, target.experimentalDistance);
 		return target;
 	}
 
 	private Position toAimingCoordinates(Position pixels) {
-		double aimingX = (pixels.getX() - camera.getResolution(CameraInterface.Axis.X) / 2.0)
-				/ (camera.getResolution(CameraInterface.Axis.X) / 2.0);
-		double aimingY = (pixels.getY() - camera.getResolution(CameraInterface.Axis.Y) / 2.0)
-				/ (camera.getResolution(CameraInterface.Axis.Y) / 2.0);
+		double aimingX = (pixels.getX() - camera.getResolution(Axis.X) / 2.0) / (camera.getResolution(Axis.X) / 2.0);
+		double aimingY = (pixels.getY() - camera.getResolution(Axis.Y) / 2.0) / (camera.getResolution(Axis.Y) / 2.0);
 		return new Position(aimingX, aimingY);
 	}
 
@@ -173,33 +169,6 @@ public class Camera {
 		Size size = image.size();
 		double aimingCoordinate = (centerX / size.width) * 2 - 1;
 		return aimingCoordinate * camera.getViewAngle() / 2;
-	}
-
-	/**
-	 * @author FRC Team #125, NUtrons
-	 * 
-	 */
-	private double computeRobotDistance(double cameraDistance, double cameraXAngle) {
-		double angle = 90 + Math.abs(cameraXAngle);
-		double cameraOffset = camera.getHorizontalOffset();
-		if (cameraOffset == 0.0) {
-			return cameraDistance;
-		}
-
-		return Math.sqrt(Math.pow(cameraOffset, 2) + Math.pow(cameraDistance, 2)
-				- (2 * Math.abs(cameraOffset) * cameraDistance * Math.cos(Math.toRadians(angle))));
-
-	}
-
-	/**
-	 * @author FRC Team #125, NUtrons
-	 * 
-	 */
-	private double computeRobotAngle(Mat image, double centerX, double cameraDistance) {
-		double distance = computeRobotDistance(cameraDistance, computeAngle(image, centerX));
-		return Math.toDegrees(Math
-				.acos(Math.pow(camera.getHorizontalOffset(), 2) - Math.pow(cameraDistance, 2) + Math.pow(distance, 2))
-				/ (2 * distance * Math.abs(camera.getHorizontalOffset()))) - 90.0;
 	}
 
 	private Mat filterRetroreflective() {
@@ -228,7 +197,6 @@ public class Camera {
 				largestIdx = idx;
 			}
 		}
-
 		Rect bounding = Imgproc.boundingRect(contours.get(largestIdx));
 		return bounding;
 	}
@@ -296,25 +264,38 @@ public class Camera {
 		private double height;
 		private double percentArea;
 		private double targetArea;
-		private double experimentalDistance;
-		private double experimentalAngle;
 		private Rect boundingRectangle;
 		private Position aimingCoordinates;
+
+		/**
+		 * The aspect ratio of the target bounding rectangle. A good score
+		 * should approach the width / height of the actual bounding rectangle
+		 * of your target.
+		 * 
+		 * @return The width / height of the target bounding rectangle.
+		 */
+		public double getAspectRatio() {
+			return getWidth() / getHeight();
+		}
+
+		/**
+		 * The coverage area of the target. A good score should approach the
+		 * coverage area of your target as the following ratio (area
+		 * target)/(area bounding rectangle).
+		 * 
+		 * @return The area of the target divided by the area of the bounding
+		 *         rectangle.
+		 */
+		public double getCoverageArea() {
+			return getTargetArea() / getBoundingRectangle().area();
+		}
 
 		public Position getAimingCoordinates() {
 			return aimingCoordinates;
 		}
 
-		public double getExperimentalDistance() {
-			return experimentalDistance;
-		}
-
 		public Rect getBoundingRectangle() {
 			return boundingRectangle;
-		}
-
-		public double getExperimentalAngle() {
-			return experimentalAngle;
 		}
 
 		public double getPercentArea() {

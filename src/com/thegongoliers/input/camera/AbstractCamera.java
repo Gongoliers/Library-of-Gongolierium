@@ -1,11 +1,9 @@
 package com.thegongoliers.input.camera;
 
-
-
 import org.opencv.core.Mat;
 import org.opencv.core.Size;
 
-//import edu.wpi.first.wpilibj.CameraServer;
+import edu.wpi.first.wpilibj.CameraServer;
 
 public abstract class AbstractCamera implements CameraInterface {
 
@@ -17,7 +15,7 @@ public abstract class AbstractCamera implements CameraInterface {
 	}
 
 	public void display() {
-//		CameraServer.getInstance().setImage(getImage());
+		CameraServer.getInstance().addCamera(getVideoSource());
 	}
 
 	public int getResolution(Axis axis) {
