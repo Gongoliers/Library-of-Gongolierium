@@ -131,11 +131,11 @@ public class Camera {
 	 *            The height of the actual target.
 	 * @return The target information.
 	 */
-	public Target findTarget(double width, double height) {
+	public Target findTarget(double width, double height) throws TargetNotFoundException {
 		Mat binaryFilteredImage = filterRetroreflective();
 		ParticleReport particleReport = generateParticleReport(binaryFilteredImage, findBlob(binaryFilteredImage));
 		if (particleReport == null)
-			return new Target();
+			throw new TargetNotFoundException();
 		double rawX = (particleReport.boundingRectLeft + particleReport.boundingRectRight) / 2;
 		double rawY = (particleReport.boundingRectBottom + particleReport.boundingRectTop) / 2;
 		Target target = new Target();
