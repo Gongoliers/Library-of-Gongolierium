@@ -71,12 +71,10 @@ public class Camera {
 	}
 
 	/**
-	 * This method displays the current image onto the SmartDashboard. Call this
-	 * method repeatedly to have a live stream of images.
+	 * This method displays the current video stream onto the SmartDashboard.
 	 */
 	public void display() {
-		CameraDisplayer displayer = new CameraDisplayer();
-		displayer.display(camera.getVideoSource());
+		camera.display();
 	}
 
 	/**

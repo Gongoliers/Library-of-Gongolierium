@@ -81,4 +81,6 @@ public interface CameraInterface {
 	 */
 	VideoSource getVideoSource();
 
+	void display();
+
 }

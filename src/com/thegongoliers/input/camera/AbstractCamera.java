@@ -3,6 +3,8 @@ package com.thegongoliers.input.camera;
 import org.opencv.core.Mat;
 import org.opencv.core.Size;
 
+import edu.wpi.first.wpilibj.CameraServer;
+
 public abstract class AbstractCamera implements CameraInterface {
 
 	protected Mat frame;
@@ -18,6 +20,10 @@ public abstract class AbstractCamera implements CameraInterface {
 			return (int) size.width;
 		else
 			return (int) size.height;
+	}
+
+	public void display() {
+		CameraServer.getInstance().startAutomaticCapture(getVideoSource());
 	}
 
 }
