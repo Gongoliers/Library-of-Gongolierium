@@ -22,8 +22,4 @@ public abstract class AbstractCamera implements CameraInterface {
 			return (int) size.height;
 	}
 
-	public void display() {
-		CameraServer.getInstance().startAutomaticCapture(getVideoSource());
-	}
-
 }

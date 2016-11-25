@@ -18,6 +18,10 @@ public class MicrosoftLifeCam extends AbstractCamera {
 		camera = new USBCamera("cam", port);
 	}
 
+	public void display() {
+		CameraServer.getInstance().startAutomaticCapture(getVideoSource());
+	}
+
 	public double getViewAngle() {
 		return 60;
 	}
