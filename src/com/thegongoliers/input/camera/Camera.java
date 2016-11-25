@@ -27,6 +27,7 @@ public class Camera {
 	private int targetExposure, targetBrightness, normalBrightness;
 	private Range hue, saturation, value;
 	private Mode cameraMode;
+	private double offset = 0.0;
 
 	Camera(CameraInterface camera, int targetExposure, int targetBrightness, int normalBrightness, Range hue,
 			Range saturation, Range value) {
@@ -39,6 +40,25 @@ public class Camera {
 		this.value = value;
 		camera.start();
 		disableTargetMode();
+	}
+
+	/**
+	 * Get the horizontal offset of the camera from the center of the robot.
+	 * 
+	 * @return The horizontal offset of the camera.
+	 */
+	public double getHorizontalOffset() {
+		return offset;
+	}
+
+	/**
+	 * Set the horizontal offset of the camera from the center of the robot.
+	 * 
+	 * @param hOffset
+	 *            The horizontal offset of the camera.
+	 */
+	public void setHorizontalOffset(double hOffset) {
+		this.offset = hOffset;
 	}
 
 	/**
@@ -55,7 +75,8 @@ public class Camera {
 	 * method repeatedly to have a live stream of images.
 	 */
 	public void display() {
-		camera.display();
+		CameraDisplayer displayer = new CameraDisplayer();
+		displayer.display(camera.getVideoSource());
 	}
 
 	/**

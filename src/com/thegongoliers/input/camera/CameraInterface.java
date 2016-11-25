@@ -66,11 +66,6 @@ public interface CameraInterface {
 	void setFPS(int fps);
 
 	/**
-	 * Display the camera image on the SmartDashboard.
-	 */
-	void display();
-
-	/**
 	 * Get the resolution of the image.
 	 * 
 	 * @param axis
@@ -78,21 +73,6 @@ public interface CameraInterface {
 	 * @return The resolution of the axis in pixels.
 	 */
 	int getResolution(Axis axis);
-
-	/**
-	 * Get the horizontal offset of the camera from the center of the robot.
-	 * 
-	 * @return The horizontal offset of the camera.
-	 */
-	double getHorizontalOffset();
-
-	/**
-	 * Set the horizontal offset of the camera from the center of the robot.
-	 * 
-	 * @param hOffset
-	 *            The horizontal offset of the camera.
-	 */
-	void setHorizontalOffset(double hOffset);
 
 	/**
 	 * Gets the video source of this camera.
