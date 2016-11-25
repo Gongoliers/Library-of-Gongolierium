@@ -275,6 +275,9 @@ public class Camera {
 		 * @return The width / height of the target bounding rectangle.
 		 */
 		public double getAspectRatio() {
+			if (getHeight() == 0) {
+				return 0;
+			}
 			return getWidth() / getHeight();
 		}
 
@@ -287,6 +290,9 @@ public class Camera {
 		 *         rectangle.
 		 */
 		public double getCoverageArea() {
+			if (getBoundingRectangle() == null || getBoundingRectangle().area() == 0) {
+				return 0;
+			}
 			return getTargetArea() / getBoundingRectangle().area();
 		}
 
