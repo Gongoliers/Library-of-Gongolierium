@@ -1,10 +1,10 @@
 package com.thegongoliers.input;
 
-import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import edu.wpi.first.wpilibj.buttons.Trigger;
 
-public class XboxController extends Joystick {
+public class EnhancedXboxController extends XboxController {
 
 	public final JoystickButton A = new JoystickButton(this, 1);
 	public final JoystickButton B = new JoystickButton(this, 2);
@@ -17,11 +17,15 @@ public class XboxController extends Joystick {
 	public final JoystickButton LEFT_STICK_BUTTON = new JoystickButton(this, 9);
 	public final JoystickButton RIGHT_STICK_BUTTON = new JoystickButton(this, 10);
 
+	public EnhancedXboxController(int port) {
+		super(port);
+	}
+
 	public final Trigger LT = new Trigger() {
 
 		@Override
 		public boolean get() {
-			return Math.abs(Math.round(getLeftTrigger())) == 1;
+			return getTrigger(Hand.kLeft);
 		}
 	};
 
@@ -29,7 +33,7 @@ public class XboxController extends Joystick {
 
 		@Override
 		public boolean get() {
-			return Math.abs(Math.round(getRightTrigger())) == 1;
+			return getTrigger(Hand.kRight);
 		}
 	};
 
@@ -82,11 +86,11 @@ public class XboxController extends Joystick {
 	}
 
 	public double getLeftTrigger() {
-		return getRawAxis(2);
+		return getTriggerAxis(Hand.kLeft);
 	}
 
 	public double getRightTrigger() {
-		return getRawAxis(3);
+		return getTriggerAxis(Hand.kRight);
 	}
 
 	public DPAD getPOVDirection() {
@@ -110,10 +114,6 @@ public class XboxController extends Joystick {
 		public int getDirection() {
 			return direction;
 		}
-	}
-
-	public XboxController(int port) {
-		super(port);
 	}
 
 }
