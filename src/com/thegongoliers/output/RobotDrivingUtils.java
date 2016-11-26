@@ -38,7 +38,7 @@ public class RobotDrivingUtils {
 	 *            The magnitude of the correction that the robot will take to
 	 *            drive straight (0.01 worked well in the past)
 	 */
-	public static void gyroStabalizedOperation(RobotDrive robotDrive, double y, double rotation, double gyroAngle,
+	public static void gyroStabilizedOperation(RobotDrive robotDrive, double y, double rotation, double gyroAngle,
 			double rotationThreshold, double correctionFactor) {
 		if (Math.abs(rotation) >= rotationThreshold) {
 			robotDrive.arcadeDrive(y, rotation);
