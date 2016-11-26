@@ -1,5 +1,7 @@
 package com.thegongoliers.input;
 
+import com.thegongoliers.util.Position;
+
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import edu.wpi.first.wpilibj.buttons.Trigger;
@@ -68,6 +70,14 @@ public class EnhancedXboxController extends XboxController {
 			return getPOV() == DPAD.WEST.getDirection();
 		}
 	};
+
+	public Position getLeftStick() {
+		return new Position(getLeftX(), getLeftY());
+	}
+
+	public Position getRightStick() {
+		return new Position(getRightX(), getRightY());
+	}
 
 	public double getLeftY() {
 		return getRawAxis(1);
