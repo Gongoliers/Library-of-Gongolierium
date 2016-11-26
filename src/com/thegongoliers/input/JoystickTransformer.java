@@ -34,7 +34,8 @@ public class JoystickTransformer {
 	 * @return The smoothed joystick value.
 	 */
 	public Position power(Position input, double pow) {
-		return new Position(Math.pow(input.getX(), pow), Math.pow(input.getY(), pow));
+		return new Position(Math.copySign(1, input.getX()) * Math.pow(Math.abs(input.getX()), pow),
+				Math.copySign(1, input.getY()) * Math.pow(Math.abs(input.getY()), pow));
 	}
 
 	/**
