@@ -3,7 +3,7 @@ package com.thegongoliers.input;
 import com.thegongoliers.util.MathExt;
 import com.thegongoliers.util.Position;
 
-public class JoystickSensitivityMapper {
+public class JoystickTransformer {
 
 	/**
 	 * Changes the sensitivity of the joystick values. Call after applying other
