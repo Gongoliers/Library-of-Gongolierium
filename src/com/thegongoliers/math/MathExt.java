@@ -1,4 +1,4 @@
-package com.thegongoliers.util;
+package com.thegongoliers.math;
 
 import java.util.ArrayList;
 import java.util.List;

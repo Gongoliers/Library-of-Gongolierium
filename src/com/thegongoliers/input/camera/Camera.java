@@ -13,7 +13,7 @@ import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 
-import com.thegongoliers.util.Position;
+import com.thegongoliers.math.Position;
 
 /**
  * Allows for abstract use of the camera.

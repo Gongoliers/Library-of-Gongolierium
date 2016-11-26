@@ -1,6 +1,6 @@
 package com.thegongoliers.input;
 
-import com.thegongoliers.util.LinearAlgebra.Vector;
+import com.thegongoliers.math.LinearAlgebra.Vector;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 

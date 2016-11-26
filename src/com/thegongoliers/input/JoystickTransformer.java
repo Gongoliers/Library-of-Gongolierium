@@ -1,7 +1,7 @@
 package com.thegongoliers.input;
 
-import com.thegongoliers.util.MathExt;
-import com.thegongoliers.util.Position;
+import com.thegongoliers.math.MathExt;
+import com.thegongoliers.math.Position;
 
 public class JoystickTransformer {
 

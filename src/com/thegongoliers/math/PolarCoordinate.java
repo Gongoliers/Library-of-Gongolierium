@@ -1,4 +1,4 @@
-package com.thegongoliers.util;
+package com.thegongoliers.math;
 
 public class PolarCoordinate extends Pair {
 
