@@ -6,6 +6,22 @@ import com.thegongoliers.math.Position;
 public class JoystickTransformer {
 
 	/**
+	 * Applies the function +/- b + (1 - b) * [a*x^3 + (1 - a)*x] to the joystick values. 
+	 * @param input The 
+	 * @param alpha
+	 * @param beta
+	 * @return
+	 */
+	public Position cubicTransform(Position input, double alpha, double beta) {
+		return new Position(cubicTransform(input.getX(), alpha, beta), cubicTransform(input.getY(), alpha, beta));
+	}
+
+	public double cubicTransform(double input, double alpha, double beta) {
+		double val = (1 - beta) * (alpha * Math.pow(input, 3) + (1 - alpha) * input);
+		return (input >= 0 ? beta : -beta) + val;
+	}
+
+	/**
 	 * Changes the sensitivity of the joystick values. Call after applying other
 	 * adjustments to the joystick values.
 	 * 
@@ -16,11 +32,21 @@ public class JoystickTransformer {
 	 * @return The adjusted controller input with the sensitivity applied.
 	 */
 	public Position sensitivity(Position input, double sensitivity) {
-		Position p = timesScalar(input, sensitivity);
-		Position adjP = new Position(0, 0);
-		adjP.setX(MathExt.toRange(p.getX(), -1, 1));
-		adjP.setY(MathExt.toRange(p.getY(), -1, 1));
-		return adjP;
+		return new Position(sensitivity(input.getX(), sensitivity), sensitivity(input.getY(), sensitivity));
+	}
+
+	/**
+	 * Changes the sensitivity of the joystick value. Call after applying other
+	 * adjustments to the joystick value.
+	 * 
+	 * @param input
+	 *            The value of the joystick.
+	 * @param sensitivity
+	 *            The sensitivity (greater than 0, where 0 is no movement)
+	 * @return The adjusted controller input with the sensitivity applied.
+	 */
+	public double sensitivity(double input, double sensitivity) {
+		return MathExt.toRange(input * sensitivity, -1, 1);
 	}
 
 	/**
@@ -34,8 +60,21 @@ public class JoystickTransformer {
 	 * @return The smoothed joystick value.
 	 */
 	public Position power(Position input, double pow) {
-		return new Position(Math.copySign(1, input.getX()) * Math.pow(Math.abs(input.getX()), pow),
-				Math.copySign(1, input.getY()) * Math.pow(Math.abs(input.getY()), pow));
+		return new Position(power(input.getX(), pow), power(input.getY(), pow));
+	}
+
+	/**
+	 * Smoothes the value of the joystick by a power. Should be applied after a
+	 * deadzone transformation.
+	 * 
+	 * @param input
+	 *            The value of the joystick.
+	 * @param pow
+	 *            The smoothing power.
+	 * @return The smoothed joystick value.
+	 */
+	public double power(double input, double pow) {
+		return Math.copySign(1, input) * Math.pow(Math.abs(input), pow);
 	}
 
 	/**
@@ -48,14 +87,22 @@ public class JoystickTransformer {
 	 * @return The adjusted joystick value with the deadzone.
 	 */
 	public Position axialDeadzone(Position input, double thresh) {
-		Position newPos = new Position(0, 0);
-		if (Math.abs(input.getX()) >= thresh) {
-			newPos.setX(input.getX());
-		}
-		if (Math.abs(input.getY()) >= thresh) {
-			newPos.setY(input.getY());
-		}
-		return newPos;
+		return new Position(axialDeadzone(input.getX(), thresh), axialDeadzone(input.getY(), thresh));
+	}
+
+	/**
+	 * Blocks movement within a threshold on each axis..
+	 * 
+	 * @param input
+	 *            The value of the joystick.
+	 * @param thresh
+	 *            The deadzone threshold.
+	 * @return The adjusted joystick value with the deadzone.
+	 */
+	public double axialDeadzone(double input, double thresh) {
+		if (Math.abs(input) < thresh)
+			return 0.0;
+		return input;
 	}
 
 	/**
