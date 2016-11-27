@@ -1,13 +1,11 @@
 package com.thegongoliers.output;
 
-public interface FlywheelInterface {
+public interface FlywheelInterface extends Stoppable {
 
-	public void spinUp(double speed);
+	void spinUp(double speed);
 
-	public void stop();
+	void spinToSpeed(double speed);
 
-	public void spinToSpeed(double speed);
-	
-	public double getSpeed();
+	double getSpeed();
 
 }
