@@ -1,6 +1,6 @@
 package com.thegongoliers.output;
 
-public interface Lifter extends Stoppable {
+public interface LifterInterface extends Stoppable {
 	void up(double speed);
 
 	void down(double speed);

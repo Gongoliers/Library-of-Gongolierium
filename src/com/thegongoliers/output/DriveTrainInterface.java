@@ -2,7 +2,7 @@ package com.thegongoliers.output;
 
 import edu.wpi.first.wpilibj.GenericHID;
 
-public interface DriveTrain extends Stoppable {
+public interface DriveTrainInterface extends Stoppable {
 	void forward(double speed);
 
 	void reverse(double speed);

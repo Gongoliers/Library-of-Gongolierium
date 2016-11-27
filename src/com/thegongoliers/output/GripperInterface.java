@@ -1,6 +1,6 @@
 package com.thegongoliers.output;
 
-public interface Gripper extends Stoppable {
+public interface GripperInterface extends Stoppable {
 	void close();
 
 	void open();

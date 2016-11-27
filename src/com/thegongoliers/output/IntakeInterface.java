@@ -1,6 +1,6 @@
 package com.thegongoliers.output;
 
-public interface Intake extends Stoppable {
+public interface IntakeInterface extends Stoppable {
 	void in(double speed);
 
 	void in();
