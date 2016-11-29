@@ -11,6 +11,7 @@ public class MicrosoftLifeCam extends AbstractCamera {
 
 	private boolean cameraStarted;
 	private USBCamera camera;
+	CvSink cvSink;;
 
 	public MicrosoftLifeCam(int port) {
 		super();
@@ -45,13 +46,13 @@ public class MicrosoftLifeCam extends AbstractCamera {
 	public Mat getImage() {
 		if (!cameraStarted)
 			start();
-		CvSink cvSink = CameraServer.getInstance().getVideo();
 		cvSink.grabFrame(frame);
 		return frame;
 	}
 
 	public void start() {
 		CameraServer.getInstance().startAutomaticCapture(camera);
+		cvSink = CameraServer.getInstance().getVideo();
 		cameraStarted = true;
 	}
 
