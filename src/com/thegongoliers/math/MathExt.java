@@ -259,11 +259,11 @@ public class MathExt {
 		return toPrimitiveArray(toArrayList(values).stream().sorted().collect(Collectors.toList()));
 	}
 
-	public static Position translate2d(Position p, double angle, double tx, double ty) {
+	public static Position transform2d(Position p, double angle, double tx, double ty) {
 		Position newP = new Position(0, 0);
-		angle = Math.toRadians(angle);
-		newP.setX(Math.cos(angle) * p.getX() + Math.sin(angle) * p.getY() + tx);
-		newP.setY(-Math.sin(angle) * p.getX() + Math.cos(angle) * p.getY() + ty);
+		angle = -Math.toRadians(angle);
+		newP.setX(Math.cos(angle) * p.getX() + Math.sin(angle) * p.getY() - tx);
+		newP.setY(-Math.sin(angle) * p.getX() + Math.cos(angle) * p.getY() - ty);
 		return newP;
 	}
 
