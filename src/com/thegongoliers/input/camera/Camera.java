@@ -146,6 +146,7 @@ public class Camera {
 		target.centerY = rawY;
 		target.aimingCoordinates = toAimingCoordinates(new Position(rawX, rawY));
 		target.angle = computeAngle(binaryFilteredImage, rawX);
+		target.alpha = 90 - camera.getViewAngle();
 		target.width = Math.abs(particleReport.boundingRectRight - particleReport.boundingRectLeft);
 		target.height = Math.abs(particleReport.boundingRectBottom - particleReport.boundingRectTop);
 		target.percentArea = particleReport.percentAreaToImageArea;
@@ -259,6 +260,7 @@ public class Camera {
 
 	public static class Target {
 		private double centerX, centerY;
+		private double alpha;
 		private double distance;
 		private double angle;
 		private double width;
@@ -311,7 +313,7 @@ public class Camera {
 		 *         the center of the robot.
 		 */
 		public PolarCoordinate toRobotFrame(Position offsetFromCenter, double rotationAngle) {
-			Position cartesian = MathExt.toCartesian(new PolarCoordinate(distance, angle));
+			Position cartesian = MathExt.toCartesian(new PolarCoordinate(distance, alpha));
 			Position robotFrame = MathExt.transform2d(cartesian, -rotationAngle, offsetFromCenter.getX(),
 					offsetFromCenter.getY());
 			return MathExt.toPolar(robotFrame);
