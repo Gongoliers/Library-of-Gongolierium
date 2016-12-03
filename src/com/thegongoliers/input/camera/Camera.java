@@ -312,7 +312,7 @@ public class Camera {
 		 */
 		public PolarCoordinate toRobotFrame(Position offsetFromCenter, double rotationAngle) {
 			Position cartesian = MathExt.toCartesian(new PolarCoordinate(distance, angle));
-			Position robotFrame = MathExt.transform2d(cartesian, rotationAngle, offsetFromCenter.getX(),
+			Position robotFrame = MathExt.transform2d(cartesian, -rotationAngle, offsetFromCenter.getX(),
 					offsetFromCenter.getY());
 			return MathExt.toPolar(robotFrame);
 
