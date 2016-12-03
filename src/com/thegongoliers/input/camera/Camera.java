@@ -13,6 +13,8 @@ import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 
+import com.thegongoliers.math.MathExt;
+import com.thegongoliers.math.PolarCoordinate;
 import com.thegongoliers.math.Position;
 
 /**
@@ -27,7 +29,6 @@ public class Camera {
 	private int targetExposure, targetBrightness, normalBrightness;
 	private Range hue, saturation, value;
 	private Mode cameraMode;
-	private double offset = 0.0;
 
 	Camera(CameraInterface camera, int targetExposure, int targetBrightness, int normalBrightness, Range hue,
 			Range saturation, Range value) {
@@ -40,25 +41,6 @@ public class Camera {
 		this.value = value;
 		camera.start();
 		disableTargetMode();
-	}
-
-	/**
-	 * Get the horizontal offset of the camera from the center of the robot.
-	 * 
-	 * @return The horizontal offset of the camera.
-	 */
-	public double getHorizontalOffset() {
-		return offset;
-	}
-
-	/**
-	 * Set the horizontal offset of the camera from the center of the robot.
-	 * 
-	 * @param hOffset
-	 *            The horizontal offset of the camera.
-	 */
-	public void setHorizontalOffset(double hOffset) {
-		this.offset = hOffset;
 	}
 
 	/**
@@ -313,6 +295,41 @@ public class Camera {
 				return 0;
 			}
 			return getTargetArea() / getBoundingRectangle().area();
+		}
+
+		/**
+		 * Calculates the position of the target from the robot's frame of
+		 * reference
+		 * 
+		 * @param offsetFromCenter
+		 *            The camera's offset from the center (in the same units as
+		 *            the target dimensions)
+		 * @param rotationAngle
+		 *            The angle that the camera is rotated from the front of the
+		 *            robot in degrees.
+		 * @return The polar coordinates (angle and distance) of the target from
+		 *         the center of the robot.
+		 */
+		public PolarCoordinate toRobotFrame(Position offsetFromCenter, double rotationAngle) {
+			Position cartesian = MathExt.toCartesian(new PolarCoordinate(distance, angle));
+			Position robotFrame = MathExt.translate2d(cartesian, rotationAngle, offsetFromCenter.getX(),
+					offsetFromCenter.getY());
+			return MathExt.toPolar(robotFrame);
+
+		}
+
+		/**
+		 * Calculates the position of the target from the robot's frame of
+		 * reference
+		 * 
+		 * @param offsetFromCenter
+		 *            The camera's offset from the center (in the same units as
+		 *            the target dimensions)
+		 * @return The polar coordinates (angle and distance) of the target from
+		 *         the center of the robot.
+		 */
+		public PolarCoordinate toRobotFrame(Position offsetFromCenter) {
+			return toRobotFrame(offsetFromCenter, 0);
 		}
 
 		public Position getAimingCoordinates() {
