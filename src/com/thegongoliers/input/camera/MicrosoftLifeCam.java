@@ -4,6 +4,7 @@ import org.opencv.core.Mat;
 
 import edu.wpi.cscore.CvSink;
 import edu.wpi.cscore.USBCamera;
+import edu.wpi.cscore.VideoException;
 import edu.wpi.cscore.VideoSource;
 import edu.wpi.first.wpilibj.CameraServer;
 
@@ -40,7 +41,11 @@ public class MicrosoftLifeCam extends AbstractCamera {
 	}
 
 	public void setExposureAuto() {
-		camera.setExposureAuto();
+		try {
+			camera.setExposureAuto();
+		} catch (VideoException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public Mat getImage() {
