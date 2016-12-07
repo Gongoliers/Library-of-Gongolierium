@@ -1,4 +1,5 @@
 package com.thegongoliers.util;
+
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -18,6 +19,8 @@ public class MessagingFramework {
 	}
 
 	public static <T extends Object> void publish(String topic, T data) {
+		if (!nodes.containsKey(topic))
+			return;
 		List<Consumer<Object>> subscribedNodes = nodes.get(topic);
 		for (Consumer<Object> node : subscribedNodes)
 			node.accept(data);
