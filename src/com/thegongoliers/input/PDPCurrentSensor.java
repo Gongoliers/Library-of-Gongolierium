@@ -7,7 +7,7 @@ import edu.wpi.first.wpilibj.PowerDistributionPanel;
 /**
  * Created by Kyle on 7/25/2016.
  */
-public class PDPCurrentSensor implements PIDSource {
+public class PDPCurrentSensor implements PIDSource, CurrentSensor {
 
 	private int port;
 	private PowerDistributionPanel pdp;
