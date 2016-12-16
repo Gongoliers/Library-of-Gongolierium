@@ -28,7 +28,7 @@ public abstract class AbstractAccelerometer implements AccelerometerInterface {
 	public Vector getGravitationalAcceleration() {
 		Vector original = asVector();
 		Vector direction = original.normalized();
-		return direction.timesScalar(9.81);
+		return direction;
 	}
 
 	public Vector asVector() {
