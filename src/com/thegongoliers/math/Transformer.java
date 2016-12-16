@@ -20,7 +20,7 @@ public class Transformer {
 	public Pose lookup(String fromFrame, String toFrame) {
 		Pose f1 = lookup(fromFrame);
 		Pose f2 = lookup(toFrame);
-		Pose diff = new Pose(f1.getX() - f2.getX(), f1.getY() - f2.getY(), f2.getRotation() - f1.getRotation());
+		Pose diff = new Pose(f1.getX() - f2.getX(), f1.getY() - f2.getY(), f2.getOrientation() - f1.getOrientation());
 		return diff;
 	}
 
@@ -38,7 +38,7 @@ public class Transformer {
 	}
 
 	private Pose transform2d(Pose p, Pose trans) {
-		double angle = Math.toRadians(trans.getRotation());
+		double angle = Math.toRadians(trans.getOrientation());
 		double x = Math.cos(angle) * p.getX() + Math.sin(angle) * p.getY() + trans.getX();
 		double y = -Math.sin(angle) * p.getX() + Math.cos(angle) * p.getY() + trans.getY();
 		return new Pose(x, y, angle);

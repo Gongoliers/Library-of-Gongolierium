@@ -1,4 +1,5 @@
 package com.thegongoliers.input;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -10,6 +11,12 @@ public class CSV {
 	public String[] colHeaders;
 	public String[][] data;
 
+	/**
+	 * Parse a CSV file
+	 * 
+	 * @param filename
+	 *            The filename of the CSV document.
+	 */
 	public CSV(String filename) {
 		File mFile = new File(filename);
 		String rawData = readFile(mFile);
@@ -21,6 +28,15 @@ public class CSV {
 		}
 	}
 
+	/**
+	 * Get a value as a string from the CSV document
+	 * 
+	 * @param property
+	 *            The name of the column.
+	 * @param row
+	 *            The index of the row, starting at 0, not including the header
+	 * @return A string value at the given position in the file
+	 */
 	public String get(String property, int row) {
 		int index = propertyIndex(property);
 		if (index == -1)
@@ -28,14 +44,41 @@ public class CSV {
 		return data[row][index];
 	}
 
+	/**
+	 * Get a value as an int from the CSV document
+	 * 
+	 * @param property
+	 *            The name of the column.
+	 * @param row
+	 *            The index of the row, starting at 0, not including the header
+	 * @return An int value at the given position in the file
+	 */
 	public int getInt(String property, int row) {
 		return Integer.valueOf(get(property, row));
 	}
 
+	/**
+	 * Get a value as a double from the CSV document
+	 * 
+	 * @param property
+	 *            The name of the column.
+	 * @param row
+	 *            The index of the row, starting at 0, not including the header
+	 * @return A double value at the given position in the file
+	 */
 	public double getDouble(String property, int row) {
 		return Double.valueOf(get(property, row));
 	}
 
+	/**
+	 * Get a value as a boolean from the CSV document
+	 * 
+	 * @param property
+	 *            The name of the column.
+	 * @param row
+	 *            The index of the row, starting at 0, not including the header
+	 * @return A boolean value at the given position in the file
+	 */
 	public boolean getBoolean(String property, int row) {
 		return Boolean.valueOf(get(property, row));
 	}

@@ -6,22 +6,6 @@ import com.thegongoliers.math.Position;
 public class JoystickTransformer {
 
 	/**
-	 * Applies the function +/- b + (1 - b) * [a*x^3 + (1 - a)*x] to the joystick values. 
-	 * @param input The 
-	 * @param alpha
-	 * @param beta
-	 * @return
-	 */
-	public Position cubicTransform(Position input, double alpha, double beta) {
-		return new Position(cubicTransform(input.getX(), alpha, beta), cubicTransform(input.getY(), alpha, beta));
-	}
-
-	public double cubicTransform(double input, double alpha, double beta) {
-		double val = (1 - beta) * (alpha * Math.pow(input, 3) + (1 - alpha) * input);
-		return (input >= 0 ? beta : -beta) + val;
-	}
-
-	/**
 	 * Changes the sensitivity of the joystick values. Call after applying other
 	 * adjustments to the joystick values.
 	 * 

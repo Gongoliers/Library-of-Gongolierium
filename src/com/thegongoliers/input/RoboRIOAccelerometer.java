@@ -2,6 +2,10 @@ package com.thegongoliers.input;
 
 import edu.wpi.first.wpilibj.BuiltInAccelerometer;
 
+/**
+ * Represents the built in accelerometer on the RoboRIO
+ *
+ */
 public class RoboRIOAccelerometer extends AbstractAccelerometer {
 	private BuiltInAccelerometer accelerometer = new BuiltInAccelerometer();
 
