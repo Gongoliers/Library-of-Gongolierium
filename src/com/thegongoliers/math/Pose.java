@@ -47,4 +47,12 @@ public class Pose {
 		return orientation;
 	}
 
+	@Override
+	public boolean equals(Object other) {
+		if (!(other instanceof Pose))
+			return false;
+		Pose o = (Pose) other;
+		return o.x == x && o.y == y && o.orientation == orientation;
+	}
+
 }

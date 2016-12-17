@@ -24,9 +24,17 @@ public class Pair {
 	public void setSecond(double newValue) {
 		msecond = newValue;
 	}
-	
+
 	@Override
 	public String toString() {
 		return "(" + getFirst() + ", " + getSecond() + ")";
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (!(obj instanceof Pair))
+			return false;
+		Pair pair = (Pair) obj;
+		return pair.getFirst() == getFirst() && pair.getSecond() == getSecond();
 	}
 }
