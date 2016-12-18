@@ -2,11 +2,13 @@ package com.thegongoliers.input;
 
 import com.thegongoliers.math.LinearAlgebra.Vector;
 
+import edu.wpi.first.wpilibj.interfaces.Accelerometer;
+
 /**
  * An interface for using accelerometers with added on features.
  * 
  */
-public interface AccelerometerInterface {
+public interface AccelerometerInterface extends Accelerometer {
 
 	/**
 	 * Gets the tilt of the robot (angle to ground).
@@ -14,27 +16,6 @@ public interface AccelerometerInterface {
 	 * @return The tilt of the robot in degrees.
 	 */
 	public double getTilt();
-
-	/**
-	 * Gets the Y-Axis acceleration of the robot.
-	 * 
-	 * @return The Y-Axis acceleration in g-force.
-	 */
-	public double getY();
-
-	/**
-	 * Gets the X-Axis acceleration of the robot.
-	 * 
-	 * @return The X-Axis acceleration in g-force.
-	 */
-	public double getX();
-
-	/**
-	 * Gets the Z-Axis acceleration of the robot.
-	 * 
-	 * @return The Z-Axis acceleration of the robot in g-force.
-	 */
-	public double getZ();
 
 	/**
 	 * Display the values of the accelerometer to the SmartDashboard.
