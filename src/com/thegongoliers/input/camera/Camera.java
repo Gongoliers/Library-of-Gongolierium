@@ -13,9 +13,11 @@ import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 
+import com.thegongoliers.geometry_msgs.Cylindrical;
+import com.thegongoliers.geometry_msgs.Point;
+import com.thegongoliers.geometry_msgs.Pose;
 import com.thegongoliers.math.MathExt;
-import com.thegongoliers.math.PolarCoordinate;
-import com.thegongoliers.math.Position;
+import com.thegongoliers.math.TF;
 
 /**
  * Allows for abstract use of the camera.
@@ -144,7 +146,7 @@ public class Camera {
 		target.distance = computeDistance(binaryFilteredImage, particleReport, width);
 		target.centerX = rawX;
 		target.centerY = rawY;
-		target.aimingCoordinates = toAimingCoordinates(new Position(rawX, rawY));
+		target.aimingCoordinates = toAimingCoordinates(new Point(rawX, rawY, 0));
 		target.angle = computeAngle(binaryFilteredImage, rawX);
 		target.alpha = 90 - camera.getViewAngle();
 		target.width = Math.abs(particleReport.boundingRectRight - particleReport.boundingRectLeft);
@@ -154,10 +156,10 @@ public class Camera {
 		return target;
 	}
 
-	private Position toAimingCoordinates(Position pixels) {
-		double aimingX = (pixels.getX() - camera.getResolution(Axis.X) / 2.0) / (camera.getResolution(Axis.X) / 2.0);
-		double aimingY = (pixels.getY() - camera.getResolution(Axis.Y) / 2.0) / (camera.getResolution(Axis.Y) / 2.0);
-		return new Position(aimingX, aimingY);
+	private Point toAimingCoordinates(Point pixels) {
+		double aimingX = (pixels.x - camera.getResolution(Axis.X) / 2.0) / (camera.getResolution(Axis.X) / 2.0);
+		double aimingY = (pixels.y - camera.getResolution(Axis.Y) / 2.0) / (camera.getResolution(Axis.Y) / 2.0);
+		return new Point(aimingX, aimingY, 0);
 	}
 
 	private double computeDistance(Mat image, ParticleReport report, double width) {
@@ -268,7 +270,7 @@ public class Camera {
 		private double percentArea;
 		private double targetArea;
 		private Rect boundingRectangle;
-		private Position aimingCoordinates;
+		private Point aimingCoordinates;
 
 		/**
 		 * The aspect ratio of the target bounding rectangle. A good score
@@ -303,38 +305,20 @@ public class Camera {
 		 * Calculates the position of the target from the robot's frame of
 		 * reference
 		 * 
-		 * @param offsetFromCenter
+		 * @param offset
 		 *            The camera's offset from the center (in the same units as
 		 *            the target dimensions)
-		 * @param rotationAngle
-		 *            The angle that the camera is rotated from the front of the
-		 *            robot in degrees.
-		 * @return The polar coordinates (angle and distance) of the target from
-		 *         the center of the robot.
+		 * @return The Point in space of of the target from the center of the
+		 *         robot.
 		 */
-		public PolarCoordinate toRobotFrame(Position offsetFromCenter, double rotationAngle) {
-			Position cartesian = MathExt.toCartesian(new PolarCoordinate(distance, alpha));
-			Position robotFrame = MathExt.transform2d(cartesian, -rotationAngle, offsetFromCenter.getX(),
-					offsetFromCenter.getY());
-			return MathExt.toPolar(robotFrame);
-
+		public Point toRobotFrame(Pose offset) {
+			Point cartesian = MathExt.toCartesian(new Cylindrical(distance, alpha, 0));
+			TF tf = new TF();
+			tf.put("camera", offset);
+			return tf.transformToOrigin(cartesian, "camera").position;
 		}
 
-		/**
-		 * Calculates the position of the target from the robot's frame of
-		 * reference
-		 * 
-		 * @param offsetFromCenter
-		 *            The camera's offset from the center (in the same units as
-		 *            the target dimensions)
-		 * @return The polar coordinates (angle and distance) of the target from
-		 *         the center of the robot.
-		 */
-		public PolarCoordinate toRobotFrame(Position offsetFromCenter) {
-			return toRobotFrame(offsetFromCenter, 0);
-		}
-
-		public Position getAimingCoordinates() {
+		public Point getAimingCoordinates() {
 			return aimingCoordinates;
 		}
 

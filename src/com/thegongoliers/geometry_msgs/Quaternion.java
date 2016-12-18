@@ -2,6 +2,8 @@ package com.thegongoliers.geometry_msgs;
 
 public class Quaternion {
 	public double x, y, z, w;
+	
+	public static final Quaternion zero = new Quaternion(1, 0, 0, 0);
 
 	public Quaternion(double w, double x, double y, double z) {
 		this.x = x;

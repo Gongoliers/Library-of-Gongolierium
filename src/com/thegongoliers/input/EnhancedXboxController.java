@@ -1,6 +1,6 @@
 package com.thegongoliers.input;
 
-import com.thegongoliers.math.Position;
+import com.thegongoliers.geometry_msgs.Point;
 
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
@@ -71,12 +71,12 @@ public class EnhancedXboxController extends XboxController {
 		}
 	};
 
-	public Position getLeftStick() {
-		return new Position(getLeftX(), getLeftY());
+	public Point getLeftStick() {
+		return new Point(getLeftX(), getLeftY(), 0);
 	}
 
-	public Position getRightStick() {
-		return new Position(getRightX(), getRightY());
+	public Point getRightStick() {
+		return new Point(getRightX(), getRightY(), 0);
 	}
 
 	public double getLeftY() {

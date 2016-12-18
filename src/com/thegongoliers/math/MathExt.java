@@ -4,6 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.thegongoliers.geometry_msgs.Cylindrical;
+import com.thegongoliers.geometry_msgs.Point;
+import com.thegongoliers.geometry_msgs.Spherical;
+
 public class MathExt {
 
 	private MathExt() {
@@ -45,33 +49,36 @@ public class MathExt {
 		return Character.isDigit(symbol) || symbol == '-' || symbol == '.';
 	}
 
-	/**
-	 * toPolar : Position -> PolarCoordinate
-	 * 
-	 * Converts a cartesian coordinate to the polar plane.
-	 * 
-	 * @param cartesian
-	 * @return
-	 */
-	public static PolarCoordinate toPolar(Position cartesian) {
-		double magnitude = Math.sqrt(Math.pow(cartesian.getX(), 2) + Math.pow(cartesian.getY(), 2));
-		double angle = Math.atan2(cartesian.getY(), cartesian.getX());
-
-		return new PolarCoordinate(magnitude, angle);
+	public static Spherical toSpherical(Point p) {
+		double rho = Math.sqrt(square(p.x) + square(p.y) + square(p.z));
+		double theta = Math.atan2(p.y, p.x);
+		double phi = Math.acos(p.z / rho);
+		return new Spherical(rho, theta, phi);
 	}
 
-	/**
-	 * toCartesian : PolarCoordinate -> Position
-	 * 
-	 * Converts a polar coordinate to the cartesian plane.
-	 * 
-	 * @param polar
-	 * @return
-	 */
-	public static Position toCartesian(PolarCoordinate polar) {
-		double x = polar.getXComponent();
-		double y = polar.getYComponent();
-		return new Position(x, y);
+	public static Spherical toSpherical(Cylindrical c) {
+		double rho = Math.sqrt(square(c.r) + square(c.z));
+		double phi = Math.asin(c.r / rho);
+		return new Spherical(rho, c.theta, phi);
+	}
+
+	public static Cylindrical toCylindrical(Point p) {
+		double magnitude = Math.sqrt(Math.pow(p.x, 2) + Math.pow(p.y, 2));
+		double angle = Math.atan2(p.y, p.x);
+		return new Cylindrical(magnitude, angle, p.z);
+	}
+
+	public static Cylindrical toCylindrical(Spherical s) {
+		return new Cylindrical(s.p * Math.sin(s.phi), s.theta, s.p * Math.cos(s.phi));
+	}
+
+	public static Point toCartesian(Cylindrical c) {
+		return new Point(c.r * Math.cos(c.theta), c.r * Math.sin(c.theta), c.z);
+	}
+
+	public static Point toCartesian(Spherical s) {
+		return new Point(s.p * Math.sin(s.phi) * Math.cos(s.theta), s.p * Math.sin(s.phi) * Math.sin(s.theta),
+				s.p * Math.cos(s.phi));
 	}
 
 	/**
@@ -151,17 +158,7 @@ public class MathExt {
 	}
 
 	public static double average(double[] values) {
-		return toArrayList(values).stream().mapToDouble(x -> x).average().getAsDouble();
-	}
-
-	public static double first(double[] values) {
-		return values[0];
-	}
-
-	public static double[] rest(double[] values) {
-		double[] restValues = new double[values.length - 1];
-		System.arraycopy(values, 1, restValues, 0, restValues.length);
-		return restValues;
+		return sum(values) / values.length;
 	}
 
 	public static double sum(double[] values) {
@@ -257,14 +254,6 @@ public class MathExt {
 
 	public static double[] sort(double[] values) {
 		return toPrimitiveArray(toArrayList(values).stream().sorted().collect(Collectors.toList()));
-	}
-
-	public static Position transform2d(Position p, double angle, double tx, double ty) {
-		Position newP = new Position(0, 0);
-		angle = -Math.toRadians(angle);
-		newP.setX(Math.cos(angle) * p.getX() + Math.sin(angle) * p.getY() - tx);
-		newP.setY(-Math.sin(angle) * p.getX() + Math.cos(angle) * p.getY() - ty);
-		return newP;
 	}
 
 }

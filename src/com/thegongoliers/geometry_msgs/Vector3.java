@@ -13,6 +13,10 @@ public class Vector3 {
 
 	public double x, y, z;
 
+	public Vector3(Point p) {
+		this(p.x, p.y, p.z);
+	}
+
 	public Vector3(double x, double y, double z) {
 		this.x = x;
 		this.y = y;

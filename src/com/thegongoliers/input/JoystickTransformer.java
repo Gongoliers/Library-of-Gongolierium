@@ -1,7 +1,7 @@
 package com.thegongoliers.input;
 
+import com.thegongoliers.geometry_msgs.Point;
 import com.thegongoliers.math.MathExt;
-import com.thegongoliers.math.Position;
 
 public class JoystickTransformer {
 
@@ -15,8 +15,9 @@ public class JoystickTransformer {
 	 *            The sensitivity (greater than 0, where 0 is no movement)
 	 * @return The adjusted controller input with the sensitivity applied.
 	 */
-	public Position sensitivity(Position input, double sensitivity) {
-		return new Position(sensitivity(input.getX(), sensitivity), sensitivity(input.getY(), sensitivity));
+	public Point sensitivity(Point input, double sensitivity) {
+		return new Point(sensitivity(input.x, sensitivity), sensitivity(input.y, sensitivity),
+				sensitivity(input.z, sensitivity));
 	}
 
 	/**
@@ -43,8 +44,8 @@ public class JoystickTransformer {
 	 *            The smoothing power.
 	 * @return The smoothed joystick value.
 	 */
-	public Position power(Position input, double pow) {
-		return new Position(power(input.getX(), pow), power(input.getY(), pow));
+	public Point power(Point input, double pow) {
+		return new Point(power(input.x, pow), power(input.y, pow), power(input.z, pow));
 	}
 
 	/**
@@ -58,7 +59,7 @@ public class JoystickTransformer {
 	 * @return The smoothed joystick value.
 	 */
 	public double power(double input, double pow) {
-		return Math.copySign(1, input) * Math.pow(Math.abs(input), pow);
+		return MathExt.sign(input) * Math.pow(Math.abs(input), pow);
 	}
 
 	/**
@@ -70,8 +71,9 @@ public class JoystickTransformer {
 	 *            The deadzone threshold.
 	 * @return The adjusted joystick value with the deadzone.
 	 */
-	public Position axialDeadzone(Position input, double thresh) {
-		return new Position(axialDeadzone(input.getX(), thresh), axialDeadzone(input.getY(), thresh));
+	public Point axialDeadzone(Point input, double thresh) {
+		return new Point(axialDeadzone(input.x, thresh), axialDeadzone(input.y, thresh),
+				axialDeadzone(input.z, thresh));
 	}
 
 	/**
@@ -98,9 +100,9 @@ public class JoystickTransformer {
 	 *            The deadzone threshold.
 	 * @return The adjusted joystick value with the deadzone.
 	 */
-	public Position radialDeadzone(Position input, double thresh) {
+	public Point radialDeadzone(Point input, double thresh) {
 		if (magnitude(input) < thresh)
-			return new Position(0, 0);
+			return Point.origin;
 		return input;
 	}
 
@@ -114,22 +116,22 @@ public class JoystickTransformer {
 	 *            The deadzone threshold.
 	 * @return The adjusted joystick value with the deadzone.
 	 */
-	public Position scaledRadialDeadzone(Position input, double thresh) {
+	public Point scaledRadialDeadzone(Point input, double thresh) {
 		if (magnitude(input) < thresh)
-			return new Position(0, 0);
+			return Point.origin;
 		return timesScalar(normalized(input), ((magnitude(input) - thresh) / (1 - thresh)));
 	}
 
-	private Position timesScalar(Position p, double scalar) {
-		return new Position(p.getX() * scalar, p.getY() * scalar);
+	private Point timesScalar(Point p, double scalar) {
+		return new Point(p.x * scalar, p.y * scalar, p.z * scalar);
 	}
 
-	private Position normalized(Position p) {
+	private Point normalized(Point p) {
 		double mag = magnitude(p);
-		return new Position(p.getX() / mag, p.getY() / mag);
+		return new Point(p.x / mag, p.y / mag, p.z / mag);
 	}
 
-	private double magnitude(Position p) {
-		return Math.sqrt(p.getX() * p.getX() + p.getY() * p.getY());
+	private double magnitude(Point p) {
+		return Math.sqrt(p.x * p.x + p.y * p.y + p.z * p.z);
 	}
 }

@@ -8,4 +8,8 @@ public class Transform {
 		this.translation = translation;
 		this.rotation = rotation;
 	}
+
+	public Transform inverse() {
+		return new Transform(translation.multiply(-1), rotation.inverse());
+	}
 }
