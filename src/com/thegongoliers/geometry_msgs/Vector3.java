@@ -11,24 +11,12 @@ public class Vector3 {
 	public static final Vector3 k = new Vector3(0, 0, 1);
 	public static final Vector3 zero = new Vector3(0, 0, 0);
 
-	private double x, y, z;
+	public double x, y, z;
 
 	public Vector3(double x, double y, double z) {
 		this.x = x;
 		this.y = y;
 		this.z = z;
-	}
-
-	public double getX() {
-		return x;
-	}
-
-	public double getY() {
-		return y;
-	}
-
-	public double getZ() {
-		return z;
 	}
 
 	public Vector3 add(Vector3 other) {
