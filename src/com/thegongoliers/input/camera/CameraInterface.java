@@ -8,7 +8,7 @@ public interface CameraInterface {
 	/**
 	 * Get the view angle of the camera in degrees.
 	 * 
-	 * @return The view angle in degres.
+	 * @return The view angle in degrees.
 	 */
 	double getViewAngle();
 
