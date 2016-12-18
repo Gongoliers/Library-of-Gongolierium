@@ -36,4 +36,5 @@ public class Point {
 	public Point divide(double other) {
 		return new Point(x / other, y / other, z / other);
 	}
+	
 }
