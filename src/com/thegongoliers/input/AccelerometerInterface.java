@@ -1,6 +1,6 @@
 package com.thegongoliers.input;
 
-import com.thegongoliers.math.LinearAlgebra.Vector;
+import com.thegongoliers.geometry_msgs.Vector3;
 
 import edu.wpi.first.wpilibj.interfaces.Accelerometer;
 
@@ -9,6 +9,8 @@ import edu.wpi.first.wpilibj.interfaces.Accelerometer;
  * 
  */
 public interface AccelerometerInterface extends Accelerometer {
+	
+	public static final double GRAVITY = 9.81;
 
 	/**
 	 * Gets the tilt of the robot (angle to ground).
@@ -26,22 +28,22 @@ public interface AccelerometerInterface extends Accelerometer {
 	 * Gets an approximation of the linear acceleration (without gravity) that
 	 * the robot is experiencing
 	 * 
-	 * @return The linear acceleration in g-force
+	 * @return The linear acceleration in m/s^2
 	 */
-	public Vector getLinearAcceleration();
+	public Vector3 getLinearAcceleration();
 
 	/**
 	 * Gets an approximation of the gravitational acceleration (without linear)
 	 * that the robot is experiencing
 	 * 
-	 * @return The gravitational acceleration in g-force
+	 * @return The gravitational acceleration in m/s^2
 	 */
-	public Vector getGravitationalAcceleration();
+	public Vector3 getGravitationalAcceleration();
 
 	/**
 	 * Produces the output of the accelerometer as a vector
 	 * 
-	 * @return The acceleration vector in g-force
+	 * @return The acceleration vector in m/s^2.
 	 */
-	public Vector asVector();
+	public Vector3 get();
 }

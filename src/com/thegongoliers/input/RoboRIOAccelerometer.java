@@ -11,17 +11,17 @@ public class RoboRIOAccelerometer extends AbstractAccelerometer {
 
 	@Override
 	public double getY() {
-		return accelerometer.getY();
+		return accelerometer.getY() * GRAVITY;
 	}
 
 	@Override
 	public double getX() {
-		return accelerometer.getX();
+		return accelerometer.getX() * GRAVITY;
 	}
 
 	@Override
 	public double getZ() {
-		return accelerometer.getZ();
+		return accelerometer.getZ() * GRAVITY;
 	}
 
 	@Override

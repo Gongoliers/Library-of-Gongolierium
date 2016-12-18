@@ -2,45 +2,46 @@ package com.thegongoliers.math;
 
 import java.util.HashMap;
 
+import com.thegongoliers.geometry_msgs.Pose2D;
+
 public class Transformer {
-	private HashMap<String, Pose> frames;
+	private HashMap<String, Pose2D> frames;
 
 	public static final String ORIGIN = "origin";
 
 	public Transformer() {
-		Pose origin = new Pose(0, 0, 0);
+		Pose2D origin = new Pose2D(0, 0, 0);
 		frames = new HashMap<>();
 		frames.put(ORIGIN, origin);
 	}
 
-	public Pose lookup(String frame) {
+	public Pose2D lookup(String frame) {
 		return frames.get(frame);
 	}
 
-	public Pose lookup(String fromFrame, String toFrame) {
-		Pose f1 = lookup(fromFrame);
-		Pose f2 = lookup(toFrame);
-		Pose diff = new Pose(f1.getX() - f2.getX(), f1.getY() - f2.getY(), f2.getOrientation() - f1.getOrientation());
+	public Pose2D lookup(String fromFrame, String toFrame) {
+		Pose2D f1 = lookup(fromFrame);
+		Pose2D f2 = lookup(toFrame);
+		Pose2D diff = new Pose2D(f1.x - f2.x, f1.y - f2.y, f2.theta - f1.theta);
 		return diff;
 	}
 
-	public Pose transform(Pose p, String fromFrame, String toFrame) {
-		Pose trans = lookup(fromFrame, toFrame);
+	public Pose2D transform(Pose2D p, String fromFrame, String toFrame) {
+		Pose2D trans = lookup(fromFrame, toFrame);
 		return transform2d(p, trans);
 	}
 
-	public Pose transformToOrigin(Pose p, String fromFrame) {
+	public Pose2D transformToOrigin(Pose2D p, String fromFrame) {
 		return transform(p, fromFrame, ORIGIN);
 	}
 
-	public void put(String frame, Pose location) {
+	public void put(String frame, Pose2D location) {
 		frames.put(frame, location);
 	}
 
-	private Pose transform2d(Pose p, Pose trans) {
-		double angle = Math.toRadians(trans.getOrientation());
-		double x = Math.cos(angle) * p.getX() + Math.sin(angle) * p.getY() + trans.getX();
-		double y = -Math.sin(angle) * p.getX() + Math.cos(angle) * p.getY() + trans.getY();
-		return new Pose(x, y, angle);
+	private Pose2D transform2d(Pose2D p, Pose2D trans) {
+		double x = Math.cos(trans.theta) * p.x + Math.sin(trans.theta) * p.y + trans.x;
+		double y = -Math.sin(trans.theta) * p.x + Math.cos(trans.theta) * p.y + trans.y;
+		return new Pose2D(x, y, trans.theta);
 	}
 }
