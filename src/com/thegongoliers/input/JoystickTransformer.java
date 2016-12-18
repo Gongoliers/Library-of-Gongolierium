@@ -1,6 +1,6 @@
 package com.thegongoliers.input;
 
-import com.thegongoliers.geometry_msgs.Point;
+import com.thegongoliers.geometry.Point;
 import com.thegongoliers.math.MathExt;
 
 public class JoystickTransformer {

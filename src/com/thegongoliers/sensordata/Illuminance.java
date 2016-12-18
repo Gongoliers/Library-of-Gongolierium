@@ -1,8 +1,7 @@
 package com.thegongoliers.sensordata;
 
 public class Illuminance {
-	private double illuminance;
-	private double variance;
+	public double illuminance, variance;
 
 	public Illuminance(double illuminance, double variance) {
 		this.illuminance = illuminance;
@@ -13,11 +12,4 @@ public class Illuminance {
 		this(illuminance, 0);
 	}
 
-	public double getIlluminance() {
-		return illuminance;
-	}
-
-	public double getVariance() {
-		return variance;
-	}
 }

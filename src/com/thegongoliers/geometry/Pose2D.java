@@ -1,4 +1,4 @@
-package com.thegongoliers.geometry_msgs;
+package com.thegongoliers.geometry;
 
 public class Pose2D {
 	public double x, y, theta;

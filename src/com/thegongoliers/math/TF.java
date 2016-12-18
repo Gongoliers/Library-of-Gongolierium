@@ -2,11 +2,11 @@ package com.thegongoliers.math;
 
 import java.util.HashMap;
 
-import com.thegongoliers.geometry_msgs.Point;
-import com.thegongoliers.geometry_msgs.Pose;
-import com.thegongoliers.geometry_msgs.Quaternion;
-import com.thegongoliers.geometry_msgs.Transform;
-import com.thegongoliers.geometry_msgs.Vector3;
+import com.thegongoliers.geometry.Point;
+import com.thegongoliers.geometry.Pose;
+import com.thegongoliers.geometry.Quaternion;
+import com.thegongoliers.geometry.Transform;
+import com.thegongoliers.geometry.Vector3;
 
 public class TF {
 	private HashMap<String, Pose> frames;

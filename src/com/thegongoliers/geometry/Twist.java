@@ -1,4 +1,4 @@
-package com.thegongoliers.geometry_msgs;
+package com.thegongoliers.geometry;
 
 public class Twist {
 	public Vector3 linear, angular;

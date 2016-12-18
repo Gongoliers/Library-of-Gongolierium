@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.thegongoliers.geometry_msgs.Cylindrical;
-import com.thegongoliers.geometry_msgs.Point;
-import com.thegongoliers.geometry_msgs.Spherical;
+import com.thegongoliers.geometry.Cylindrical;
+import com.thegongoliers.geometry.Point;
+import com.thegongoliers.geometry.Spherical;
 
 public class MathExt {
 

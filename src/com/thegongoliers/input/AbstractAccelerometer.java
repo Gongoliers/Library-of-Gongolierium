@@ -1,6 +1,6 @@
 package com.thegongoliers.input;
 
-import com.thegongoliers.geometry_msgs.Vector3;
+import com.thegongoliers.geometry.Vector3;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 

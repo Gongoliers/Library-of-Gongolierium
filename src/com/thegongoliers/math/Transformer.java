@@ -2,7 +2,7 @@ package com.thegongoliers.math;
 
 import java.util.HashMap;
 
-import com.thegongoliers.geometry_msgs.Pose2D;
+import com.thegongoliers.geometry.Pose2D;
 
 public class Transformer {
 	private HashMap<String, Pose2D> frames;

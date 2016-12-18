@@ -1,4 +1,4 @@
-package com.thegongoliers.geometry_msgs;
+package com.thegongoliers.geometry;
 
 public class Wrench {
 	public Vector3 force, torque;

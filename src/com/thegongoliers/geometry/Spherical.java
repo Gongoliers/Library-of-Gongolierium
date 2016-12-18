@@ -1,4 +1,4 @@
-package com.thegongoliers.geometry_msgs;
+package com.thegongoliers.geometry;
 
 public class Spherical {
 	public double p, theta, phi;

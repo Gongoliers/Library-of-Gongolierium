@@ -13,9 +13,9 @@ import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 
-import com.thegongoliers.geometry_msgs.Cylindrical;
-import com.thegongoliers.geometry_msgs.Point;
-import com.thegongoliers.geometry_msgs.Pose;
+import com.thegongoliers.geometry.Cylindrical;
+import com.thegongoliers.geometry.Point;
+import com.thegongoliers.geometry.Pose;
 import com.thegongoliers.math.MathExt;
 import com.thegongoliers.math.TF;
 

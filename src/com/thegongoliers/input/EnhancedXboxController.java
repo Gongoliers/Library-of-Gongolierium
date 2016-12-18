@@ -1,6 +1,6 @@
 package com.thegongoliers.input;
 
-import com.thegongoliers.geometry_msgs.Point;
+import com.thegongoliers.geometry.Point;
 
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;

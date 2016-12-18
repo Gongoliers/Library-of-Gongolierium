@@ -1,4 +1,4 @@
-package com.thegongoliers.geometry_msgs;
+package com.thegongoliers.geometry;
 
 /**
  * Represents a direction as a 3D vector

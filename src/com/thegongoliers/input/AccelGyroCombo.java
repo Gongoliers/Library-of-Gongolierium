@@ -1,6 +1,6 @@
 package com.thegongoliers.input;
 
-import com.thegongoliers.geometry_msgs.Accel;
+import com.thegongoliers.geometry.Accel;
 
 public class AccelGyroCombo {
 
