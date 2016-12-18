@@ -16,7 +16,7 @@ public class MicrosoftLifeCam extends AbstractCamera {
 	public MicrosoftLifeCam(int port) {
 		super();
 		cameraStarted = false;
-		camera = new USBCamera("cam", port);
+		camera = new USBCamera("cam" + port, 0);
 	}
 
 	public void display() {
