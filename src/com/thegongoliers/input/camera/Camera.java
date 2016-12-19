@@ -314,7 +314,7 @@ public class Camera {
 		public Point toRobotFrame(Pose offset) {
 			Point cartesian = MathExt.toCartesian(new Cylindrical(distance, alpha, 0));
 			TF tf = new TF();
-			tf.put("camera", offset);
+			tf.put("camera", TF.ORIGIN, offset);
 			return tf.transformToOrigin(cartesian, "camera").position;
 		}
 
