@@ -29,11 +29,11 @@ public class RotateToAngle extends Command {
 	@Override
 	protected void initialize() {
 		robotDriveTrain.enable();
+		robotDriveTrain.setSetpointRelative(targetAngle);
 	}
 
 	@Override
 	protected void execute() {
-		robotDriveTrain.setSetpointRelative(targetAngle);
 	}
 
 	@Override
