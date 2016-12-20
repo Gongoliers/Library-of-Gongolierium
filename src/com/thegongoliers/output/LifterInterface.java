@@ -39,5 +39,5 @@ public interface LifterInterface extends Stoppable {
 	 * 
 	 * @return The position of the lifting mechanism
 	 */
-	double getPosition();
+	double getNormalizedPosition();
 }
