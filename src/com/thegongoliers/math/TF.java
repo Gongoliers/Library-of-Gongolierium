@@ -70,6 +70,10 @@ public class TF {
 		p.getChildren().add(child);
 		frames.put(frame, child);
 	}
+	
+	public void put(String frame, Pose location){
+		put(frame, ORIGIN, location);
+	}
 
 	public void put(String frame, PoseStamped location) {
 		put(frame, location.header.frame, location.pose);
