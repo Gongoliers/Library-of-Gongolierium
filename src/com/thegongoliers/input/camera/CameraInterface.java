@@ -6,7 +6,7 @@ import com.thegongoliers.output.Displayable;
 
 import edu.wpi.cscore.VideoSource;
 
-public interface CameraInterface extends Displayable{
+public interface CameraInterface extends Displayable {
 	/**
 	 * Get the view angle of the camera in degrees.
 	 * 
