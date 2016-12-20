@@ -2,9 +2,11 @@ package com.thegongoliers.input.camera;
 
 import org.opencv.core.Mat;
 
+import com.thegongoliers.output.Displayable;
+
 import edu.wpi.cscore.VideoSource;
 
-public interface CameraInterface {
+public interface CameraInterface extends Displayable{
 	/**
 	 * Get the view angle of the camera in degrees.
 	 * 
@@ -80,10 +82,5 @@ public interface CameraInterface {
 	 * @return The VideoSource of the camera.
 	 */
 	VideoSource getVideoSource();
-
-	/**
-	 * Display the camera VideoSource
-	 */
-	void display();
 
 }
