@@ -6,7 +6,7 @@ package com.thegongoliers.geometry;
  */
 public class Point {
 	public double x, y, z;
-	
+
 	public static final Point origin = new Point(0, 0, 0);
 
 	public Point(double x, double y, double z) {
@@ -23,6 +23,10 @@ public class Point {
 		return new Point(x + other, y + other, z + other);
 	}
 
+	public Point add(Vector3 other) {
+		return new Point(x + other.x, y + other.y, z + other.z);
+	}
+
 	public Point subtract(Point other) {
 		return new Point(x - other.x, y - other.y, z - other.z);
 	}
@@ -30,8 +34,8 @@ public class Point {
 	public Point subtract(double other) {
 		return new Point(x - other, y - other, z - other);
 	}
-	
-	public Point subtract(Vector3 other){
+
+	public Point subtract(Vector3 other) {
 		return new Point(x - other.x, y - other.y, z - other.z);
 	}
 
@@ -42,10 +46,10 @@ public class Point {
 	public Point divide(double other) {
 		return new Point(x / other, y / other, z / other);
 	}
-	
+
 	@Override
 	public String toString() {
 		return "<Point " + x + ", " + y + ", " + z + ">";
 	}
-	
+
 }

@@ -64,5 +64,17 @@ public class Vector3 {
 	public Vector3 normalize() {
 		return divide(magnitude());
 	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if(obj == null || !(obj instanceof Vector3)) return false;
+		Vector3 other = (Vector3) obj;
+		return other.x == x && other.y == y && other.z == z;
+	}
+	
+	@Override
+	public String toString() {
+		return String.format("<Vector3 %1$f %2$f %3$f>", x, y, z);
+	}
 
 }
