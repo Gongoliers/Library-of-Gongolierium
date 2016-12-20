@@ -46,6 +46,18 @@ public class Point {
 	public Point divide(double other) {
 		return new Point(x / other, y / other, z / other);
 	}
+	
+	public Vector3 toVector(){
+		return new Vector3(this);
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null || !(obj instanceof Point))
+			return false;
+		Point other = (Point) obj;
+		return other.x == x && other.y == y && other.z == z;
+	}
 
 	@Override
 	public String toString() {

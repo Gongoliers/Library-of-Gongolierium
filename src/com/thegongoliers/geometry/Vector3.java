@@ -65,6 +65,10 @@ public class Vector3 {
 		return divide(magnitude());
 	}
 	
+	public static Vector3 fromPoints(Point from, Point to){
+		return new Vector3(to.subtract(from));
+	}
+	
 	@Override
 	public boolean equals(Object obj) {
 		if(obj == null || !(obj instanceof Vector3)) return false;
