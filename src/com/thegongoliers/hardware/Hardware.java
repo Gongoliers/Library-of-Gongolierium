@@ -1,26 +1,29 @@
 package com.thegongoliers.hardware;
 
 import com.ctre.CANTalon;
+import com.thegongoliers.input.Accelerometer;
+import com.thegongoliers.input.AngleSensor;
 import com.thegongoliers.input.CurrentSensor;
-import com.thegongoliers.input.CurrentSwitch;
-import com.thegongoliers.input.LimitSwitch;
-import com.thegongoliers.input.TiltSensor;
+import com.thegongoliers.input.DistanceSensor;
+import com.thegongoliers.input.Gyroscope;
+import com.thegongoliers.input.Switch;
+import com.thegongoliers.input.ThreeAxisAccelerometer;
 import com.thegongoliers.input.camera.Camera;
 import com.thegongoliers.input.camera.Camera.LEDColor;
+import com.thegongoliers.math.MathExt;
+import com.thegongoliers.output.Compressor;
 import com.thegongoliers.output.JoinedSpeedController;
+import com.thegongoliers.output.Solenoid;
 
 import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.BuiltInAccelerometer;
-import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Jaguar;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
-import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.Victor;
-import edu.wpi.first.wpilibj.interfaces.Accelerometer;
-import edu.wpi.first.wpilibj.interfaces.Gyro;
 
 import com.thegongoliers.input.camera.MicrosoftLifeCam;
 
@@ -37,17 +40,24 @@ public class Hardware {
 	}
 
 	public static class Accelerometers {
-		public static Accelerometer builtin() {
-			return new BuiltInAccelerometer();
+		public static ThreeAxisAccelerometer builtin() {
+			BuiltInAccelerometer accel = new BuiltInAccelerometer();
+			return ThreeAxisAccelerometer.create(accel::getX, accel::getY, accel::getZ);
 		}
 	}
 
 	public static class Switches {
-		public static LimitSwitch limitSwitch(int port) {
-			return new LimitSwitch(port);
+		public static Switch normallyOpen(int port) {
+			DigitalInput input = new DigitalInput(port);
+			return input::get;
 		}
 
-		public static CurrentSwitch current(CurrentSensor sensor, double thresh) {
+		public static Switch normallyClosed(int port) {
+			DigitalInput input = new DigitalInput(port);
+			return () -> !input.get();
+		}
+
+		public static Switch currentSwitch(CurrentSensor sensor, double thresh) {
 			return () -> sensor.getCurrent() >= thresh;
 		}
 	}
@@ -75,20 +85,24 @@ public class Hardware {
 	}
 
 	public static class AngleSensors {
-		public static Gyro gyroscope(int port) {
+		public static Gyroscope gyroscope(int port) {
 			AnalogGyro gyro = new AnalogGyro(port);
 			gyro.initGyro();
-			return gyro;
+			return Gyroscope.create(gyro::getAngle, gyro::getRate);
 		}
 
-		public static Encoder encoder(int port1, int port2, double distancePerPulse) {
+		public static AngleSensor encoder(int port1, int port2, double distancePerPulse) {
 			Encoder encoder = new Encoder(port1, port2);
 			encoder.setDistancePerPulse(distancePerPulse);
-			return encoder;
+			return AngleSensor.create(encoder::getDistance);
 		}
 
-		public static TiltSensor tilt(Accelerometer accel) {
-			return new TiltSensor(accel);
+		public static AngleSensor tilt(Accelerometer accel) {
+			return AngleSensor.create(() -> {
+				double y = accel.getAcceleration();
+				y = MathExt.toRange(y, -1, 1);
+				return Math.toDegrees(Math.asin(y));
+			});
 		}
 	}
 
@@ -105,22 +119,118 @@ public class Hardware {
 	}
 
 	public static class DistanceSensors {
-		public static Encoder encoder(int port1, int port2, double distancePerPulse) {
-			return AngleSensors.encoder(port1, port2, distancePerPulse);
+		public static DistanceSensor encoder(int port1, int port2, double distancePerPulse) {
+			Encoder encoder = new Encoder(port1, port2);
+			encoder.setDistancePerPulse(distancePerPulse);
+			return DistanceSensor.create(encoder::getDistance);
 		}
 	}
 
 	public static class Pneumatics {
 		public static Solenoid solenoid(int port) {
-			return new Solenoid(port);
+			edu.wpi.first.wpilibj.Solenoid solenoid = new edu.wpi.first.wpilibj.Solenoid(0);
+			return new Solenoid() {
+
+				@Override
+				public Solenoid retract() {
+					solenoid.set(false);
+					return this;
+				}
+
+				@Override
+				public boolean isRetracted() {
+					return !solenoid.get();
+				}
+
+				@Override
+				public boolean isExtended() {
+					return solenoid.get();
+				}
+
+				@Override
+				public Solenoid extend() {
+					solenoid.set(true);
+					return this;
+				}
+			};
 		}
 
 		public static Compressor compressor() {
-			return new Compressor();
+			edu.wpi.first.wpilibj.Compressor compressor = new edu.wpi.first.wpilibj.Compressor();
+			return new Compressor() {
+
+				@Override
+				public Compressor stop() {
+					compressor.stop();
+					return this;
+				}
+
+				@Override
+				public Compressor start() {
+					compressor.start();
+					return this;
+				}
+
+				@Override
+				public Compressor runAutomatically() {
+					compressor.setClosedLoopControl(true);
+					return this;
+				}
+
+				@Override
+				public boolean isRunning() {
+					return compressor.enabled();
+				}
+
+				@Override
+				public Switch getPressureSwitch() {
+					return compressor::getPressureSwitchValue;
+				}
+
+				@Override
+				public CurrentSensor getCompressorCurrent() {
+					return compressor::getCompressorCurrent;
+				}
+			};
 		}
 
 		public static Compressor compressor(int port) {
-			return new Compressor(port);
+			edu.wpi.first.wpilibj.Compressor compressor = new edu.wpi.first.wpilibj.Compressor();
+			return new Compressor() {
+
+				@Override
+				public Compressor stop() {
+					compressor.stop();
+					return this;
+				}
+
+				@Override
+				public Compressor start() {
+					compressor.start();
+					return this;
+				}
+
+				@Override
+				public Compressor runAutomatically() {
+					compressor.setClosedLoopControl(true);
+					return this;
+				}
+
+				@Override
+				public boolean isRunning() {
+					return compressor.enabled();
+				}
+
+				@Override
+				public Switch getPressureSwitch() {
+					return compressor::getPressureSwitchValue;
+				}
+
+				@Override
+				public CurrentSensor getCompressorCurrent() {
+					return compressor::getCompressorCurrent;
+				}
+			};
 		}
 	}
 
