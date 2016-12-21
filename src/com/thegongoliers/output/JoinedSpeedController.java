@@ -6,21 +6,21 @@ import java.util.List;
 
 import edu.wpi.first.wpilibj.SpeedController;
 
-public class SynchronizedSpeedControllers implements SpeedController {
+public class JoinedSpeedController implements SpeedController {
 
 	private List<SpeedController> mSpeedControllers;
 	private boolean mIsInverted = false;
 
-	public SynchronizedSpeedControllers() {
+	public JoinedSpeedController() {
 		mSpeedControllers = new ArrayList<>();
 	}
 
-	public SynchronizedSpeedControllers(SpeedController... speedControllers) {
+	public JoinedSpeedController(SpeedController... speedControllers) {
 		mSpeedControllers = new ArrayList<>();
 		Collections.addAll(mSpeedControllers, speedControllers);
 	}
 
-	public SynchronizedSpeedControllers(List<SpeedController> speedControllers) {
+	public JoinedSpeedController(List<SpeedController> speedControllers) {
 		mSpeedControllers = speedControllers;
 	}
 
