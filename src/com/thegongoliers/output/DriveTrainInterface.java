@@ -1,7 +1,5 @@
 package com.thegongoliers.output;
 
-import edu.wpi.first.wpilibj.GenericHID;
-
 public interface DriveTrainInterface extends Stoppable {
 	/**
 	 * Drive forward at the given speed

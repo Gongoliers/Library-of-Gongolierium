@@ -135,7 +135,7 @@ public class Camera {
 	 * @return The target information.
 	 */
 	public Target findTarget(double width, double height) throws TargetNotFoundException {
-		Mat binaryFilteredImage = filterRetroreflective();
+		Mat binaryFilteredImage = filterRetroreflective(hue, saturation, value);
 		ParticleReport particleReport = generateParticleReport(binaryFilteredImage, findBlob(binaryFilteredImage));
 		if (particleReport == null)
 			throw new TargetNotFoundException();
@@ -144,6 +144,28 @@ public class Camera {
 		Target target = new Target();
 		target.boundingRectangle = particleReport.boundingRect;
 		target.distance = computeDistance(binaryFilteredImage, particleReport, width);
+		target.centerX = rawX;
+		target.centerY = rawY;
+		target.aimingCoordinates = toAimingCoordinates(new Point(rawX, rawY, 0));
+		target.angle = computeAngle(binaryFilteredImage, rawX);
+		target.alpha = 90 - camera.getViewAngle();
+		target.width = Math.abs(particleReport.boundingRectRight - particleReport.boundingRectLeft);
+		target.height = Math.abs(particleReport.boundingRectBottom - particleReport.boundingRectTop);
+		target.percentArea = particleReport.percentAreaToImageArea;
+		target.targetArea = particleReport.blobArea;
+		return target;
+	}
+	
+	public Target findTarget(TargetSpecifications targetSpecs) throws TargetNotFoundException {
+		Mat binaryFilteredImage = filterRetroreflective(targetSpecs.getHue(), targetSpecs.getSaturation(), targetSpecs.getValue());
+		ParticleReport particleReport = generateParticleReport(binaryFilteredImage, findBlob(binaryFilteredImage));
+		if (particleReport == null)
+			throw new TargetNotFoundException();
+		double rawX = (particleReport.boundingRectLeft + particleReport.boundingRectRight) / 2;
+		double rawY = (particleReport.boundingRectBottom + particleReport.boundingRectTop) / 2;
+		Target target = new Target();
+		target.boundingRectangle = particleReport.boundingRect;
+		target.distance = computeDistance(binaryFilteredImage, particleReport, targetSpecs.getWidth());
 		target.centerX = rawX;
 		target.centerY = rawY;
 		target.aimingCoordinates = toAimingCoordinates(new Point(rawX, rawY, 0));
@@ -175,7 +197,7 @@ public class Camera {
 		return aimingCoordinate * camera.getViewAngle() / 2;
 	}
 
-	private Mat filterRetroreflective() {
+	private Mat filterRetroreflective(Range hue, Range saturation, Range value) {
 		Mat rawCameraImage = getImage();
 		Mat hsvCameraImage = new Mat();
 		Imgproc.cvtColor(rawCameraImage, hsvCameraImage, Imgproc.COLOR_BGR2HSV);
