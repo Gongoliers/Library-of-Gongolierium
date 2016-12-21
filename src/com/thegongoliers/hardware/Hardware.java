@@ -1,6 +1,7 @@
 package com.thegongoliers.hardware;
 
 import com.ctre.CANTalon;
+import com.thegongoliers.input.Accelerometer;
 import com.thegongoliers.input.AngleSensor;
 import com.thegongoliers.input.CurrentSensor;
 import com.thegongoliers.input.DistanceSensor;
@@ -9,6 +10,7 @@ import com.thegongoliers.input.Switch;
 import com.thegongoliers.input.ThreeAxisAccelerometer;
 import com.thegongoliers.input.camera.Camera;
 import com.thegongoliers.input.camera.Camera.LEDColor;
+import com.thegongoliers.math.MathExt;
 import com.thegongoliers.output.JoinedSpeedController;
 import com.thegongoliers.output.Solenoid;
 
@@ -92,6 +94,14 @@ public class Hardware {
 			Encoder encoder = new Encoder(port1, port2);
 			encoder.setDistancePerPulse(distancePerPulse);
 			return AngleSensor.create(encoder::getDistance);
+		}
+
+		public static AngleSensor tilt(Accelerometer accel) {
+			return AngleSensor.create(() -> {
+				double y = accel.getAcceleration();
+				y = MathExt.toRange(y, -1, 1);
+				return Math.toDegrees(Math.asin(y));
+			});
 		}
 	}
 
