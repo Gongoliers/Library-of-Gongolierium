@@ -10,6 +10,7 @@ import com.thegongoliers.input.ThreeAxisAccelerometer;
 import com.thegongoliers.input.camera.Camera;
 import com.thegongoliers.input.camera.Camera.LEDColor;
 import com.thegongoliers.output.JoinedSpeedController;
+import com.thegongoliers.output.Solenoid;
 
 import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.BuiltInAccelerometer;
@@ -111,6 +112,36 @@ public class Hardware {
 			Encoder encoder = new Encoder(port1, port2);
 			encoder.setDistancePerPulse(distancePerPulse);
 			return DistanceSensor.create(encoder::getDistance);
+		}
+	}
+
+	public static class Solenoids {
+		public static Solenoid solenoid(int port) {
+			edu.wpi.first.wpilibj.Solenoid solenoid = new edu.wpi.first.wpilibj.Solenoid(0);
+			return new Solenoid() {
+
+				@Override
+				public Solenoid retract() {
+					solenoid.set(false);
+					return this;
+				}
+
+				@Override
+				public boolean isRetracted() {
+					return !solenoid.get();
+				}
+
+				@Override
+				public boolean isExtended() {
+					return solenoid.get();
+				}
+
+				@Override
+				public Solenoid extend() {
+					solenoid.set(true);
+					return this;
+				}
+			};
 		}
 	}
 
