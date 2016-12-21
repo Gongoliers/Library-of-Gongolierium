@@ -21,7 +21,8 @@ public class GyroRobotDrive extends RobotDrive {
 		this.gyro = gyro;
 	}
 
-	public GyroRobotDrive(int frontLeftMotor, int rearLeftMotor, int frontRightMotor, int rearRightMotor, Gyro gyro) {
+	public GyroRobotDrive(int frontLeftMotor, int rearLeftMotor, int frontRightMotor, int rearRightMotor,
+			Gyro gyro) {
 		super(frontLeftMotor, rearLeftMotor, frontRightMotor, rearRightMotor);
 		this.gyro = gyro;
 	}

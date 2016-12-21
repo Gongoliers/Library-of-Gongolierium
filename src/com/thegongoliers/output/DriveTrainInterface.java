@@ -34,12 +34,4 @@ public interface DriveTrainInterface extends Stoppable {
 	 *            The speed of rotation from 0 to 1 inclusive.
 	 */
 	void rotateClockwise(double speed);
-
-	/**
-	 * Operate the robot with a controller.
-	 * 
-	 * @param controller
-	 *            The controller used to operate the robot.
-	 */
-	void operate(GenericHID controller);
 }
