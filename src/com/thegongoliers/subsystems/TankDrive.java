@@ -1,22 +1,34 @@
-package com.thegongoliers.drive;
+package com.thegongoliers.subsystems;
 
 import com.thegongoliers.output.DriveTrainInterface;
 import com.thegongoliers.output.Relay;
 
 import edu.wpi.first.wpilibj.RobotDrive;
 import edu.wpi.first.wpilibj.SpeedController;
+import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.command.Subsystem;
 
-public class TankDrive implements DriveTrainInterface {
+public class TankDrive extends Subsystem implements DriveTrainInterface {
 	private RobotDrive robotDrive;
 	private Relay highGear;
+	private Command defaultCmd;
 
 	public TankDrive(SpeedController left, SpeedController right, Relay relay) {
-		robotDrive = new RobotDrive(left, right);
-		highGear = relay;
+		this(left, right, relay, null);
 	}
 
 	public TankDrive(SpeedController left, SpeedController right) {
-		this(left, right, null);
+		this(left, right, null, null);
+	}
+
+	public TankDrive(SpeedController left, SpeedController right, Relay relay, Command defaultCmd) {
+		robotDrive = new RobotDrive(left, right);
+		highGear = relay;
+		this.defaultCmd = defaultCmd;
+	}
+
+	public TankDrive(SpeedController left, SpeedController right, Command defaultCmd) {
+		this(left, right, null, defaultCmd);
 	}
 
 	@Override
@@ -69,6 +81,11 @@ public class TankDrive implements DriveTrainInterface {
 	@Override
 	public void rotateClockwise(double speed) {
 		robotDrive.arcadeDrive(0, speed);
+	}
+
+	@Override
+	protected void initDefaultCommand() {
+		setDefaultCommand(defaultCmd);
 	}
 
 }
