@@ -1,34 +1,32 @@
 package com.thegongoliers.output;
 
-import com.thegongoliers.input.Gyroscope;
-
 import edu.wpi.first.wpilibj.RobotDrive;
 import edu.wpi.first.wpilibj.SpeedController;
+import edu.wpi.first.wpilibj.interfaces.Gyro;
 
 public class GyroRobotDrive extends RobotDrive {
 
 	private double relativeAngle = 0;
-	private Gyroscope gyro;
+	private Gyro gyro;
 	private double kp = 0.01;
 
 	public GyroRobotDrive(SpeedController frontLeftMotor, SpeedController rearLeftMotor,
-			SpeedController frontRightMotor, SpeedController rearRightMotor, Gyroscope gyro) {
+			SpeedController frontRightMotor, SpeedController rearRightMotor, Gyro gyro) {
 		super(frontLeftMotor, rearLeftMotor, frontRightMotor, rearRightMotor);
 		this.gyro = gyro;
 	}
 
-	public GyroRobotDrive(SpeedController leftMotor, SpeedController rightMotor, Gyroscope gyro) {
+	public GyroRobotDrive(SpeedController leftMotor, SpeedController rightMotor, Gyro gyro) {
 		super(leftMotor, rightMotor);
 		this.gyro = gyro;
 	}
 
-	public GyroRobotDrive(int frontLeftMotor, int rearLeftMotor, int frontRightMotor, int rearRightMotor,
-			Gyroscope gyro) {
+	public GyroRobotDrive(int frontLeftMotor, int rearLeftMotor, int frontRightMotor, int rearRightMotor, Gyro gyro) {
 		super(frontLeftMotor, rearLeftMotor, frontRightMotor, rearRightMotor);
 		this.gyro = gyro;
 	}
 
-	public GyroRobotDrive(int leftMotorChannel, int rightMotorChannel, Gyroscope gyro) {
+	public GyroRobotDrive(int leftMotorChannel, int rightMotorChannel, Gyro gyro) {
 		super(leftMotorChannel, rightMotorChannel);
 		this.gyro = gyro;
 	}
@@ -38,7 +36,7 @@ public class GyroRobotDrive extends RobotDrive {
 	}
 
 	public double getFieldOrientation() {
-		return gyro.getHeading();
+		return gyro.getAngle() % 360;
 	}
 
 	public void setKP(double kp) {
@@ -66,7 +64,7 @@ public class GyroRobotDrive extends RobotDrive {
 		stabilizedArcadeDrive(speed, rotation, 0.1);
 	}
 
-	public Gyroscope getGyro() {
+	public Gyro getGyro() {
 		return gyro;
 	}
 
