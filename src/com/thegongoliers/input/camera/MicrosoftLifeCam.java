@@ -1,19 +1,26 @@
 package com.thegongoliers.input.camera;
 
-import com.ni.vision.NIVision.Image;
+import org.opencv.core.Mat;
 
-import edu.wpi.first.wpilibj.vision.USBCamera;
+import edu.wpi.cscore.CvSink;
+import edu.wpi.cscore.USBCamera;
+import edu.wpi.cscore.VideoSource;
+import edu.wpi.first.wpilibj.CameraServer;
 
 public class MicrosoftLifeCam extends AbstractCamera {
 
 	private boolean cameraStarted;
 	private USBCamera camera;
+	CvSink cvSink;;
 
-	public MicrosoftLifeCam(String cameraName) {
+	public MicrosoftLifeCam(int port) {
 		super();
 		cameraStarted = false;
-		camera = new USBCamera(cameraName);
-		camera.openCamera();
+		camera = new USBCamera("cam" + port, 0);
+	}
+
+	public void display() {
+		CameraServer.getInstance().startAutomaticCapture(getVideoSource());
 	}
 
 	public double getViewAngle() {
@@ -21,40 +28,45 @@ public class MicrosoftLifeCam extends AbstractCamera {
 	}
 
 	public void setBrightness(int brightness) {
-		camera.setBrightness(brightness);
+		// camera.setBrightness(brightness);
 	}
 
 	public int getBrightness() {
-		return camera.getBrightness();
+		// return camera.getBrightness();
+		return 0;
 	}
 
 	public void setExposureManual(int exposure) {
-		camera.setExposureManual(exposure);
+		// camera.setExposureManual(exposure);
 	}
 
 	public void setExposureAuto() {
-		camera.setExposureAuto();
+		// camera.setExposureAuto();
 	}
 
-	public Image getImage() {
+	public Mat getImage() {
 		if (!cameraStarted)
 			start();
-		camera.getImage(frame);
+		cvSink.grabFrame(frame);
 		return frame;
 	}
 
 	public void start() {
-		camera.startCapture();
+		CameraServer.getInstance().startAutomaticCapture(camera);
+		cvSink = CameraServer.getInstance().getVideo();
 		cameraStarted = true;
 	}
 
 	public void stop() {
-		camera.stopCapture();
 		cameraStarted = false;
 	}
 
 	public void setFPS(int fps) {
-		camera.setFPS(fps);
+		// camera.setFPS(fps);
+	}
+
+	public VideoSource getVideoSource() {
+		return camera;
 	}
 
 }

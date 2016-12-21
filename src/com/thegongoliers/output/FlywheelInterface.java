@@ -1,13 +1,21 @@
 package com.thegongoliers.output;
 
-public interface FlywheelInterface {
+public interface FlywheelInterface extends Stoppable {
 
-	public void spinUp(double speed);
+	/**
+	 * Spin up the flywheel to a given speed away from the robot
+	 * 
+	 * @param speed
+	 *            The speed of the flywheel from 0 to 1 inclusive.
+	 */
+	void spinOutward(double speed);
 
-	public void stop();
-
-	public void spinToSpeed(double speed);
-	
-	public double getSpeed();
+	/**
+	 * Spin up the flywheel to a given speed toward the robot
+	 * 
+	 * @param speed
+	 *            The speed of the flywheel from 0 to 1 inclusive.
+	 */
+	void spinInward(double speed);
 
 }

@@ -1,19 +1,18 @@
 package com.thegongoliers.input.camera;
 
-import com.ni.vision.NIVision.Image;
+import org.opencv.core.Mat;
 
-public interface CameraInterface {
+import com.thegongoliers.output.Displayable;
 
-	public static enum Axis {
-		X, Y
-	}
+import edu.wpi.cscore.VideoSource;
 
+public interface CameraInterface extends Displayable {
 	/**
 	 * Get the view angle of the camera in degrees.
 	 * 
-	 * @return The view angle in degres.
+	 * @return The view angle in degrees.
 	 */
-	public double getViewAngle();
+	double getViewAngle();
 
 	/**
 	 * Set the brightness of the camera image.
@@ -21,14 +20,14 @@ public interface CameraInterface {
 	 * @param brightness
 	 *            The brightness (0, 100).
 	 */
-	public void setBrightness(int brightness);
+	void setBrightness(int brightness);
 
 	/**
 	 * Get the current brightness of the camera image.
 	 * 
 	 * @return The brightness.
 	 */
-	public int getBrightness();
+	int getBrightness();
 
 	/**
 	 * Set the exposure of the camera.
@@ -36,29 +35,29 @@ public interface CameraInterface {
 	 * @param exposure
 	 *            The exposure (0, 100).
 	 */
-	public void setExposureManual(int exposure);
+	void setExposureManual(int exposure);
 
 	/**
 	 * Set the exposure of the camera to auto.
 	 */
-	public void setExposureAuto();
+	void setExposureAuto();
 
 	/**
 	 * Get the current image from the camera.
 	 * 
 	 * @return The current image.
 	 */
-	public Image getImage();
+	Mat getImage();
 
 	/**
 	 * Start the camera.
 	 */
-	public void start();
+	void start();
 
 	/**
 	 * Stop the camera.
 	 */
-	public void stop();
+	void stop();
 
 	/**
 	 * Set the frames per second of the camera.
@@ -66,12 +65,7 @@ public interface CameraInterface {
 	 * @param fps
 	 *            The FPS of the camera.
 	 */
-	public void setFPS(int fps);
-
-	/**
-	 * Display the camera image on the SmartDashboard.
-	 */
-	public void display();
+	void setFPS(int fps);
 
 	/**
 	 * Get the resolution of the image.
@@ -80,21 +74,13 @@ public interface CameraInterface {
 	 *            The Axis to get the resolution.
 	 * @return The resolution of the axis in pixels.
 	 */
-	public int getResolution(Axis axis);
+	int getResolution(Axis axis);
 
 	/**
-	 * Get the horizontal offset of the camera from the center of the robot.
+	 * Gets the video source of this camera.
 	 * 
-	 * @return The horizontal offset of the camera.
+	 * @return The VideoSource of the camera.
 	 */
-	public double getHorizontalOffset();
-
-	/**
-	 * Set the horizontal offset of the camera from the center of the robot.
-	 * 
-	 * @param hOffset
-	 *            The horizontal offset of the camera.
-	 */
-	public void setHorizontalOffset(double hOffset);
+	VideoSource getVideoSource();
 
 }

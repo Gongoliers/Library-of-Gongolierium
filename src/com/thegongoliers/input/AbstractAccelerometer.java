@@ -1,6 +1,6 @@
 package com.thegongoliers.input;
 
-import com.thegongoliers.util.LinearAlgebra.Vector;
+import com.thegongoliers.geometry.Vector3;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -19,20 +19,20 @@ public abstract class AbstractAccelerometer implements AccelerometerInterface {
 		SmartDashboard.putNumber("Accelerometer X", getZ());
 	}
 
-	public Vector getLinearAcceleration() {
-		Vector original = asVector();
-		Vector gravity = getGravitationalAcceleration();
-		return original.minus(gravity);
+	public Vector3 getLinearAcceleration() {
+		Vector3 original = get();
+		Vector3 gravity = getGravitationalAcceleration();
+		return original.subtract(gravity);
 	}
 
-	public Vector getGravitationalAcceleration() {
-		Vector original = asVector();
-		Vector direction = original.normalized();
-		return direction.timesScalar(9.81);
+	public Vector3 getGravitationalAcceleration() {
+		Vector3 original = get();
+		Vector3 direction = original.normalize();
+		return direction.multiply(GRAVITY);
 	}
 
-	public Vector asVector() {
-		return new Vector(getX(), getY(), getZ());
+	public Vector3 get() {
+		return new Vector3(getX(), getY(), getZ());
 	}
 
 }

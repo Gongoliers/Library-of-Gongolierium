@@ -1,36 +1,23 @@
 package com.thegongoliers.input;
 
-import com.thegongoliers.util.LinearAlgebra.Vector;
+import com.thegongoliers.geometry.Vector3;
 
-public interface AccelerometerInterface {
+import edu.wpi.first.wpilibj.interfaces.Accelerometer;
+
+/**
+ * An interface for using accelerometers with added on features.
+ * 
+ */
+public interface AccelerometerInterface extends Accelerometer {
+	
+	public static final double GRAVITY = 9.81;
 
 	/**
 	 * Gets the tilt of the robot (angle to ground).
 	 * 
-	 * @return The tilt of the robot.
+	 * @return The tilt of the robot in degrees.
 	 */
 	public double getTilt();
-
-	/**
-	 * Gets the Y-Axis acceleration of the robot.
-	 * 
-	 * @return The Y-Axis acceleration.
-	 */
-	public double getY();
-
-	/**
-	 * Gets the X-Axis acceleration of the robot.
-	 * 
-	 * @return The X-Axis acceleration.
-	 */
-	public double getX();
-
-	/**
-	 * Gets the Z-Axis acceleration of the robot.
-	 * 
-	 * @return The Z-Axis acceleration of the robot.
-	 */
-	public double getZ();
 
 	/**
 	 * Display the values of the accelerometer to the SmartDashboard.
@@ -41,22 +28,22 @@ public interface AccelerometerInterface {
 	 * Gets an approximation of the linear acceleration (without gravity) that
 	 * the robot is experiencing
 	 * 
-	 * @return The linear acceleration
+	 * @return The linear acceleration in m/s^2
 	 */
-	public Vector getLinearAcceleration();
+	public Vector3 getLinearAcceleration();
 
 	/**
 	 * Gets an approximation of the gravitational acceleration (without linear)
 	 * that the robot is experiencing
 	 * 
-	 * @return The gravitational acceleration
+	 * @return The gravitational acceleration in m/s^2
 	 */
-	public Vector getGravitationalAcceleration();
+	public Vector3 getGravitationalAcceleration();
 
 	/**
 	 * Produces the output of the accelerometer as a vector
 	 * 
-	 * @return The acceleration vector
+	 * @return The acceleration vector in m/s^2.
 	 */
-	public Vector asVector();
+	public Vector3 get();
 }
