@@ -1,7 +1,6 @@
 package com.thegongoliers.commands;
 
-import java.util.function.BooleanSupplier;
-
+import com.thegongoliers.input.Switch;
 import com.thegongoliers.subsystems.Intake;
 
 import edu.wpi.first.wpilibj.command.Command;
@@ -13,13 +12,13 @@ public class IntakeObject extends Command {
 
 	private Intake intake;
 	private double speed;
-	private BooleanSupplier hasObject;
+	private Switch hasObject;
 
-	public IntakeObject(Intake intake, BooleanSupplier hasObject) {
+	public IntakeObject(Intake intake, Switch hasObject) {
 		this(intake, 1, hasObject);
 	}
 
-	public IntakeObject(Intake intake, double speed, BooleanSupplier hasObject) {
+	public IntakeObject(Intake intake, double speed, Switch hasObject) {
 		requires(intake);
 		this.intake = intake;
 		this.speed = speed;
@@ -37,7 +36,7 @@ public class IntakeObject extends Command {
 
 	// Make this return true when this Command no longer needs to run execute()
 	protected boolean isFinished() {
-		return hasObject.getAsBoolean();
+		return hasObject.isTriggered();
 	}
 
 	// Called once after isFinished returns true

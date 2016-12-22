@@ -12,7 +12,6 @@ public interface Fuse extends Switch {
 
 			@Override
 			public boolean isTriggered() {
-				// TODO Auto-generated method stub
 				return triggered;
 			}
 
@@ -27,6 +26,7 @@ public interface Fuse extends Switch {
 				triggered = false;
 				return this;
 			}
+
 		};
 	}
 }
