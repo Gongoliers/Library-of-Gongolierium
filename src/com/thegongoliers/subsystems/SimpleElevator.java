@@ -67,10 +67,15 @@ public class SimpleElevator extends Subsystem implements LifterInterface {
 	}
 
 	@Override
-	public double getNormalizedPosition() {
+	public double getPosition() {
 		return position.getAsDouble();
 	}
 
+	@Override
+	public void setDefaultCommand(Command command) {
+		super.setDefaultCommand(command);
+	}
+	
 	@Override
 	protected void initDefaultCommand() {
 		setDefaultCommand(defaultCmd);

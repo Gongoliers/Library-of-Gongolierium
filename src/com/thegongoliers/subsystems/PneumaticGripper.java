@@ -4,9 +4,8 @@ import com.thegongoliers.output.GripperInterface;
 import com.thegongoliers.output.Solenoid;
 
 import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.command.Subsystem;
 
-public class PneumaticGripper extends Subsystem implements GripperInterface {
+public class PneumaticGripper extends Gripper implements GripperInterface {
 
 	private final Solenoid solenoid;
 	private Command defaultCmd;
@@ -47,6 +46,11 @@ public class PneumaticGripper extends Subsystem implements GripperInterface {
 	@Override
 	public void open() {
 		solenoid.retract();
+	}
+	
+	@Override
+	public void setDefaultCommand(Command command) {
+		super.setDefaultCommand(command);
 	}
 
 }

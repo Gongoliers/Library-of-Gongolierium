@@ -1,4 +1,4 @@
-package com.thegongoliers.commands;
+package com.thegongoliers.commands.driving;
 
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.PIDSubsystem;

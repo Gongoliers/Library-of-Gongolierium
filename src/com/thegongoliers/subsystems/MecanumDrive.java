@@ -5,10 +5,9 @@ import com.thegongoliers.output.MecanumDriveTrainInterface;
 import edu.wpi.first.wpilibj.RobotDrive;
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
 
-public class MecanumDrive extends Subsystem implements MecanumDriveTrainInterface {
+public class MecanumDrive extends DriveTrain implements MecanumDriveTrainInterface {
 
 	private RobotDrive robotDrive;
 	private Gyro gyro;
@@ -78,6 +77,11 @@ public class MecanumDrive extends Subsystem implements MecanumDriveTrainInterfac
 
 	public void polar(double magnitude, double direction, double rotation) {
 		robotDrive.mecanumDrive_Polar(magnitude, direction, rotation);
+	}
+	
+	@Override
+	public void setDefaultCommand(Command command) {
+		super.setDefaultCommand(command);
 	}
 
 	@Override

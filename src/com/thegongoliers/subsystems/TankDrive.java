@@ -6,9 +6,8 @@ import com.thegongoliers.output.Relay;
 import edu.wpi.first.wpilibj.RobotDrive;
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.command.Subsystem;
 
-public class TankDrive extends Subsystem implements DriveTrainInterface {
+public class TankDrive extends DriveTrain implements DriveTrainInterface {
 	private RobotDrive robotDrive;
 	private Relay highGear;
 	private Command defaultCmd;
@@ -83,6 +82,11 @@ public class TankDrive extends Subsystem implements DriveTrainInterface {
 		robotDrive.arcadeDrive(0, speed);
 	}
 
+	@Override
+	public void setDefaultCommand(Command command) {
+		super.setDefaultCommand(command);
+	}
+	
 	@Override
 	protected void initDefaultCommand() {
 		setDefaultCommand(defaultCmd);
