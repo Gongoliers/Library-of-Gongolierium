@@ -1,15 +1,15 @@
 package com.thegongoliers.subsystems;
 
-import com.thegongoliers.output.FlywheelInterface;
+import com.thegongoliers.output.IntakeInterface;
 
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.command.Subsystem;
 
-public abstract class Flywheel extends Subsystem implements FlywheelInterface {
+public abstract class Intake extends Subsystem implements IntakeInterface {
 
 	private SpeedController motor;
 
-	public Flywheel(SpeedController motor) {
+	public Intake(SpeedController motor) {
 		this.motor = motor;
 	}
 
@@ -19,13 +19,23 @@ public abstract class Flywheel extends Subsystem implements FlywheelInterface {
 	}
 
 	@Override
-	public void spinOutward(double speed) {
+	public void in(double speed) {
 		motor.set(speed);
 	}
 
 	@Override
-	public void spinInward(double speed) {
+	public void in() {
+		in(1);
+	}
+
+	@Override
+	public void out(double speed) {
 		motor.set(-speed);
+	}
+
+	@Override
+	public void out() {
+		out(1);
 	}
 
 }

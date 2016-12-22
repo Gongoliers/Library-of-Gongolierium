@@ -6,39 +6,28 @@ import java.util.function.DoubleSupplier;
 import com.thegongoliers.output.LifterInterface;
 
 import edu.wpi.first.wpilibj.SpeedController;
-import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Subsystem;
 
-public class SimpleElevator extends Subsystem implements LifterInterface {
+public abstract class SimpleElevator extends Subsystem implements LifterInterface {
 
 	private SpeedController motor;
 	private DoubleSupplier position;
 	private BooleanSupplier atTop, atBottom;
-	private Command defaultCmd;
 
 	public SimpleElevator(SpeedController motor, DoubleSupplier position, BooleanSupplier atTop,
-			BooleanSupplier atBottom, Command defaultCmd) {
+			BooleanSupplier atBottom) {
 		this.motor = motor;
 		this.position = position;
 		this.atTop = atTop;
 		this.atBottom = atBottom;
-		this.defaultCmd = defaultCmd;
-	}
-
-	public SimpleElevator(SpeedController motor, Command defaultCmd) {
-		this(motor, () -> 0.0, () -> false, () -> false, defaultCmd);
-	}
-
-	public SimpleElevator(SpeedController motor, BooleanSupplier atTop, BooleanSupplier atBottom, Command defaultCmd) {
-		this(motor, () -> 0.0, atTop, atBottom, defaultCmd);
 	}
 
 	public SimpleElevator(SpeedController motor) {
-		this(motor, () -> 0.0, () -> false, () -> false, null);
+		this(motor, () -> 0.0, () -> false, () -> false);
 	}
 
 	public SimpleElevator(SpeedController motor, BooleanSupplier atTop, BooleanSupplier atBottom) {
-		this(motor, () -> 0.0, atTop, atBottom, null);
+		this(motor, () -> 0.0, atTop, atBottom);
 	}
 
 	@Override
@@ -69,16 +58,7 @@ public class SimpleElevator extends Subsystem implements LifterInterface {
 	@Override
 	public double getPosition() {
 		return position.getAsDouble();
-	}
+	}	
 
-	@Override
-	public void setDefaultCommand(Command command) {
-		super.setDefaultCommand(command);
-	}
-	
-	@Override
-	protected void initDefaultCommand() {
-		setDefaultCommand(defaultCmd);
-	}
 
 }

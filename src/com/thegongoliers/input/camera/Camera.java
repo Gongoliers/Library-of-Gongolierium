@@ -19,18 +19,22 @@ import com.thegongoliers.geometry.Pose;
 import com.thegongoliers.math.MathExt;
 import com.thegongoliers.math.TF;
 
+import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.command.Subsystem;
+
 /**
  * Allows for abstract use of the camera.
  * 
  * @author Kyle
  *
  */
-public class Camera {
+public class Camera extends Subsystem {
 
 	private CameraInterface camera;
 	private int targetExposure, targetBrightness, normalBrightness;
 	private Range hue, saturation, value;
 	private Mode cameraMode;
+	private Command defaultCmd;
 
 	Camera(CameraInterface camera, int targetExposure, int targetBrightness, int normalBrightness, Range hue,
 			Range saturation, Range value) {
@@ -155,9 +159,10 @@ public class Camera {
 		target.targetArea = particleReport.blobArea;
 		return target;
 	}
-	
+
 	public Target findTarget(TargetSpecifications targetSpecs) throws TargetNotFoundException {
-		Mat binaryFilteredImage = filterRetroreflective(targetSpecs.getHue(), targetSpecs.getSaturation(), targetSpecs.getValue());
+		Mat binaryFilteredImage = filterRetroreflective(targetSpecs.getHue(), targetSpecs.getSaturation(),
+				targetSpecs.getValue());
 		ParticleReport particleReport = generateParticleReport(binaryFilteredImage, findBlob(binaryFilteredImage));
 		if (particleReport == null)
 			throw new TargetNotFoundException();
@@ -381,7 +386,7 @@ public class Camera {
 		}
 	}
 
-	public static class CameraBuilder {
+	public static class Builder {
 		private CameraInterface camera;
 		private int targetExposure, targetBrightness, normalBrightness = 50;
 		private Range hue, saturation, value;
@@ -395,7 +400,7 @@ public class Camera {
 		 *            The color of the led.
 		 * @return The CameraBuilder object
 		 */
-		public CameraBuilder setLEDColor(LEDColor color) {
+		public Builder setLEDColor(LEDColor color) {
 			switch (color) {
 			case GREEN:
 				hue = new Range(75, 125);
@@ -414,7 +419,7 @@ public class Camera {
 		 *            The camera.
 		 * @return The CameraBuilder object
 		 */
-		public CameraBuilder setCamera(CameraInterface camera) {
+		public Builder setCamera(CameraInterface camera) {
 			this.camera = camera;
 			return this;
 		}
@@ -428,7 +433,7 @@ public class Camera {
 		 *            The target exposure.
 		 * @return The CameraBuilder object
 		 */
-		public CameraBuilder setTargetExposure(int exposure) {
+		public Builder setTargetExposure(int exposure) {
 			targetExposure = exposure;
 			return this;
 		}
@@ -442,7 +447,7 @@ public class Camera {
 		 *            The target brightness.
 		 * @return The CameraBuilder object
 		 */
-		public CameraBuilder setTargetBrightness(int brightness) {
+		public Builder setTargetBrightness(int brightness) {
 			targetBrightness = brightness;
 			return this;
 		}
@@ -456,7 +461,7 @@ public class Camera {
 		 *            The normal brightness.
 		 * @return The CameraBuilder object
 		 */
-		public CameraBuilder setNormalBrightness(int brightness) {
+		public Builder setNormalBrightness(int brightness) {
 			normalBrightness = brightness;
 			return this;
 		}
@@ -475,7 +480,7 @@ public class Camera {
 		 *            The value range.
 		 * @return The CameraBuilder object
 		 */
-		public CameraBuilder setManualHSVRange(Range hue, Range saturation, Range value) {
+		public Builder setManualHSVRange(Range hue, Range saturation, Range value) {
 			this.hue = hue;
 			this.saturation = saturation;
 			this.value = value;
@@ -495,6 +500,17 @@ public class Camera {
 				throw new RuntimeException("Camera can not be null");
 			return new Camera(camera, targetExposure, targetBrightness, normalBrightness, hue, saturation, value);
 		}
+	}
+
+	@Override
+	public void setDefaultCommand(Command command) {
+		this.defaultCmd = command;
+		super.setDefaultCommand(command);
+	}
+
+	@Override
+	protected void initDefaultCommand() {
+		setDefaultCommand(defaultCmd);
 	}
 
 }

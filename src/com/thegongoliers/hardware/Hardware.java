@@ -2,16 +2,15 @@ package com.thegongoliers.hardware;
 
 import com.ctre.CANTalon;
 import com.thegongoliers.input.CurrentSensor;
-import com.thegongoliers.input.CurrentSwitch;
-import com.thegongoliers.input.LimitSwitch;
+import com.thegongoliers.input.Switch;
 import com.thegongoliers.input.TiltSensor;
-import com.thegongoliers.input.camera.Camera;
-import com.thegongoliers.input.camera.Camera.LEDColor;
+import com.thegongoliers.input.camera.CameraInterface;
 import com.thegongoliers.output.JoinedSpeedController;
 
 import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.BuiltInAccelerometer;
 import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Jaguar;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
@@ -27,12 +26,8 @@ import com.thegongoliers.input.camera.MicrosoftLifeCam;
 public class Hardware {
 
 	public static class Cameras {
-		public static Camera microsoftLifeCam(int port) {
-			return microsoftLifeCam(port, LEDColor.GREEN);
-		}
-
-		public static Camera microsoftLifeCam(int port, LEDColor color) {
-			return new Camera.CameraBuilder().setCamera(new MicrosoftLifeCam(port)).setLEDColor(color).build();
+		public static CameraInterface microsoftLifeCam(int port) {
+			return new MicrosoftLifeCam(port);
 		}
 	}
 
@@ -43,11 +38,21 @@ public class Hardware {
 	}
 
 	public static class Switches {
-		public static LimitSwitch limitSwitch(int port) {
-			return new LimitSwitch(port);
+		public static Switch limitSwitch(int port) {
+			return new DigitalInput(port)::get;
 		}
 
-		public static CurrentSwitch current(CurrentSensor sensor, double thresh) {
+		public static Switch normallyOpen(int port) {
+			DigitalInput input = new DigitalInput(port);
+			return input::get;
+		}
+
+		public static Switch normallyClosed(int port) {
+			DigitalInput input = new DigitalInput(port);
+			return () -> !input.get();
+		}
+
+		public static Switch current(CurrentSensor sensor, double thresh) {
 			return () -> sensor.getCurrent() >= thresh;
 		}
 	}
