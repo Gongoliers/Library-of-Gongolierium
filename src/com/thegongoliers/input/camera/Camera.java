@@ -19,22 +19,18 @@ import com.thegongoliers.geometry.Pose;
 import com.thegongoliers.math.MathExt;
 import com.thegongoliers.math.TF;
 
-import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.command.Subsystem;
-
 /**
  * Allows for abstract use of the camera.
  * 
  * @author Kyle
  *
  */
-public class Camera extends Subsystem {
+public class Camera {
 
 	private CameraInterface camera;
 	private int targetExposure, targetBrightness, normalBrightness;
 	private Range hue, saturation, value;
 	private Mode cameraMode;
-	private Command defaultCmd;
 
 	Camera(CameraInterface camera, int targetExposure, int targetBrightness, int normalBrightness, Range hue,
 			Range saturation, Range value) {
@@ -500,17 +496,6 @@ public class Camera extends Subsystem {
 				throw new RuntimeException("Camera can not be null");
 			return new Camera(camera, targetExposure, targetBrightness, normalBrightness, hue, saturation, value);
 		}
-	}
-
-	@Override
-	public void setDefaultCommand(Command command) {
-		this.defaultCmd = command;
-		super.setDefaultCommand(command);
-	}
-
-	@Override
-	protected void initDefaultCommand() {
-		setDefaultCommand(defaultCmd);
 	}
 
 }
