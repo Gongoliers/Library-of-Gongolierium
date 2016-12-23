@@ -1,15 +1,14 @@
 package com.thegongoliers.output;
 
-public class Solenoid extends edu.wpi.first.wpilibj.Solenoid {
+import edu.wpi.first.wpilibj.Solenoid;
 
+public class EnhancedSolenoid {
+
+	private Solenoid solenoid;
 	private boolean inverted = false;
 
-	public Solenoid(int channel) {
-		super(channel);
-	}
-
-	public Solenoid(int moduleNumber, int channel) {
-		super(moduleNumber, channel);
+	public EnhancedSolenoid(int channel) {
+		solenoid = new Solenoid(channel);
 	}
 
 	public void invert() {
@@ -25,19 +24,19 @@ public class Solenoid extends edu.wpi.first.wpilibj.Solenoid {
 	}
 
 	public void retract() {
-		set(inverted);
+		solenoid.set(inverted);
 	}
 
 	public void extend() {
-		set(!inverted);
+		solenoid.set(!inverted);
 	}
 
 	public boolean isExtended() {
-		return get() != inverted;
+		return solenoid.get() != inverted;
 	}
 
 	public boolean isRetracted() {
-		return get() == inverted;
+		return solenoid.get() == inverted;
 	}
 
 }

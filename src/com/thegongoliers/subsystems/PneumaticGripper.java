@@ -1,13 +1,13 @@
 package com.thegongoliers.subsystems;
 
 import com.thegongoliers.output.GripperInterface;
-import com.thegongoliers.output.Solenoid;
+import com.thegongoliers.output.EnhancedSolenoid;
 
 public abstract class PneumaticGripper extends Gripper implements GripperInterface {
 
-	private final Solenoid solenoid;
+	private final EnhancedSolenoid solenoid;
 
-	public PneumaticGripper(Solenoid solenoid) {
+	public PneumaticGripper(EnhancedSolenoid solenoid) {
 		this.solenoid = solenoid;
 	}
 
