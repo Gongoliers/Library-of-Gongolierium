@@ -28,7 +28,7 @@ public class TF {
 		return frames.get(frame).getData();
 	}
 
-	public Pose transform(Point p, String fromFrame, String toFrame) {
+	public Point transform(Point p, String fromFrame, String toFrame) {
 		TreeSearchEngine search = new TreeSearchEngine();
 		TreeNode<Transform> ancestor = search.findLowestCommonAncestor(frames.get(fromFrame), frames.get(toFrame));
 		TreeNode<Transform> current = frames.get(fromFrame);
@@ -46,7 +46,7 @@ public class TF {
 			Transform c = ancestors.get(i).getData();
 			currentPt = applyTransformationBack(currentPt, c);
 		}
-		return new Pose(currentPt, Quaternion.zero);
+		return currentPt;
 	}
 
 	private Point applyTransformationTo(Point p, Transform t) {
@@ -58,7 +58,7 @@ public class TF {
 		return t.rotation.rotate(p.subtract(t.translation.multiply(-1)));
 	}
 
-	public Pose transformToOrigin(Point p, String fromFrame) {
+	public Point transformToOrigin(Point p, String fromFrame) {
 		return transform(p, fromFrame, ORIGIN);
 	}
 

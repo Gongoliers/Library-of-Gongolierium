@@ -13,11 +13,7 @@ import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 
-import com.thegongoliers.geometry.Cylindrical;
 import com.thegongoliers.geometry.Point;
-import com.thegongoliers.geometry.Pose;
-import com.thegongoliers.math.MathExt;
-import com.thegongoliers.math.TF;
 
 /**
  * Allows for abstract use of the camera.
@@ -29,18 +25,13 @@ public class Camera {
 
 	private CameraInterface camera;
 	private int targetExposure, targetBrightness, normalBrightness;
-	private Range hue, saturation, value;
 	private Mode cameraMode;
 
-	Camera(CameraInterface camera, int targetExposure, int targetBrightness, int normalBrightness, Range hue,
-			Range saturation, Range value) {
+	Camera(CameraInterface camera, int targetExposure, int targetBrightness, int normalBrightness) {
 		this.camera = camera;
 		this.targetBrightness = targetBrightness;
 		this.targetExposure = targetExposure;
 		this.normalBrightness = normalBrightness;
-		this.hue = hue;
-		this.saturation = saturation;
-		this.value = value;
 		camera.start();
 		disableTargetMode();
 	}
@@ -128,54 +119,35 @@ public class Camera {
 	 * details about the target including its center location, distance, and
 	 * angle to the camera.
 	 * 
-	 * @param width
-	 *            The width of the actual target.
-	 * @param height
-	 *            The height of the actual target.
+	 * @param targetSpecs
+	 *            The specifications of the target
+	 * @param minPercentArea
+	 *            The minimum percent area of the target
 	 * @return The target information.
 	 */
-	public Target findTarget(double width, double height) throws TargetNotFoundException {
-		Mat binaryFilteredImage = filterRetroreflective(hue, saturation, value);
-		ParticleReport particleReport = generateParticleReport(binaryFilteredImage, findBlob(binaryFilteredImage));
-		if (particleReport == null)
-			throw new TargetNotFoundException();
-		double rawX = (particleReport.boundingRectLeft + particleReport.boundingRectRight) / 2;
-		double rawY = (particleReport.boundingRectBottom + particleReport.boundingRectTop) / 2;
-		Target target = new Target();
-		target.boundingRectangle = particleReport.boundingRect;
-		target.distance = computeDistance(binaryFilteredImage, particleReport, width);
-		target.centerX = rawX;
-		target.centerY = rawY;
-		target.aimingCoordinates = toAimingCoordinates(new Point(rawX, rawY, 0));
-		target.angle = computeAngle(binaryFilteredImage, rawX);
-		target.alpha = 90 - camera.getViewAngle();
-		target.width = Math.abs(particleReport.boundingRectRight - particleReport.boundingRectLeft);
-		target.height = Math.abs(particleReport.boundingRectBottom - particleReport.boundingRectTop);
-		target.percentArea = particleReport.percentAreaToImageArea;
-		target.targetArea = particleReport.blobArea;
-		return target;
-	}
-
-	public Target findTarget(TargetSpecifications targetSpecs) throws TargetNotFoundException {
+	public TargetReport findTarget(TargetSpecifications targetSpecs, double minPercentArea)
+			throws TargetNotFoundException {
 		Mat binaryFilteredImage = filterRetroreflective(targetSpecs.getHue(), targetSpecs.getSaturation(),
 				targetSpecs.getValue());
 		ParticleReport particleReport = generateParticleReport(binaryFilteredImage, findBlob(binaryFilteredImage));
-		if (particleReport == null)
+		if (particleReport == null || particleReport.percentAreaToImageArea < minPercentArea)
 			throw new TargetNotFoundException();
 		double rawX = (particleReport.boundingRectLeft + particleReport.boundingRectRight) / 2;
 		double rawY = (particleReport.boundingRectBottom + particleReport.boundingRectTop) / 2;
-		Target target = new Target();
-		target.boundingRectangle = particleReport.boundingRect;
-		target.distance = computeDistance(binaryFilteredImage, particleReport, targetSpecs.getWidth());
-		target.centerX = rawX;
-		target.centerY = rawY;
-		target.aimingCoordinates = toAimingCoordinates(new Point(rawX, rawY, 0));
-		target.angle = computeAngle(binaryFilteredImage, rawX);
-		target.alpha = 90 - camera.getViewAngle();
-		target.width = Math.abs(particleReport.boundingRectRight - particleReport.boundingRectLeft);
-		target.height = Math.abs(particleReport.boundingRectBottom - particleReport.boundingRectTop);
-		target.percentArea = particleReport.percentAreaToImageArea;
-		target.targetArea = particleReport.blobArea;
+		double angle = 90 - computeAngle(binaryFilteredImage, rawX);
+		double distance = computeDistance(binaryFilteredImage, particleReport, targetSpecs.getWidth());
+		Point aimingCoordinates = toAimingCoordinates(new Point(rawX, rawY, 0));
+		double aspectRatio = (particleReport.boundingRect.width / particleReport.boundingRect.height);
+		double aspectScore = Scorer.score(aspectRatio, targetSpecs.getWidth() / targetSpecs.getHeight());
+
+		double areaRatio = particleReport.blobArea / particleReport.boundingRect.area();
+		double areaScore = Scorer.score(areaRatio,
+				targetSpecs.getArea() / (targetSpecs.getHeight() * targetSpecs.getWidth()));
+
+		int confidence = (int) Math.round((aspectScore + areaScore) / 2);
+
+		TargetReport target = new TargetReport(confidence, angle, distance, aimingCoordinates);
+
 		return target;
 	}
 
@@ -279,145 +251,47 @@ public class Camera {
 		TARGET, NORMAL
 	}
 
-	public static enum LEDColor {
-		GREEN
-	}
+	public static class TargetReport implements TargetReportInterface {
 
-	public static class Target {
-		private double centerX, centerY;
-		private double alpha;
-		private double distance;
-		private double angle;
-		private double width;
-		private double height;
-		private double percentArea;
-		private double targetArea;
-		private Rect boundingRectangle;
+		private int confidence;
+		private double angle, distance;
 		private Point aimingCoordinates;
 
-		/**
-		 * The aspect ratio of the target bounding rectangle. A good score
-		 * should approach the width / height of the actual bounding rectangle
-		 * of your target.
-		 * 
-		 * @return The width / height of the target bounding rectangle.
-		 */
-		public double getAspectRatio() {
-			if (getHeight() == 0) {
-				return 0;
-			}
-			return getWidth() / getHeight();
+		public TargetReport(int confidence, double angle, double distance, Point aimingCoordinates) {
+			this.confidence = confidence;
+			this.angle = angle;
+			this.distance = distance;
+			this.aimingCoordinates = aimingCoordinates;
 		}
 
-		/**
-		 * The coverage area of the target. A good score should approach the
-		 * coverage area of your target as the following ratio (area
-		 * target)/(area bounding rectangle).
-		 * 
-		 * @return The area of the target divided by the area of the bounding
-		 *         rectangle.
-		 */
-		public double getCoverageArea() {
-			if (getBoundingRectangle() == null || getBoundingRectangle().area() == 0) {
-				return 0;
-			}
-			return getTargetArea() / getBoundingRectangle().area();
+		@Override
+		public int confidence() {
+			return confidence;
 		}
 
-		/**
-		 * Calculates the position of the target from the robot's frame of
-		 * reference
-		 * 
-		 * @param offset
-		 *            The camera's offset from the center (in the same units as
-		 *            the target dimensions)
-		 * @return The Point in space of of the target from the center of the
-		 *         robot.
-		 */
-		public Point toRobotFrame(Pose offset) {
-			Point cartesian = MathExt.toCartesian(new Cylindrical(distance, alpha, 0));
-			TF tf = new TF();
-			tf.put("camera", TF.ORIGIN, offset);
-			return tf.transformToOrigin(cartesian, "camera").position;
+		@Override
+		public double angle() {
+			return angle;
 		}
 
-		public Point getAimingCoordinates() {
-			return aimingCoordinates;
-		}
-
-		public Rect getBoundingRectangle() {
-			return boundingRectangle;
-		}
-
-		public double getPercentArea() {
-			return percentArea;
-		}
-
-		public double getTargetArea() {
-			return targetArea;
-		}
-
-		public double getWidth() {
-			return width;
-		}
-
-		public double getHeight() {
-			return height;
-		}
-
-		public double getCenterX() {
-			return centerX;
-		}
-
-		public double getCenterY() {
-			return centerY;
-		}
-
-		public double getDistance() {
+		@Override
+		public double distance() {
 			return distance;
 		}
 
-		public double getAngle() {
-			return angle;
+		@Override
+		public Point aimingCoordinates() {
+			return aimingCoordinates;
 		}
+
 	}
 
 	public static class Builder {
 		private CameraInterface camera;
 		private int targetExposure, targetBrightness, normalBrightness = 50;
-		private Range hue, saturation, value;
 
-		/**
-		 * This method sets the HSV range of the findTarget method of the Camera
-		 * class based on the LED color specified. Currently, only GREEN is
-		 * supported.
-		 * 
-		 * @param color
-		 *            The color of the led.
-		 * @return The CameraBuilder object
-		 */
-		public Builder setLEDColor(LEDColor color) {
-			switch (color) {
-			case GREEN:
-				hue = new Range(75, 125);
-				saturation = new Range(175, 255);
-				value = new Range(65, 255);
-				break;
-			}
-			return this;
-		}
-
-		/**
-		 * This method sets the type of camera being used. Currently, only the
-		 * MicrosoftLifeCam class implements CameraInterface.
-		 * 
-		 * @param camera
-		 *            The camera.
-		 * @return The CameraBuilder object
-		 */
-		public Builder setCamera(CameraInterface camera) {
+		public Builder(CameraInterface camera) {
 			this.camera = camera;
-			return this;
 		}
 
 		/**
@@ -463,38 +337,15 @@ public class Camera {
 		}
 
 		/**
-		 * This method sets the HSV range of the findTarget method of the Camera
-		 * class. You do not have to use this method, using setLEDColor will
-		 * prefill the HSV values. The default color is the same as
-		 * setLEDColor(LEDColor.GREEN).
-		 * 
-		 * @param hue
-		 *            The hue range.
-		 * @param saturation
-		 *            The saturation range.
-		 * @param value
-		 *            The value range.
-		 * @return The CameraBuilder object
-		 */
-		public Builder setManualHSVRange(Range hue, Range saturation, Range value) {
-			this.hue = hue;
-			this.saturation = saturation;
-			this.value = value;
-			return this;
-		}
-
-		/**
 		 * This method takes all of the specified settings and generates a
 		 * Camera object.
 		 * 
 		 * @return The camera object.
 		 */
 		public Camera build() {
-			if (hue == null)
-				this.setLEDColor(LEDColor.GREEN);
 			if (camera == null)
 				throw new RuntimeException("Camera can not be null");
-			return new Camera(camera, targetExposure, targetBrightness, normalBrightness, hue, saturation, value);
+			return new Camera(camera, targetExposure, targetBrightness, normalBrightness);
 		}
 	}
 
