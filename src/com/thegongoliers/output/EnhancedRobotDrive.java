@@ -84,6 +84,14 @@ public class EnhancedRobotDrive implements Stoppable {
 		if (transmission != null)
 			transmission.off();
 	}
+	
+	public boolean isInHighGear(){
+		return transmission != null && transmission.isOn();
+	}
+	
+	public boolean isInLowGear(){
+		return transmission != null && transmission.isOff();
+	}
 
 	public void arcadeStabilized(double speed, double rotation, double rotationThreshold) {
 		if (Math.abs(rotation) >= rotationThreshold) {

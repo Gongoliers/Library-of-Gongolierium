@@ -2,6 +2,7 @@ package com.thegongoliers.input.camera;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 
 import org.opencv.core.Core;
@@ -26,12 +27,15 @@ public class Camera {
 	private CameraInterface camera;
 	private int targetExposure, targetBrightness, normalBrightness;
 	private Mode cameraMode;
+	private HashMap<String, TargetSpecifications> defaultTargets;
 
-	Camera(CameraInterface camera, int targetExposure, int targetBrightness, int normalBrightness) {
+	Camera(CameraInterface camera, int targetExposure, int targetBrightness, int normalBrightness,
+			HashMap<String, TargetSpecifications> targets) {
 		this.camera = camera;
 		this.targetBrightness = targetBrightness;
 		this.targetExposure = targetExposure;
 		this.normalBrightness = normalBrightness;
+		defaultTargets = targets;
 		camera.start();
 		disableTargetMode();
 	}
@@ -111,6 +115,10 @@ public class Camera {
 	 */
 	public Mode getMode() {
 		return cameraMode;
+	}
+
+	public TargetReport findTarget(String name, double minPercentArea) throws TargetNotFoundException {
+		return findTarget(defaultTargets.get(name), minPercentArea);
 	}
 
 	/**
@@ -289,9 +297,11 @@ public class Camera {
 	public static class Builder {
 		private CameraInterface camera;
 		private int targetExposure, targetBrightness, normalBrightness = 50;
+		private HashMap<String, TargetSpecifications> targets;
 
 		public Builder(CameraInterface camera) {
 			this.camera = camera;
+			this.targets = new HashMap<>();
 		}
 
 		/**
@@ -336,6 +346,11 @@ public class Camera {
 			return this;
 		}
 
+		public Builder addTargetSpecification(String name, TargetSpecifications target) {
+			targets.put(name, target);
+			return this;
+		}
+
 		/**
 		 * This method takes all of the specified settings and generates a
 		 * Camera object.
@@ -345,7 +360,7 @@ public class Camera {
 		public Camera build() {
 			if (camera == null)
 				throw new RuntimeException("Camera can not be null");
-			return new Camera(camera, targetExposure, targetBrightness, normalBrightness);
+			return new Camera(camera, targetExposure, targetBrightness, normalBrightness, targets);
 		}
 	}
 
