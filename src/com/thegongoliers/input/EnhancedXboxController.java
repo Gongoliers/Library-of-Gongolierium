@@ -95,6 +95,10 @@ public class EnhancedXboxController extends XboxController {
 		return getRawAxis(4);
 	}
 
+	public double getTrigger() {
+		return getLeftTrigger() + getRightTrigger();
+	}
+
 	public double getLeftTrigger() {
 		return getTriggerAxis(Hand.kLeft);
 	}

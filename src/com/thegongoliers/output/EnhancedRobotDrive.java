@@ -35,6 +35,18 @@ public class EnhancedRobotDrive implements Stoppable {
 		return 0;
 	}
 
+	public boolean rotateToward(double angle, PID controller) {
+		if (gyro != null) {
+			controller.continuous = true;
+			controller.minInput = 0;
+			controller.maxInput = 360;
+			arcade(0, controller.getOutput(getFieldOrientation(), angle));
+			return controller.isAtTargetPosition(getFieldOrientation(), angle);
+		} else {
+			return false;
+		}
+	}
+
 	public void mecanum(double x, double y, double rotation) {
 		robotDrive.mecanumDrive_Cartesian(x, y, rotation, 0);
 	}
@@ -84,12 +96,12 @@ public class EnhancedRobotDrive implements Stoppable {
 		if (transmission != null)
 			transmission.off();
 	}
-	
-	public boolean isInHighGear(){
+
+	public boolean isInHighGear() {
 		return transmission != null && transmission.isOn();
 	}
-	
-	public boolean isInLowGear(){
+
+	public boolean isInLowGear() {
 		return transmission != null && transmission.isOff();
 	}
 

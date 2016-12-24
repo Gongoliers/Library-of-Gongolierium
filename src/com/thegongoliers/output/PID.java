@@ -9,6 +9,16 @@ public class PID {
 	private double previousError;
 	private double sumError = 0;
 	private boolean first = true;
+	boolean continuous = false;
+	public double minInput = 0, maxInput = 1;
+
+	public PID(double kp, double ki, double kd, double threshold, boolean continuous) {
+		this.kp = kp;
+		this.ki = ki;
+		this.kd = kd;
+		this.threshold = threshold;
+		this.continuous = continuous;
+	}
 
 	public PID(double kp, double ki, double kd, double threshold) {
 		this.kp = kp;
@@ -17,8 +27,21 @@ public class PID {
 		this.threshold = threshold;
 	}
 
+	private double getContinuousError(double error) {
+		if (continuous) {
+			if (Math.abs(error) > (maxInput - minInput) / 2) {
+				if (error > 0) {
+					return error - (maxInput - minInput);
+				} else {
+					return error + (maxInput - minInput);
+				}
+			}
+		}
+		return error;
+	}
+
 	public double getOutput(double currentPosition, double targetPosition) {
-		double error = targetPosition - currentPosition;
+		double error = getContinuousError(targetPosition - currentPosition);
 		if (first) {
 			previousError = error;
 			first = false;

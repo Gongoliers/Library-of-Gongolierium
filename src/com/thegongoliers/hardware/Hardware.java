@@ -95,6 +95,36 @@ public class Hardware {
 		public static TiltSensor tilt(Accelerometer accel) {
 			return new TiltSensor(accel);
 		}
+		
+		public static Gyro invertGyro(Gyro gyro){
+			return new Gyro() {
+				
+				@Override
+				public void reset() {
+					gyro.reset();
+				}
+				
+				@Override
+				public double getRate() {
+					return -gyro.getRate();
+				}
+				
+				@Override
+				public double getAngle() {
+					return -gyro.getAngle();
+				}
+				
+				@Override
+				public void free() {
+					gyro.free();
+				}
+				
+				@Override
+				public void calibrate() {
+					gyro.calibrate();
+				}
+			};
+		}
 	}
 
 	public static class CurrentSensors {
