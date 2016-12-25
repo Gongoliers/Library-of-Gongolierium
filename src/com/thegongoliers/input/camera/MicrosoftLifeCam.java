@@ -9,18 +9,18 @@ import edu.wpi.first.wpilibj.CameraServer;
 
 public class MicrosoftLifeCam extends AbstractCamera {
 
-	private boolean cameraStarted;
+	private boolean cameraStarted = false;
 	private USBCamera camera;
 	CvSink cvSink;;
+	private int port;
 
 	public MicrosoftLifeCam(int port) {
 		super();
-		cameraStarted = false;
-		camera = new USBCamera("cam" + port, 0);
+		this.port = port;
+		start();
 	}
 
 	public void display() {
-		CameraServer.getInstance().startAutomaticCapture(getVideoSource());
 	}
 
 	public double getViewAngle() {
@@ -28,20 +28,28 @@ public class MicrosoftLifeCam extends AbstractCamera {
 	}
 
 	public void setBrightness(int brightness) {
-		// camera.setBrightness(brightness);
+		if (cameraStarted && camera.isValid() && camera.isConnected())
+			camera.setBrightness(brightness);
 	}
 
 	public int getBrightness() {
-		// return camera.getBrightness();
+		if (cameraStarted && camera.isValid() && camera.isConnected())
+			return camera.getBrightness();
 		return 0;
 	}
 
 	public void setExposureManual(int exposure) {
-		// camera.setExposureManual(exposure);
+		if (camera.isValid() && camera.isConnected())
+			camera.setExposureManual(exposure);
 	}
 
 	public void setExposureAuto() {
-		// camera.setExposureAuto();
+		if (isReady())
+			camera.setExposureAuto();
+	}
+
+	private boolean isReady() {
+		return cameraStarted && camera.isValid() && camera.isConnected();
 	}
 
 	public Mat getImage() {
@@ -52,7 +60,7 @@ public class MicrosoftLifeCam extends AbstractCamera {
 	}
 
 	public void start() {
-		CameraServer.getInstance().startAutomaticCapture(camera);
+		camera = CameraServer.getInstance().startAutomaticCapture(port);
 		cvSink = CameraServer.getInstance().getVideo();
 		cameraStarted = true;
 	}
@@ -62,7 +70,7 @@ public class MicrosoftLifeCam extends AbstractCamera {
 	}
 
 	public void setFPS(int fps) {
-		// camera.setFPS(fps);
+		camera.setFPS(fps);
 	}
 
 	public VideoSource getVideoSource() {
