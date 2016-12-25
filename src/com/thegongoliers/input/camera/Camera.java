@@ -1,14 +1,16 @@
 package com.thegongoliers.input.camera;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.function.Consumer;
 
 import org.opencv.core.Core;
+import org.opencv.core.CvType;
 import org.opencv.core.Mat;
+import org.opencv.core.MatOfInt;
 import org.opencv.core.MatOfPoint;
-import org.opencv.core.Range;
+import org.opencv.core.MatOfPoint2f;
 import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 import org.opencv.core.Size;
@@ -117,8 +119,57 @@ public class Camera {
 		return cameraMode;
 	}
 
-	public TargetReport findTarget(String name, double minPercentArea) throws TargetNotFoundException {
-		return findTarget(defaultTargets.get(name), minPercentArea);
+	public TargetReport findTarget(String name, double minArea) throws TargetNotFoundException {
+		return findTarget(defaultTargets.get(name), minArea);
+	}
+
+	public void findTargetAsync(String name, double minArea, Consumer<TargetReport> processResult) {
+		new Thread(() -> {
+			try {
+				TargetReport target = findTarget(name, minArea);
+				processResult.accept(target);
+			} catch (TargetNotFoundException e) {
+				processResult.accept(null);
+			}
+		}).start();
+	}
+
+	public void findTargetAsync(TargetSpecifications specs, double minArea, Consumer<TargetReport> processResult) {
+		new Thread(() -> {
+			try {
+				TargetReport target = findTarget(specs, minArea);
+				processResult.accept(target);
+			} catch (TargetNotFoundException e) {
+				processResult.accept(null);
+			}
+		}).start();
+	}
+
+	public Thread continuouslyFindTargetAsync(String name, double minArea, Consumer<TargetReport> processResult) {
+		return new Thread(() -> {
+			while (true) {
+				try {
+					TargetReport target = findTarget(name, minArea);
+					processResult.accept(target);
+				} catch (TargetNotFoundException e) {
+					processResult.accept(null);
+				}
+			}
+		});
+	}
+
+	public Thread continuouslyFindTargetAsync(TargetSpecifications specs, double minArea,
+			Consumer<TargetReport> processResult) {
+		return new Thread(() -> {
+			while (true) {
+				try {
+					TargetReport target = findTarget(specs, minArea);
+					processResult.accept(target);
+				} catch (TargetNotFoundException e) {
+					processResult.accept(null);
+				}
+			}
+		});
 	}
 
 	/**
@@ -129,26 +180,30 @@ public class Camera {
 	 * 
 	 * @param targetSpecs
 	 *            The specifications of the target
-	 * @param minPercentArea
-	 *            The minimum percent area of the target
+	 * @param minArea
+	 *            The minimum area in pixels of the target
 	 * @return The target information.
 	 */
-	public TargetReport findTarget(TargetSpecifications targetSpecs, double minPercentArea)
-			throws TargetNotFoundException {
-		Mat binaryFilteredImage = filterRetroreflective(targetSpecs.getHue(), targetSpecs.getSaturation(),
-				targetSpecs.getValue());
-		ParticleReport particleReport = generateParticleReport(binaryFilteredImage, findBlob(binaryFilteredImage));
-		if (particleReport == null || particleReport.percentAreaToImageArea < minPercentArea)
+	public TargetReport findTarget(TargetSpecifications targetSpecs, double minArea) throws TargetNotFoundException {
+		double[] hue = { targetSpecs.getHue().start, targetSpecs.getHue().end };
+		double[] sat = { targetSpecs.getSaturation().start, targetSpecs.getSaturation().end };
+		double[] val = { targetSpecs.getValue().start, targetSpecs.getValue().end };
+		Pipeline p = new Pipeline();
+		p.process(hue, sat, val, minArea);
+		List<MatOfPoint> contours = p.filterContoursOutput();
+		if (contours.isEmpty())
 			throw new TargetNotFoundException();
-		double rawX = (particleReport.boundingRectLeft + particleReport.boundingRectRight) / 2;
-		double rawY = (particleReport.boundingRectBottom + particleReport.boundingRectTop) / 2;
-		double angle = 90 - computeAngle(binaryFilteredImage, rawX);
-		double distance = computeDistance(binaryFilteredImage, particleReport, targetSpecs.getWidth());
+		MatOfPoint contour = contours.get(0);
+		Rect boundary = Imgproc.boundingRect(contour);
+		double rawX = boundary.x + boundary.width / 2;
+		double rawY = boundary.y + boundary.height / 2;
+		double angle = 90 - computeAngle(p.hsvThresholdOutput(), rawX);
+		double distance = computeDistance(p.hsvThresholdOutput(), boundary.width, targetSpecs.getWidth());
 		Point aimingCoordinates = toAimingCoordinates(new Point(rawX, rawY, 0));
-		double aspectRatio = (particleReport.boundingRect.width / particleReport.boundingRect.height);
+		double aspectRatio = (boundary.width / boundary.height);
 		double aspectScore = Scorer.score(aspectRatio, targetSpecs.getWidth() / targetSpecs.getHeight());
 
-		double areaRatio = particleReport.blobArea / particleReport.boundingRect.area();
+		double areaRatio = Imgproc.contourArea(contour) / boundary.area();
 		double areaScore = Scorer.score(areaRatio,
 				targetSpecs.getArea() / (targetSpecs.getHeight() * targetSpecs.getWidth()));
 
@@ -165,10 +220,10 @@ public class Camera {
 		return new Point(aimingX, aimingY, 0);
 	}
 
-	private double computeDistance(Mat image, ParticleReport report, double width) {
+	private double computeDistance(Mat image, double targetWidth, double width) {
 		double normalizedWidth;
 		Size size = image.size();
-		normalizedWidth = 2 * (report.boundingRectRight - report.boundingRectLeft) / size.width;
+		normalizedWidth = 2 * targetWidth / size.width;
 		return width / (normalizedWidth * Math.tan(Math.toRadians(camera.getViewAngle() / 2)));
 	}
 
@@ -177,83 +232,6 @@ public class Camera {
 		double aimingCoordinate = (centerX / size.width) * 2 - 1;
 		return aimingCoordinate * camera.getViewAngle() / 2;
 	}
-
-	private Mat filterRetroreflective(Range hue, Range saturation, Range value) {
-		Mat rawCameraImage = getImage();
-		Mat hsvCameraImage = new Mat();
-		Imgproc.cvtColor(rawCameraImage, hsvCameraImage, Imgproc.COLOR_BGR2HSV);
-		Scalar minRange = new Scalar(hue.start, saturation.start, value.start);
-		Scalar maxRange = new Scalar(hue.end, saturation.end, value.end);
-		Mat binaryImage = new Mat();
-		Core.inRange(hsvCameraImage, minRange, maxRange, binaryImage);
-		return binaryImage;
-	}
-
-	private Rect findBlob(Mat binaryFilteredImage) {
-		List<MatOfPoint> contours = new ArrayList<MatOfPoint>();
-		Mat hierarchy = new Mat();
-		Imgproc.findContours(binaryFilteredImage, contours, hierarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
-		double largest = 0;
-		int largestIdx = 0;
-		if (contours.isEmpty())
-			return null;
-		for (int idx = 0; idx < contours.size(); idx++) {
-			double area = Imgproc.boundingRect(contours.get(idx)).area();
-			if (area > largest) {
-				largest = area;
-				largestIdx = idx;
-			}
-		}
-		Rect bounding = Imgproc.boundingRect(contours.get(largestIdx));
-		return bounding;
-	}
-
-	private ParticleReport generateParticleReport(Mat binaryImage, Rect boundingRect) {
-		ParticleReport report = new ParticleReport();
-		if (boundingRect == null)
-			return null;
-		report.area = boundingRect.area();
-		int sum = 0;
-		for (int i = (int) boundingRect.tl().x; i < boundingRect.br().x; i++) {
-			for (int j = (int) boundingRect.tl().y; j < boundingRect.br().y; j++) {
-				double[] vals = binaryImage.get(j, i);
-				int s = 0;
-				for (double val : vals) {
-					s += val;
-				}
-				if (s > 0) {
-					sum++;
-				}
-			}
-		}
-		report.boundingRect = boundingRect;
-		report.blobArea = sum;
-		report.percentAreaToImageArea = report.area / binaryImage.size().area() * 100;
-		report.boundingRectBottom = boundingRect.br().y;
-		report.boundingRectLeft = boundingRect.tl().x;
-		report.boundingRectRight = boundingRect.br().x;
-		report.boundingRectTop = boundingRect.tl().y;
-		return report;
-	}
-
-	private class ParticleReport implements Comparator<ParticleReport>, Comparable<ParticleReport> {
-		double percentAreaToImageArea;
-		double blobArea;
-		double area;
-		double boundingRectLeft;
-		double boundingRectTop;
-		double boundingRectRight;
-		double boundingRectBottom;
-		Rect boundingRect;
-
-		public int compareTo(ParticleReport r) {
-			return (int) (r.area - this.area);
-		}
-
-		public int compare(ParticleReport r1, ParticleReport r2) {
-			return (int) (r1.area - r2.area);
-		}
-	};
 
 	public static enum Mode {
 		TARGET, NORMAL
@@ -362,6 +340,263 @@ public class Camera {
 				throw new RuntimeException("Camera can not be null");
 			return new Camera(camera, targetExposure, targetBrightness, normalBrightness, targets);
 		}
+	}
+
+	class Pipeline {
+
+		// Outputs
+		private Mat hsvThresholdOutput = new Mat();
+		private Mat cvErodeOutput = new Mat();
+		private ArrayList<MatOfPoint> findContoursOutput = new ArrayList<MatOfPoint>();
+		private ArrayList<MatOfPoint> filterContoursOutput = new ArrayList<MatOfPoint>();
+
+		// Sources
+		private Mat source0;
+
+		/**
+		 * This constructor sets up the pipeline
+		 */
+		public Pipeline() {
+		}
+
+		/**
+		 * This is the primary method that runs the entire pipeline and updates
+		 * the outputs.
+		 */
+		public void process(double[] hsvThresholdHue, double[] hsvThresholdSaturation, double[] hsvThresholdValue,
+				double filterContoursMinArea) {
+			// Step HSV_Threshold0:
+			Mat hsvThresholdInput = source0;
+			hsvThreshold(hsvThresholdInput, hsvThresholdHue, hsvThresholdSaturation, hsvThresholdValue,
+					hsvThresholdOutput);
+
+			// Step CV_erode0:
+			Mat cvErodeSrc = hsvThresholdOutput;
+			Mat cvErodeKernel = new Mat();
+			org.opencv.core.Point cvErodeAnchor = new org.opencv.core.Point(-1, -1);
+			double cvErodeIterations = 1.0;
+			int cvErodeBordertype = Core.BORDER_CONSTANT;
+			Scalar cvErodeBordervalue = new Scalar(-1);
+			cvErode(cvErodeSrc, cvErodeKernel, cvErodeAnchor, cvErodeIterations, cvErodeBordertype, cvErodeBordervalue,
+					cvErodeOutput);
+
+			// Step Find_Contours0:
+			Mat findContoursInput = cvErodeOutput;
+			boolean findContoursExternalOnly = false;
+			findContours(findContoursInput, findContoursExternalOnly, findContoursOutput);
+
+			// Step Filter_Contours0:
+			ArrayList<MatOfPoint> filterContoursContours = findContoursOutput;
+			double filterContoursMinPerimeter = 0;
+			double filterContoursMinWidth = 0;
+			double filterContoursMaxWidth = 1000;
+			double filterContoursMinHeight = 0;
+			double filterContoursMaxHeight = 1000;
+			double[] filterContoursSolidity = { 0, 100 };
+			double filterContoursMaxVertices = 1000000;
+			double filterContoursMinVertices = 0;
+			double filterContoursMinRatio = 0;
+			double filterContoursMaxRatio = 1000;
+			filterContours(filterContoursContours, filterContoursMinArea, filterContoursMinPerimeter,
+					filterContoursMinWidth, filterContoursMaxWidth, filterContoursMinHeight, filterContoursMaxHeight,
+					filterContoursSolidity, filterContoursMaxVertices, filterContoursMinVertices,
+					filterContoursMinRatio, filterContoursMaxRatio, filterContoursOutput);
+
+		}
+
+		/**
+		 * This method is a generated setter for source0.
+		 * 
+		 * @param source
+		 *            the Mat to set
+		 */
+		public void setsource0(Mat source0) {
+			this.source0 = source0;
+		}
+
+		/**
+		 * This method is a generated getter for the output of a HSV_Threshold.
+		 * 
+		 * @return Mat output from HSV_Threshold.
+		 */
+		public Mat hsvThresholdOutput() {
+			return hsvThresholdOutput;
+		}
+
+		/**
+		 * This method is a generated getter for the output of a CV_erode.
+		 * 
+		 * @return Mat output from CV_erode.
+		 */
+		public Mat cvErodeOutput() {
+			return cvErodeOutput;
+		}
+
+		/**
+		 * This method is a generated getter for the output of a Find_Contours.
+		 * 
+		 * @return ArrayList<MatOfPoint> output from Find_Contours.
+		 */
+		public ArrayList<MatOfPoint> findContoursOutput() {
+			return findContoursOutput;
+		}
+
+		/**
+		 * This method is a generated getter for the output of a
+		 * Filter_Contours.
+		 * 
+		 * @return ArrayList<MatOfPoint> output from Filter_Contours.
+		 */
+		public ArrayList<MatOfPoint> filterContoursOutput() {
+			return filterContoursOutput;
+		}
+
+		/**
+		 * Segment an image based on hue, saturation, and value ranges.
+		 *
+		 * @param input
+		 *            The image on which to perform the HSL threshold.
+		 * @param hue
+		 *            The min and max hue
+		 * @param sat
+		 *            The min and max saturation
+		 * @param val
+		 *            The min and max value
+		 * @param output
+		 *            The image in which to store the output.
+		 */
+		private void hsvThreshold(Mat input, double[] hue, double[] sat, double[] val, Mat out) {
+			Imgproc.cvtColor(input, out, Imgproc.COLOR_BGR2HSV);
+			Core.inRange(out, new Scalar(hue[0], sat[0], val[0]), new Scalar(hue[1], sat[1], val[1]), out);
+		}
+
+		/**
+		 * Expands area of lower value in an image.
+		 * 
+		 * @param src
+		 *            the Image to erode.
+		 * @param kernel
+		 *            the kernel for erosion.
+		 * @param anchor
+		 *            the center of the kernel.
+		 * @param iterations
+		 *            the number of times to perform the erosion.
+		 * @param borderType
+		 *            pixel extrapolation method.
+		 * @param borderValue
+		 *            value to be used for a constant border.
+		 * @param dst
+		 *            Output Image.
+		 */
+		private void cvErode(Mat src, Mat kernel, org.opencv.core.Point anchor, double iterations, int borderType,
+				Scalar borderValue, Mat dst) {
+			if (kernel == null) {
+				kernel = new Mat();
+			}
+			if (anchor == null) {
+				anchor = new org.opencv.core.Point(-1, -1);
+			}
+			if (borderValue == null) {
+				borderValue = new Scalar(-1);
+			}
+			Imgproc.erode(src, dst, kernel, anchor, (int) iterations, borderType, borderValue);
+		}
+
+		/**
+		 * Sets the values of pixels in a binary image to their distance to the
+		 * nearest black pixel.
+		 * 
+		 * @param input
+		 *            The image on which to perform the Distance Transform.
+		 * @param type
+		 *            The Transform.
+		 * @param maskSize
+		 *            the size of the mask.
+		 * @param output
+		 *            The image in which to store the output.
+		 */
+		private void findContours(Mat input, boolean externalOnly, List<MatOfPoint> contours) {
+			Mat hierarchy = new Mat();
+			contours.clear();
+			int mode;
+			if (externalOnly) {
+				mode = Imgproc.RETR_EXTERNAL;
+			} else {
+				mode = Imgproc.RETR_LIST;
+			}
+			int method = Imgproc.CHAIN_APPROX_SIMPLE;
+			Imgproc.findContours(input, contours, hierarchy, mode, method);
+		}
+
+		/**
+		 * Filters out contours that do not meet certain criteria.
+		 * 
+		 * @param inputContours
+		 *            is the input list of contours
+		 * @param output
+		 *            is the the output list of contours
+		 * @param minArea
+		 *            is the minimum area of a contour that will be kept
+		 * @param minPerimeter
+		 *            is the minimum perimeter of a contour that will be kept
+		 * @param minWidth
+		 *            minimum width of a contour
+		 * @param maxWidth
+		 *            maximum width
+		 * @param minHeight
+		 *            minimum height
+		 * @param maxHeight
+		 *            maximimum height
+		 * @param Solidity
+		 *            the minimum and maximum solidity of a contour
+		 * @param minVertexCount
+		 *            minimum vertex Count of the contours
+		 * @param maxVertexCount
+		 *            maximum vertex Count
+		 * @param minRatio
+		 *            minimum ratio of width to height
+		 * @param maxRatio
+		 *            maximum ratio of width to height
+		 */
+		private void filterContours(List<MatOfPoint> inputContours, double minArea, double minPerimeter,
+				double minWidth, double maxWidth, double minHeight, double maxHeight, double[] solidity,
+				double maxVertexCount, double minVertexCount, double minRatio, double maxRatio,
+				List<MatOfPoint> output) {
+			final MatOfInt hull = new MatOfInt();
+			output.clear();
+			// operation
+			for (int i = 0; i < inputContours.size(); i++) {
+				final MatOfPoint contour = inputContours.get(i);
+				final Rect bb = Imgproc.boundingRect(contour);
+				if (bb.width < minWidth || bb.width > maxWidth)
+					continue;
+				if (bb.height < minHeight || bb.height > maxHeight)
+					continue;
+				final double area = Imgproc.contourArea(contour);
+				if (area < minArea)
+					continue;
+				if (Imgproc.arcLength(new MatOfPoint2f(contour.toArray()), true) < minPerimeter)
+					continue;
+				Imgproc.convexHull(contour, hull);
+				MatOfPoint mopHull = new MatOfPoint();
+				mopHull.create((int) hull.size().height, 1, CvType.CV_32SC2);
+				for (int j = 0; j < hull.size().height; j++) {
+					int index = (int) hull.get(j, 0)[0];
+					double[] point = new double[] { contour.get(index, 0)[0], contour.get(index, 0)[1] };
+					mopHull.put(j, 0, point);
+				}
+				final double solid = 100 * area / Imgproc.contourArea(mopHull);
+				if (solid < solidity[0] || solid > solidity[1])
+					continue;
+				if (contour.rows() < minVertexCount || contour.rows() > maxVertexCount)
+					continue;
+				final double ratio = bb.width / (double) bb.height;
+				if (ratio < minRatio || ratio > maxRatio)
+					continue;
+				output.add(contour);
+			}
+		}
+
 	}
 
 }
