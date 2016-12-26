@@ -1,19 +1,19 @@
 package com.thegongoliers.input;
 
-public class CurrentSpikeSensor implements ResettableSwitch {
+public class VoltageSpikeSensor implements ResettableSwitch {
 
-	private CurrentTripSensor sensor;
+	private VoltageTripSensor sensor;
 	private boolean wasTriggered = false;
 
 	/**
-	 * Triggers after a spike in the current
+	 * Triggers after a spike in the voltage
 	 * 
-	 * @param currentTripSensor
-	 *            The current trip sensor (HighCurrentSensors detect upward spikes,
-	 *            LowCurrentSensors downward spikes)
+	 * @param voltageTripSensor
+	 *            The voltage trip sensor (HighVoltageSensors detect upward spikes,
+	 *            LowVoltageSensors downward spikes)
 	 */
-	public CurrentSpikeSensor(CurrentTripSensor currentTripSensor) {
-		sensor = currentTripSensor;
+	public VoltageSpikeSensor(VoltageTripSensor voltageTripSensor) {
+		sensor = voltageTripSensor;
 	}
 
 	@Override

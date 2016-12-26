@@ -1,9 +1,6 @@
 package com.thegongoliers.input;
 
-public class CurrentTrippedSensor implements Switch {
-
-	private CurrentSensor sensor;
-	private double thresh;
+public class HighCurrentSensor extends CurrentTripSensor {
 
 	/**
 	 * Triggers when the current exceeds a threshold
@@ -13,9 +10,9 @@ public class CurrentTrippedSensor implements Switch {
 	 * @param threshold
 	 *            A threshold to trigger in Amps.
 	 */
-	public CurrentTrippedSensor(CurrentSensor currentSensor, double threshold) {
-		sensor = currentSensor;
-		thresh = threshold;
+	public HighCurrentSensor(CurrentSensor currentSensor, double threshold) {
+		super(currentSensor, threshold);
+
 	}
 
 	@Override
