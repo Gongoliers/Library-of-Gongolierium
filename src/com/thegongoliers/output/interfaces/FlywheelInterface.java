@@ -1,4 +1,6 @@
-package com.thegongoliers.output;
+package com.thegongoliers.output.interfaces;
+
+import com.thegongoliers.output.Stoppable;
 
 public interface FlywheelInterface extends Stoppable {
 

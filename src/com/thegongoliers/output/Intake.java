@@ -1,5 +1,7 @@
 package com.thegongoliers.output;
 
+import com.thegongoliers.output.interfaces.IntakeInterface;
+
 import edu.wpi.first.wpilibj.SpeedController;
 
 public class Intake implements IntakeInterface {

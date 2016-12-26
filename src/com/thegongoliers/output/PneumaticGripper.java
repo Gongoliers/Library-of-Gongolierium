@@ -1,5 +1,7 @@
 package com.thegongoliers.output;
 
+import com.thegongoliers.output.interfaces.GripperInterface;
+
 public class PneumaticGripper implements GripperInterface {
 
 	private final EnhancedSolenoid solenoid;

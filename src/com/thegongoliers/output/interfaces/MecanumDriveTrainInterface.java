@@ -1,4 +1,4 @@
-package com.thegongoliers.output;
+package com.thegongoliers.output.interfaces;
 
 public interface MecanumDriveTrainInterface extends DriveTrainInterface {
 	/**

@@ -3,6 +3,8 @@ package com.thegongoliers.output;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
+import com.thegongoliers.output.interfaces.LifterInterface;
+
 import edu.wpi.first.wpilibj.SpeedController;
 
 public class Lifter implements LifterInterface {
