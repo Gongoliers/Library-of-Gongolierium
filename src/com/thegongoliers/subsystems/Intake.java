@@ -3,9 +3,8 @@ package com.thegongoliers.subsystems;
 import com.thegongoliers.output.IntakeInterface;
 
 import edu.wpi.first.wpilibj.SpeedController;
-import edu.wpi.first.wpilibj.command.Subsystem;
 
-public abstract class Intake extends Subsystem implements IntakeInterface {
+public class Intake implements IntakeInterface {
 
 	private SpeedController motor;
 

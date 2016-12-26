@@ -3,7 +3,7 @@ package com.thegongoliers.subsystems;
 import com.thegongoliers.output.GripperInterface;
 import com.thegongoliers.output.EnhancedSolenoid;
 
-public abstract class PneumaticGripper extends Gripper implements GripperInterface {
+public class PneumaticGripper implements GripperInterface {
 
 	private final EnhancedSolenoid solenoid;
 

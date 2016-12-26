@@ -3,9 +3,8 @@ package com.thegongoliers.subsystems;
 import com.thegongoliers.output.FlywheelInterface;
 
 import edu.wpi.first.wpilibj.SpeedController;
-import edu.wpi.first.wpilibj.command.Subsystem;
 
-public abstract class Flywheel extends Subsystem implements FlywheelInterface {
+public class Flywheel implements FlywheelInterface {
 
 	private SpeedController motor;
 
