@@ -7,7 +7,7 @@ import edu.wpi.first.wpilibj.interfaces.Accelerometer;
 public class TiltSensor {
 	private Accelerometer accel;
 
-	public TiltSensor(final Accelerometer accel) {
+	public TiltSensor(Accelerometer accel) {
 		this.accel = accel;
 	}
 
