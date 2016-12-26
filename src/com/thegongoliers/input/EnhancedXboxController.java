@@ -119,9 +119,13 @@ public class EnhancedXboxController extends XboxController {
 		return DPAD.values()[getPOV() / 45];
 	}
 
-	public void rumble(float value) {
+	public void vibrate(float value) {
 		setRumble(RumbleType.kLeftRumble, value);
 		setRumble(RumbleType.kRightRumble, value);
+	}
+
+	public void stopVibration() {
+		vibrate(0f);
 	}
 
 	public static enum DPAD {
