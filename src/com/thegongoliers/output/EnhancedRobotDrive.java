@@ -4,7 +4,7 @@ import edu.wpi.first.wpilibj.RobotDrive;
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
 
-public class EnhancedRobotDrive implements Stoppable {
+public class EnhancedRobotDrive implements Stoppable, MecanumDriveTrainInterface {
 
 	private double relativeAngle = 0;
 	private Gyro gyro;

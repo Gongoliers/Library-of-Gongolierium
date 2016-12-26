@@ -1,9 +1,7 @@
-package com.thegongoliers.subsystems;
+package com.thegongoliers.output;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
-
-import com.thegongoliers.output.LifterInterface;
 
 import edu.wpi.first.wpilibj.SpeedController;
 

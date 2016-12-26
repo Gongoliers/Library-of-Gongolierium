@@ -1,6 +1,4 @@
-package com.thegongoliers.subsystems;
-
-import com.thegongoliers.output.IntakeInterface;
+package com.thegongoliers.output;
 
 import edu.wpi.first.wpilibj.SpeedController;
 

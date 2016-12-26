@@ -1,6 +1,4 @@
-package com.thegongoliers.subsystems;
-
-import com.thegongoliers.output.FlywheelInterface;
+package com.thegongoliers.output;
 
 import edu.wpi.first.wpilibj.SpeedController;
 
