@@ -49,6 +49,14 @@ public class MathExt {
 		return Character.isDigit(symbol) || symbol == '-' || symbol == '.';
 	}
 
+	public static double magnitude(double... values) {
+		double squaredSum = 0;
+		for (double val : values) {
+			squaredSum += square(val);
+		}
+		return Math.sqrt(squaredSum);
+	}
+
 	public static Spherical toSpherical(Point p) {
 		double rho = Math.sqrt(square(p.x) + square(p.y) + square(p.z));
 		double theta = Math.atan2(p.y, p.x);
