@@ -15,21 +15,21 @@ public interface DriveTrainInterface extends Stoppable {
 	 * @param speed
 	 *            The speed of the robot from 0 to 1 inclusive.
 	 */
-	void reverse(double speed);
+	void backward(double speed);
 
 	/**
-	 * Rotate counter clockwise at the given speed
+	 * Rotate left at the given speed
 	 * 
 	 * @param speed
 	 *            The speed of rotation from 0 to 1 inclusive.
 	 */
-	void rotateCounterClockwise(double speed);
+	void rotateLeft(double speed);
 
 	/**
-	 * Rotate clockwise at the given speed
+	 * Rotate right at the given speed
 	 * 
 	 * @param speed
 	 *            The speed of rotation from 0 to 1 inclusive.
 	 */
-	void rotateClockwise(double speed);
+	void rotateRight(double speed);
 }

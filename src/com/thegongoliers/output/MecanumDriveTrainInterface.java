@@ -7,7 +7,7 @@ public interface MecanumDriveTrainInterface extends DriveTrainInterface {
 	 * @param speed
 	 *            The speed of the robot from 0 to 1 inclusive.
 	 */
-	void left(double speed);
+	void strafeLeft(double speed);
 
 	/**
 	 * Drive the robot right at the given speed
@@ -15,5 +15,5 @@ public interface MecanumDriveTrainInterface extends DriveTrainInterface {
 	 * @param speed
 	 *            The speed of the robot from 0 to 1 inclusive.
 	 */
-	void right(double speed);
+	void strafeRight(double speed);
 }
