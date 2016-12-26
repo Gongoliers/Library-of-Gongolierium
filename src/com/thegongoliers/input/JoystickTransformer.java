@@ -119,11 +119,7 @@ public class JoystickTransformer {
 	public static Point scaledRadialDeadzone(Point input, double thresh) {
 		if (magnitude(input) < thresh)
 			return Point.origin;
-		return timesScalar(normalized(input), ((magnitude(input) - thresh) / (1 - thresh)));
-	}
-
-	private static Point timesScalar(Point p, double scalar) {
-		return new Point(p.x * scalar, p.y * scalar, p.z * scalar);
+		return normalized(input).multiply((magnitude(input) - thresh) / (1 - thresh));
 	}
 
 	private static Point normalized(Point p) {
