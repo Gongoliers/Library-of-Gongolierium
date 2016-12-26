@@ -1,9 +1,9 @@
 package com.thegongoliers.output;
 
 public interface Relay {
-	Relay on();
+	void on();
 
-	Relay off();
+	void off();
 
 	boolean isOn();
 
