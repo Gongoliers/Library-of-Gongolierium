@@ -189,6 +189,7 @@ public class Camera {
 		double[] sat = { targetSpecs.getSaturation().start, targetSpecs.getSaturation().end };
 		double[] val = { targetSpecs.getValue().start, targetSpecs.getValue().end };
 		Pipeline p = new Pipeline();
+		p.source0 = getImage();
 		p.process(hue, sat, val, minArea);
 		List<MatOfPoint> contours = p.filterContoursOutput();
 		if (contours.isEmpty())
@@ -268,6 +269,11 @@ public class Camera {
 		@Override
 		public Point aimingCoordinates() {
 			return aimingCoordinates;
+		}
+		
+		@Override
+		public String toString() {
+			return "<Target angle=" + angle() + " distance=" + distance() + " confidence=" + confidence() + "% >";
 		}
 
 	}
