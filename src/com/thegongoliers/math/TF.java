@@ -5,7 +5,6 @@ import java.util.List;
 
 import com.thegongoliers.geometry.Point;
 import com.thegongoliers.geometry.Pose;
-import com.thegongoliers.geometry.PoseStamped;
 import com.thegongoliers.geometry.Quaternion;
 import com.thegongoliers.geometry.Transform;
 import com.thegongoliers.geometry.Vector3;
@@ -71,9 +70,5 @@ public class TF {
 	
 	public void put(String frame, Pose location){
 		put(frame, ORIGIN, location);
-	}
-
-	public void put(String frame, PoseStamped location) {
-		put(frame, location.header.frame, location.pose);
 	}
 }
