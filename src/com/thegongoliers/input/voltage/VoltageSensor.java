@@ -1,4 +1,4 @@
-package com.thegongoliers.input;
+package com.thegongoliers.input.voltage;
 
 public interface VoltageSensor {
 

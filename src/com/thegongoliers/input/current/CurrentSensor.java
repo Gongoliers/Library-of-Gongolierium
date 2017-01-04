@@ -1,4 +1,4 @@
-package com.thegongoliers.input;
+package com.thegongoliers.input.current;
 
 /**
  * This interface provides a layer of abstraction over current sensors, allowing

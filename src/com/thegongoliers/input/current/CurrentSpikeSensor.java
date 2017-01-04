@@ -1,4 +1,6 @@
-package com.thegongoliers.input;
+package com.thegongoliers.input.current;
+
+import com.thegongoliers.input.ResettableSwitch;
 
 public class CurrentSpikeSensor implements ResettableSwitch {
 
