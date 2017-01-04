@@ -3,8 +3,8 @@ package com.thegongoliers.input;
 import com.thegongoliers.geometry.Point;
 
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.buttons.Button;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
-import edu.wpi.first.wpilibj.buttons.Trigger;
 
 public class EnhancedXboxController extends XboxController {
 
@@ -25,7 +25,7 @@ public class EnhancedXboxController extends XboxController {
 		super(port);
 	}
 
-	public final Trigger LT = new Trigger() {
+	public final Button LT = new Button() {
 
 		@Override
 		public boolean get() {
@@ -33,7 +33,7 @@ public class EnhancedXboxController extends XboxController {
 		}
 	};
 
-	public final Trigger RT = new Trigger() {
+	public final Button RT = new Button() {
 
 		@Override
 		public boolean get() {
@@ -41,7 +41,7 @@ public class EnhancedXboxController extends XboxController {
 		}
 	};
 
-	public final Trigger DPAD_UP = new Trigger() {
+	public final Button DPAD_UP = new Button() {
 
 		@Override
 		public boolean get() {
@@ -49,7 +49,7 @@ public class EnhancedXboxController extends XboxController {
 		}
 	};
 
-	public final Trigger DPAD_DOWN = new Trigger() {
+	public final Button DPAD_DOWN = new Button() {
 
 		@Override
 		public boolean get() {
@@ -57,7 +57,7 @@ public class EnhancedXboxController extends XboxController {
 		}
 	};
 
-	public final Trigger DPAD_RIGHT = new Trigger() {
+	public final Button DPAD_RIGHT = new Button() {
 
 		@Override
 		public boolean get() {
@@ -65,7 +65,7 @@ public class EnhancedXboxController extends XboxController {
 		}
 	};
 
-	public final Trigger DPAD_LEFT = new Trigger() {
+	public final Button DPAD_LEFT = new Button() {
 
 		@Override
 		public boolean get() {
