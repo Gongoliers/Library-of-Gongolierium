@@ -8,16 +8,16 @@ import edu.wpi.first.wpilibj.buttons.JoystickButton;
 
 public class EnhancedXboxController extends XboxController {
 
-	public final JoystickButton A = new JoystickButton(this, 1);
-	public final JoystickButton B = new JoystickButton(this, 2);
-	public final JoystickButton X = new JoystickButton(this, 3);
-	public final JoystickButton Y = new JoystickButton(this, 4);
-	public final JoystickButton LB = new JoystickButton(this, 5);
-	public final JoystickButton RB = new JoystickButton(this, 6);
-	public final JoystickButton BACK = new JoystickButton(this, 7);
-	public final JoystickButton START = new JoystickButton(this, 8);
-	public final JoystickButton LEFT_STICK_BUTTON = new JoystickButton(this, 9);
-	public final JoystickButton RIGHT_STICK_BUTTON = new JoystickButton(this, 10);
+	public final Button A = new JoystickButton(this, 1);
+	public final Button B = new JoystickButton(this, 2);
+	public final Button X = new JoystickButton(this, 3);
+	public final Button Y = new JoystickButton(this, 4);
+	public final Button LB = new JoystickButton(this, 5);
+	public final Button RB = new JoystickButton(this, 6);
+	public final Button BACK = new JoystickButton(this, 7);
+	public final Button START = new JoystickButton(this, 8);
+	public final Button LEFT_STICK_BUTTON = new JoystickButton(this, 9);
+	public final Button RIGHT_STICK_BUTTON = new JoystickButton(this, 10);
 
 	private double triggerThreshold = 0.5;
 
