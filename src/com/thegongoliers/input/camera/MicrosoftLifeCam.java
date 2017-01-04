@@ -1,19 +1,26 @@
 package com.thegongoliers.input.camera;
 
-import com.ni.vision.NIVision.Image;
+import org.opencv.core.Mat;
 
-import edu.wpi.first.wpilibj.vision.USBCamera;
+import edu.wpi.cscore.CvSink;
+import edu.wpi.cscore.UsbCamera;
+import edu.wpi.cscore.VideoSource;
+import edu.wpi.first.wpilibj.CameraServer;
 
 public class MicrosoftLifeCam extends AbstractCamera {
 
-	private boolean cameraStarted;
-	private USBCamera camera;
+	private boolean cameraStarted = false;
+	private UsbCamera camera;
+	CvSink cvSink;;
+	private int port;
 
-	public MicrosoftLifeCam(String cameraName) {
+	public MicrosoftLifeCam(int port) {
 		super();
-		cameraStarted = false;
-		camera = new USBCamera(cameraName);
-		camera.openCamera();
+		this.port = port;
+		start();
+	}
+
+	public void display() {
 	}
 
 	public double getViewAngle() {
@@ -21,40 +28,58 @@ public class MicrosoftLifeCam extends AbstractCamera {
 	}
 
 	public void setBrightness(int brightness) {
-		camera.setBrightness(brightness);
+		if (cameraStarted && camera.isValid() && camera.isConnected())
+			camera.setBrightness(brightness);
 	}
 
 	public int getBrightness() {
-		return camera.getBrightness();
+		if (cameraStarted && camera.isValid() && camera.isConnected())
+			return camera.getBrightness();
+		return 0;
 	}
 
 	public void setExposureManual(int exposure) {
-		camera.setExposureManual(exposure);
+		if (camera.isValid() && camera.isConnected())
+			camera.setExposureManual(exposure);
 	}
 
 	public void setExposureAuto() {
-		camera.setExposureAuto();
+		if (isReady())
+			camera.setExposureAuto();
 	}
 
-	public Image getImage() {
+	private boolean isReady() {
+		return cameraStarted && camera.isValid() && camera.isConnected();
+	}
+
+	public Mat getImage() {
 		if (!cameraStarted)
 			start();
-		camera.getImage(frame);
+		cvSink.grabFrame(frame);
 		return frame;
 	}
 
 	public void start() {
-		camera.startCapture();
+		camera = CameraServer.getInstance().startAutomaticCapture(port);
+		cvSink = CameraServer.getInstance().getVideo();
 		cameraStarted = true;
 	}
 
 	public void stop() {
-		camera.stopCapture();
 		cameraStarted = false;
 	}
 
 	public void setFPS(int fps) {
 		camera.setFPS(fps);
+	}
+
+	public VideoSource getVideoSource() {
+		return camera;
+	}
+
+	@Override
+	public void setResolution(int width, int height) {
+		camera.setResolution(width, height);
 	}
 
 }

@@ -1,38 +1,39 @@
 package com.thegongoliers.input;
 
-import edu.wpi.first.wpilibj.PIDSource;
-import edu.wpi.first.wpilibj.PIDSourceType;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 
-/**
- * Created by Kyle on 7/25/2016.
- */
-public class PDPCurrentSensor implements PIDSource {
+public class PDPCurrentSensor implements CurrentSensor {
 
-	private int port;
 	private PowerDistributionPanel pdp;
+	private int port;
 
+	/**
+	 * Creates a current sensor at the specified port of the main PDP
+	 * 
+	 * @param port
+	 *            The port on the PDP to monitor
+	 */
+	public PDPCurrentSensor(int port) {
+		pdp = new PowerDistributionPanel();
+		this.port = port;
+	}
+
+	/**
+	 * Creates a current sensor at the specified port of the specified PDP
+	 * 
+	 * @param pdp
+	 *            The PDP that contains the specified port
+	 * @param port
+	 *            The port on the PDP to monitor
+	 */
 	public PDPCurrentSensor(PowerDistributionPanel pdp, int port) {
 		this.pdp = pdp;
 		this.port = port;
 	}
 
+	@Override
 	public double getCurrent() {
 		return pdp.getCurrent(port);
-	}
-
-	@Override
-	public void setPIDSourceType(PIDSourceType pidSource) {
-	}
-
-	@Override
-	public PIDSourceType getPIDSourceType() {
-		return PIDSourceType.kDisplacement;
-	}
-
-	@Override
-	public double pidGet() {
-		return getCurrent();
 	}
 
 }
