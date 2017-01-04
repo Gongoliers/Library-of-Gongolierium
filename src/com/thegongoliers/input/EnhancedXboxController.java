@@ -19,6 +19,8 @@ public class EnhancedXboxController extends XboxController {
 	public final JoystickButton LEFT_STICK_BUTTON = new JoystickButton(this, 9);
 	public final JoystickButton RIGHT_STICK_BUTTON = new JoystickButton(this, 10);
 
+	private double triggerThreshold = 0.5;
+
 	public EnhancedXboxController(int port) {
 		super(port);
 	}
@@ -27,7 +29,7 @@ public class EnhancedXboxController extends XboxController {
 
 		@Override
 		public boolean get() {
-			return getTrigger(Hand.kLeft);
+			return getLeftTrigger() >= triggerThreshold;
 		}
 	};
 
@@ -35,7 +37,7 @@ public class EnhancedXboxController extends XboxController {
 
 		@Override
 		public boolean get() {
-			return getTrigger(Hand.kRight);
+			return getRightTrigger() >= triggerThreshold;
 		}
 	};
 
@@ -126,6 +128,14 @@ public class EnhancedXboxController extends XboxController {
 
 	public void stopVibration() {
 		vibrate(0f);
+	}
+
+	public void setTriggerThreshold(double thresh) {
+		triggerThreshold = thresh;
+	}
+
+	public double getTriggerThreshold() {
+		return triggerThreshold;
 	}
 
 	public static enum DPAD {
