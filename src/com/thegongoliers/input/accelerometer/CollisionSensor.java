@@ -1,5 +1,6 @@
-package com.thegongoliers.input;
+package com.thegongoliers.input.accelerometer;
 
+import com.thegongoliers.input.Switch;
 import com.thegongoliers.math.MathExt;
 
 import edu.wpi.first.wpilibj.interfaces.Accelerometer;
