@@ -3,13 +3,13 @@ package com.thegongoliers.commands;
 
 import com.thegongoliers.output.Stoppable;
 
-import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.command.InstantCommand;
 import edu.wpi.first.wpilibj.command.Subsystem;
 
 /**
  *
  */
-public class StopCommand extends Command {
+public class StopCommand extends InstantCommand {
 	
 	private Stoppable system;
 
@@ -22,20 +22,7 @@ public class StopCommand extends Command {
     	this.system = system;
     }
 
-    protected void initialize() {
-    	system.stop();
-    }
-
     protected void execute() {
-    }
-
-    protected boolean isFinished() {
-        return true;
-    }
-
-    protected void end() {
-    }
-
-    protected void interrupted() {
+    	system.stop();
     }
 }
