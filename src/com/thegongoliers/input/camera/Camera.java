@@ -18,6 +18,9 @@ import org.opencv.imgproc.Imgproc;
 
 import com.thegongoliers.geometry.Point;
 
+import edu.wpi.cscore.CvSource;
+import edu.wpi.first.wpilibj.CameraServer;
+
 /**
  * Allows for abstract use of the camera.
  * 
@@ -30,6 +33,7 @@ public class Camera {
 	private int targetExposure, targetBrightness, normalBrightness;
 	private Mode cameraMode;
 	private HashMap<String, TargetSpecifications> defaultTargets;
+	private CvSource outputStream;
 
 	Camera(CameraInterface camera, int targetExposure, int targetBrightness, int normalBrightness,
 			HashMap<String, TargetSpecifications> targets) {
@@ -39,6 +43,7 @@ public class Camera {
 		this.normalBrightness = normalBrightness;
 		defaultTargets = targets;
 		camera.start();
+		outputStream = CameraServer.getInstance().putVideo("Target", camera.getResolution(Axis.X), camera.getResolution(Axis.Y));
 		disableTargetMode();
 	}
 
@@ -189,7 +194,8 @@ public class Camera {
 		double[] sat = { targetSpecs.getSaturation().start, targetSpecs.getSaturation().end };
 		double[] val = { targetSpecs.getValue().start, targetSpecs.getValue().end };
 		Pipeline p = new Pipeline();
-		p.source0 = getImage();
+		Mat image = getImage();
+		p.source0 = image;
 		p.process(hue, sat, val, minArea);
 		List<MatOfPoint> contours = p.filterContoursOutput();
 		if (contours.isEmpty())
@@ -212,6 +218,10 @@ public class Camera {
 
 		TargetReport target = new TargetReport(confidence, angle, distance, aimingCoordinates);
 
+		Imgproc.rectangle(image, new org.opencv.core.Point(boundary.x, boundary.y), new org.opencv.core.Point(boundary.x + boundary.width, boundary.y + boundary.height), new Scalar(255, 0, 0));
+		
+		outputStream.putFrame(image);
+		
 		return target;
 	}
 

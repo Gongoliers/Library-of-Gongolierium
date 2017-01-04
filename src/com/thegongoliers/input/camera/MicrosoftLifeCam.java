@@ -77,4 +77,9 @@ public class MicrosoftLifeCam extends AbstractCamera {
 		return camera;
 	}
 
+	@Override
+	public void setResolution(int width, int height) {
+		camera.setResolution(width, height);
+	}
+
 }

@@ -68,6 +68,16 @@ public interface CameraInterface extends Displayable {
 	void setFPS(int fps);
 
 	/**
+	 * Set the resolution of the camera
+	 * 
+	 * @param width
+	 *            The width in pixels
+	 * @param height
+	 *            The height in pixels
+	 */
+	void setResolution(int width, int height);
+
+	/**
 	 * Get the resolution of the image.
 	 * 
 	 * @param axis

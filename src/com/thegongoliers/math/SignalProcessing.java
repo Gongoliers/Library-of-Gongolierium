@@ -19,7 +19,7 @@ public class SignalProcessing {
 		double[] iirVals = new double[values.length];
 		iirVals[0] = values[0];
 		for (int i = 1; i < values.length; i++) {
-			iirVals[i] = values[i] / 2.0 + iirVals[i - 1] / 2.0;
+			iirVals[i] = (values[i] + iirVals[i - 1]) / 2.0;
 		}
 		return iirVals;
 	}
@@ -38,6 +38,29 @@ public class SignalProcessing {
 			firVals[i] = s / i;
 		}
 		return firVals;
+	}
+
+	public static double smooth(double lastSmoothedValue, double newValue, double smoothing,
+			double timeSinceLastUpdate) {
+		return lastSmoothedValue + timeSinceLastUpdate * (newValue - lastSmoothedValue) / smoothing;
+	}
+
+	public static double smooth(double lastSmoothedValue, double newValue, double smoothing) {
+		return smooth(lastSmoothedValue, newValue, smoothing, 1);
+	}
+
+	public static double[] smooth(double[] values, double smoothing, double updateTime) {
+		double[] newValues = new double[values.length];
+		double lastValue = 0;
+		for (int i = 0; i < values.length; i++) {
+			newValues[i] = smooth(lastValue, values[i], smoothing, updateTime);
+			lastValue = values[i];
+		}
+		return newValues;
+	}
+
+	public static double[] smooth(double[] values, double smoothing) {
+		return smooth(values, smoothing, 1);
 	}
 
 }
