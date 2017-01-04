@@ -1,9 +1,9 @@
-package com.thegongoliers.util;
+package com.thegongoliers.math;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class TreeNode<T> {
+class TreeNode<T> {
 
 	private T data;
 	private TreeNode<T> parent;

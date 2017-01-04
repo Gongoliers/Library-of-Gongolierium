@@ -1,9 +1,9 @@
-package com.thegongoliers.util;
+package com.thegongoliers.math;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class TreeSearchEngine {
+class TreeSearchEngine {
 	public <T> TreeNode<T> findLowestCommonAncestor(TreeNode<T> n1, TreeNode<T> n2) {
 		if (n1 == null || n2 == null) {
 			return null;
