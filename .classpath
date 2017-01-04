@@ -8,5 +8,6 @@
 	<classpathentry kind="var" path="opencv" sourcepath="opencv.sources"/>
 	<classpathentry kind="var" path="TalonSRX"/>
 	<classpathentry kind="lib" path="C:/Users/Kyle/wpilib/user/java/lib/TalonSRXLibJava.jar"/>
+	<classpathentry kind="var" path="USERLIBS_DIR/TalonSRXLibJava.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -3,14 +3,14 @@ package com.thegongoliers.input.camera;
 import org.opencv.core.Mat;
 
 import edu.wpi.cscore.CvSink;
-import edu.wpi.cscore.USBCamera;
+import edu.wpi.cscore.UsbCamera;
 import edu.wpi.cscore.VideoSource;
 import edu.wpi.first.wpilibj.CameraServer;
 
 public class MicrosoftLifeCam extends AbstractCamera {
 
 	private boolean cameraStarted = false;
-	private USBCamera camera;
+	private UsbCamera camera;
 	CvSink cvSink;;
 	private int port;
 
