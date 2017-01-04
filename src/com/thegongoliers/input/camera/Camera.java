@@ -34,16 +34,20 @@ public class Camera {
 	private Mode cameraMode;
 	private HashMap<String, TargetSpecifications> defaultTargets;
 	private CvSource outputStream;
+	private boolean drawRect;
 
 	Camera(CameraInterface camera, int targetExposure, int targetBrightness, int normalBrightness,
-			HashMap<String, TargetSpecifications> targets) {
+			HashMap<String, TargetSpecifications> targets, boolean drawRect) {
 		this.camera = camera;
 		this.targetBrightness = targetBrightness;
 		this.targetExposure = targetExposure;
 		this.normalBrightness = normalBrightness;
 		defaultTargets = targets;
 		camera.start();
-		outputStream = CameraServer.getInstance().putVideo("Target", camera.getResolution(Axis.X), camera.getResolution(Axis.Y));
+		this.drawRect = drawRect;
+		if (drawRect)
+			outputStream = CameraServer.getInstance().putVideo("Target", camera.getResolution(Axis.X),
+					camera.getResolution(Axis.Y));
 		disableTargetMode();
 	}
 
@@ -218,10 +222,14 @@ public class Camera {
 
 		TargetReport target = new TargetReport(confidence, angle, distance, aimingCoordinates);
 
-		Imgproc.rectangle(image, new org.opencv.core.Point(boundary.x, boundary.y), new org.opencv.core.Point(boundary.x + boundary.width, boundary.y + boundary.height), new Scalar(255, 0, 0));
-		
-		outputStream.putFrame(image);
-		
+		if (drawRect && outputStream != null) {
+			Imgproc.rectangle(image, new org.opencv.core.Point(boundary.x, boundary.y),
+					new org.opencv.core.Point(boundary.x + boundary.width, boundary.y + boundary.height),
+					new Scalar(255, 0, 0));
+
+			outputStream.putFrame(image);
+		}
+
 		return target;
 	}
 
@@ -280,7 +288,7 @@ public class Camera {
 		public Point aimingCoordinates() {
 			return aimingCoordinates;
 		}
-		
+
 		@Override
 		public String toString() {
 			return "<Target angle=" + angle() + " distance=" + distance() + " confidence=" + confidence() + "% >";
@@ -290,6 +298,7 @@ public class Camera {
 
 	public static class Builder {
 		private CameraInterface camera;
+		private boolean drawRect;
 		private int targetExposure, targetBrightness, normalBrightness = 50;
 		private HashMap<String, TargetSpecifications> targets;
 
@@ -340,6 +349,11 @@ public class Camera {
 			return this;
 		}
 
+		public Builder shouldOutlineTarget(boolean drawRect) {
+			this.drawRect = drawRect;
+			return this;
+		}
+
 		public Builder addTargetSpecification(String name, TargetSpecifications target) {
 			targets.put(name, target);
 			return this;
@@ -354,7 +368,7 @@ public class Camera {
 		public Camera build() {
 			if (camera == null)
 				throw new RuntimeException("Camera can not be null");
-			return new Camera(camera, targetExposure, targetBrightness, normalBrightness, targets);
+			return new Camera(camera, targetExposure, targetBrightness, normalBrightness, targets, drawRect);
 		}
 	}
 
