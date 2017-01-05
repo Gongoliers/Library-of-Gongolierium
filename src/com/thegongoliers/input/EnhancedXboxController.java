@@ -106,7 +106,7 @@ public class EnhancedXboxController extends XboxController {
 	}
 
 	public double getTrigger() {
-		return getLeftTrigger() + getRightTrigger();
+		return getLeftTrigger() - getRightTrigger();
 	}
 
 	public double getLeftTrigger() {
