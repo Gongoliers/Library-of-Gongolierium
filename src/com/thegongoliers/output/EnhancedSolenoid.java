@@ -2,7 +2,7 @@ package com.thegongoliers.output;
 
 import edu.wpi.first.wpilibj.Solenoid;
 
-public class EnhancedSolenoid {
+public class EnhancedSolenoid implements Relay {
 
 	private Solenoid solenoid;
 	private boolean inverted = false;
@@ -37,6 +37,26 @@ public class EnhancedSolenoid {
 
 	public boolean isRetracted() {
 		return solenoid.get() == inverted;
+	}
+	
+	@Override
+	public void on() {
+		extend();
+	}
+
+	@Override
+	public void off() {
+		retract();
+	}
+
+	@Override
+	public boolean isOn() {
+		return isExtended();
+	}
+
+	@Override
+	public boolean isOff() {
+		return isRetracted();
 	}
 
 }
