@@ -1,7 +1,9 @@
 package com.thegongoliers.output;
 
+import com.thegongoliers.input.EnhancedXboxController;
 import com.thegongoliers.output.interfaces.MecanumDriveTrainInterface;
 
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotDrive;
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
@@ -116,8 +118,49 @@ public class EnhancedRobotDrive implements Stoppable, MecanumDriveTrainInterface
 		}
 	}
 
+	public void mecanumStabilized(double x, double y, double rotation, double rotationThreshold) {
+		if (Math.abs(rotation) >= rotationThreshold) {
+			mecanum(x, y, rotation);
+			markRelativeOrientation();
+		} else {
+			mecanum(x, y, kp * (relativeAngle - getOrientation()));
+		}
+	}
+
 	public void arcadeStabilized(double speed, double rotation) {
 		arcadeStabilized(speed, rotation, 0.1);
+	}
+
+	public void arcadeYZ(Joystick joystick) {
+		arcade(joystick.getY(), joystick.getZ());
+	}
+
+	public void arcadeYX(Joystick joystick) {
+		arcade(joystick.getY(), joystick.getX());
+	}
+
+	public void arcadeFPS(EnhancedXboxController xbox) {
+		arcade(xbox.getLeftY(), xbox.getRightX());
+	}
+
+	public void arcadeRacing(EnhancedXboxController xbox) {
+		arcade(xbox.getTrigger(), xbox.getLeftX());
+	}
+
+	public void mecanumXYZ(Joystick joystick) {
+		mecanum(joystick.getX(), joystick.getY(), joystick.getZ());
+	}
+
+	public void mecanumFPS(EnhancedXboxController xbox) {
+		mecanum(xbox.getLeftX(), xbox.getLeftY(), xbox.getRightX());
+	}
+
+	public void tank(Joystick left, Joystick right) {
+		tank(left.getY(), right.getY());
+	}
+
+	public void tank(EnhancedXboxController xbox) {
+		tank(xbox.getLeftY(), xbox.getRightY());
 	}
 
 	public static class Builder {
