@@ -61,13 +61,6 @@ public class Camera {
 	}
 
 	/**
-	 * This method displays the current video stream onto the SmartDashboard.
-	 */
-	public void display() {
-		camera.display();
-	}
-
-	/**
 	 * This method sets the exposure level of the camera. The parameter exposure
 	 * is on the scale of 0 to 100.
 	 * 
