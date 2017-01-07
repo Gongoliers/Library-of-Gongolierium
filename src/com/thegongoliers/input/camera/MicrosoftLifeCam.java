@@ -11,9 +11,13 @@ public class MicrosoftLifeCam extends AbstractCamera {
 
 	private boolean cameraStarted = false;
 	private UsbCamera camera;
-	CvSink cvSink;;
+	CvSink cvSink;
 	private int port;
 
+	public MicrosoftLifeCam(){
+		this(0);
+	}
+	
 	public MicrosoftLifeCam(int port) {
 		super();
 		this.port = port;

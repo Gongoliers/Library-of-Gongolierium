@@ -154,7 +154,7 @@ public class Camera {
 		}).start();
 	}
 
-	public Thread continuouslyFindTargetAsync(String name, double minArea, Consumer<TargetReport> processResult) {
+	public Thread continuouslyFindTargetAsync(String name, double minArea, Consumer<TargetReport> processResult) {		
 		return new Thread(() -> {
 			while (true) {
 				try {
