@@ -14,17 +14,26 @@ public class MicrosoftLifeCam extends AbstractCamera {
 	CvSink cvSink;
 	private int port;
 
-	public MicrosoftLifeCam(){
+	/**
+	 * Constructs a MicrosoftLifeCam. This calls the main constructor with a
+	 * port of 0.
+	 */
+	public MicrosoftLifeCam() {
 		this(0);
 	}
-	
+
+	/**
+	 * Constructs a MicrosoftLifeCam at the given USB port.
+	 * 
+	 * @param port
+	 *            The port which this camera is plugged into. This can be found
+	 *            next to "cam" when viewing the devices on the RoboRIO web
+	 *            utility.
+	 */
 	public MicrosoftLifeCam(int port) {
 		super();
 		this.port = port;
 		start();
-	}
-
-	public void display() {
 	}
 
 	public double getViewAngle() {
