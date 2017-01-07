@@ -147,7 +147,7 @@ public class Camera {
 		}).start();
 	}
 
-	public Thread continuouslyFindTargetAsync(String name, double minArea, Consumer<TargetReport> processResult) {		
+	public Thread continuouslyFindTargetAsync(String name, double minArea, Consumer<TargetReport> processResult) {
 		return new Thread(() -> {
 			while (true) {
 				try {
@@ -216,10 +216,7 @@ public class Camera {
 		TargetReport target = new TargetReport(confidence, angle, distance, aimingCoordinates);
 
 		if (drawRect && outputStream != null) {
-			Imgproc.rectangle(image, new org.opencv.core.Point(boundary.x, boundary.y),
-					new org.opencv.core.Point(boundary.x + boundary.width, boundary.y + boundary.height),
-					new Scalar(255, 0, 0));
-
+			ImageEditor.drawRectangleToMat(image, boundary, new Scalar(255, 0, 0));
 			outputStream.putFrame(image);
 		}
 
