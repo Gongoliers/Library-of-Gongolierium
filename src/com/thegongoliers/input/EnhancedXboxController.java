@@ -21,10 +21,20 @@ public class EnhancedXboxController extends XboxController {
 
 	private double triggerThreshold = 0.5;
 
+	/**
+	 * An Xbox controller with its buttons defined as instances of the Button
+	 * class.
+	 * 
+	 * @param port
+	 *            The port which the controller is plugged into.
+	 */
 	public EnhancedXboxController(int port) {
 		super(port);
 	}
 
+	/**
+	 * The left trigger.
+	 */
 	public final Button LT = new Button() {
 
 		@Override
@@ -33,6 +43,9 @@ public class EnhancedXboxController extends XboxController {
 		}
 	};
 
+	/**
+	 * The right trigger.
+	 */
 	public final Button RT = new Button() {
 
 		@Override
@@ -73,46 +86,102 @@ public class EnhancedXboxController extends XboxController {
 		}
 	};
 
+	/**
+	 * Get the Point representation of the left stick.
+	 * 
+	 * @return The Point containing the left stick x and y.
+	 */
 	public Point getLeftStick() {
 		return new Point(getLeftX(), getLeftY(), 0);
 	}
 
+	/**
+	 * Get the Point representation of the right stick.
+	 * 
+	 * @return The Point containing the right stick x and y.
+	 */
 	public Point getRightStick() {
 		return new Point(getRightX(), getRightY(), 0);
 	}
 
+	/**
+	 * Get the left stick y value.
+	 * 
+	 * @return The left stick y value.
+	 */
 	public double getLeftY() {
 		return getRawAxis(1);
 	}
 
+	/**
+	 * Get the left stick x value.
+	 * 
+	 * @return The left stick x value.
+	 */
 	public double getLeftX() {
 		return getRawAxis(0);
 	}
 
+	/**
+	 * Get the right stick y value.
+	 * 
+	 * @return The right stick y value.
+	 */
 	public double getRightY() {
 		return getRawAxis(5);
 	}
 
+	/**
+	 * Get the right stick x value.
+	 * 
+	 * @return The right stick x value.
+	 */
 	public double getRightX() {
 		return getRawAxis(4);
 	}
 
+	/**
+	 * Get the state of the left bumper.
+	 * 
+	 * @return The state of the left bumper.
+	 */
 	public boolean getLB() {
 		return getBumper(Hand.kLeft);
 	}
 
+	/**
+	 * Get the state of the right bumper.
+	 * 
+	 * @return The state of the right bumper.
+	 */
 	public boolean getRB() {
 		return getBumper(Hand.kRight);
 	}
 
+	/**
+	 * Get the combined value of the triggers, which is right trigger - left
+	 * trigger.
+	 * 
+	 * @return The combined trigger value.
+	 */
 	public double getTrigger() {
 		return getRightTrigger() - getLeftTrigger();
 	}
 
+	/**
+	 * Get the value of the left trigger from 0 to 1 inclusive.
+	 * 
+	 * @return The value of the left trigger.
+	 */
 	public double getLeftTrigger() {
 		return getTriggerAxis(Hand.kLeft);
 	}
 
+	/**
+	 * Get the value of the right trigger from 0 to 1 inclusive.
+	 * 
+	 * @return The value of the right trigger.
+	 */
 	public double getRightTrigger() {
 		return getTriggerAxis(Hand.kRight);
 	}
