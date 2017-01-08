@@ -186,27 +186,54 @@ public class EnhancedXboxController extends XboxController {
 		return getTriggerAxis(Hand.kRight);
 	}
 
+	/**
+	 * Get the current direction of the DPAD.
+	 * 
+	 * @return The current direction of the DPAD.
+	 */
 	public DPAD getPOVDirection() {
 		return DPAD.values()[getPOV() / 45];
 	}
 
+	/**
+	 * Vibrate the controller.
+	 * 
+	 * @param value
+	 *            The intensity of the vibration from 0 to 1 inclusive.
+	 */
 	public void vibrate(float value) {
 		setRumble(RumbleType.kLeftRumble, value);
 		setRumble(RumbleType.kRightRumble, value);
 	}
 
+	/**
+	 * Stop the vibration of the controller.
+	 */
 	public void stopVibration() {
 		vibrate(0f);
 	}
 
+	/**
+	 * Set the threshold of the trigger at which point it is considered pressed.
+	 * 
+	 * @param thresh
+	 *            The threshold of the trigger from 0 to 1 inclusive.
+	 */
 	public void setTriggerThreshold(double thresh) {
 		triggerThreshold = thresh;
 	}
 
+	/**
+	 * Get the threshold of the trigger at which point it is considered pressed.
+	 */
 	public double getTriggerThreshold() {
 		return triggerThreshold;
 	}
 
+	/**
+	 * The direction of the DPAD.
+	 *
+	 */
 	public static enum DPAD {
 		NORTH(0), NORTHEAST(45), EAST(90), SOUTHEAST(135), SOUTH(180), SOUTHWEST(225), WEST(270), NORTHWEST(315);
 
@@ -216,6 +243,11 @@ public class EnhancedXboxController extends XboxController {
 			this.direction = direction;
 		}
 
+		/**
+		 * Get the direction of the DPAD in degrees.
+		 * 
+		 * @return The direction.
+		 */
 		public int getDirection() {
 			return direction;
 		}
