@@ -6,6 +6,12 @@ public class PneumaticGripper implements GripperInterface {
 
 	private final EnhancedSolenoid solenoid;
 
+	/**
+	 * Creates a pneumatic gripper from a solenoid.
+	 * 
+	 * @param solenoid
+	 *            The gripper's solenoid.
+	 */
 	public PneumaticGripper(EnhancedSolenoid solenoid) {
 		this.solenoid = solenoid;
 	}
