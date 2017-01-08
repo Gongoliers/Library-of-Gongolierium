@@ -8,6 +8,12 @@ public class Flywheel implements FlywheelInterface {
 
 	private SpeedController motor;
 
+	/**
+	 * Create a flywheel using the specified SpeedController.
+	 * 
+	 * @param motor
+	 *            The flywheel's motor.
+	 */
 	public Flywheel(SpeedController motor) {
 		this.motor = motor;
 	}

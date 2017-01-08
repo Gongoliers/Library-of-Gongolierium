@@ -8,6 +8,12 @@ public class Intake implements IntakeInterface {
 
 	private SpeedController motor;
 
+	/**
+	 * Create an intake mechanism using the given SpeedController.
+	 * 
+	 * @param motor
+	 *            The intake's motor.
+	 */
 	public Intake(SpeedController motor) {
 		this.motor = motor;
 	}
