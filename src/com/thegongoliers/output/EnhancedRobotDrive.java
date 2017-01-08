@@ -301,30 +301,81 @@ public class EnhancedRobotDrive implements Stoppable, MecanumDriveTrainInterface
 	public static class Builder {
 		private EnhancedRobotDrive drive;
 
+		/**
+		 * Create an EnhancedRobotDrive with four motors (mainly used for
+		 * mecanum).
+		 * 
+		 * @param leftFront
+		 *            The front left motor.
+		 * @param leftRear
+		 *            The rear left motor.
+		 * @param rightFront
+		 *            The front right motor.
+		 * @param rightRear
+		 *            The rear right motor.
+		 */
 		public Builder(SpeedController leftFront, SpeedController leftRear, SpeedController rightFront,
 				SpeedController rightRear) {
 			drive = new EnhancedRobotDrive(leftFront, leftRear, rightFront, rightRear);
 		}
 
+		/**
+		 * Create an EnhancedRobotDrive with two motors.
+		 * 
+		 * @param left
+		 *            The left motor.
+		 * @param right
+		 *            The right motor.
+		 */
 		public Builder(SpeedController left, SpeedController right) {
 			drive = new EnhancedRobotDrive(left, right);
 		}
 
+		/**
+		 * Add stabilization to the robot for all directional methods and the
+		 * stabilized driving methods.
+		 * 
+		 * @param gyro
+		 *            The robot's gyroscope.
+		 * @return This Builder for chaining.
+		 */
 		public Builder addStabilization(Gyro gyro) {
 			drive.gyro = gyro;
 			return this;
 		}
 
+		/**
+		 * Add a transmission to the robot for switching between high and low
+		 * gear.
+		 * 
+		 * @param relay
+		 *            The transmission.
+		 * @return This Builder for chaining.
+		 */
 		public Builder addTransmission(Relay relay) {
 			drive.transmission = relay;
 			return this;
 		}
 
+		/**
+		 * Set the amount of stabilization that will be applied to the drive
+		 * train (positive).
+		 * 
+		 * @param kp
+		 *            The constant of proportionality for stabilization.
+		 * @return This Builder for chaining.
+		 */
 		public Builder setStabilizationFactor(double kp) {
 			drive.kp = kp;
 			return this;
 		}
 
+		/**
+		 * Build the EnhancedRobotDrive with the specified settings.
+		 * 
+		 * @return The EnhancedRobotDrive with the parameters specified by the
+		 *         Builder.
+		 */
 		public EnhancedRobotDrive build() {
 			return drive;
 		}
