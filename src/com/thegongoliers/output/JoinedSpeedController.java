@@ -11,37 +11,35 @@ public class JoinedSpeedController implements SpeedController {
 	private List<SpeedController> mSpeedControllers;
 	private boolean mIsInverted = false;
 
+	/**
+	 * Joins speed controllers together to easily control all of their outputs
+	 * synchronously.
+	 */
 	public JoinedSpeedController() {
 		mSpeedControllers = new ArrayList<>();
 	}
 
+	/**
+	 * Joins speed controllers together to easily control all of their outputs
+	 * synchronously.
+	 * 
+	 * @param speedControllers
+	 *            The speed controllers to control.
+	 */
 	public JoinedSpeedController(SpeedController... speedControllers) {
 		mSpeedControllers = new ArrayList<>();
 		Collections.addAll(mSpeedControllers, speedControllers);
 	}
 
+	/**
+	 * Joins speed controllers together to easily control all of their outputs
+	 * synchronously.
+	 * 
+	 * @param speedControllers
+	 *            The speed controllers to control.
+	 */
 	public JoinedSpeedController(List<SpeedController> speedControllers) {
 		mSpeedControllers = speedControllers;
-	}
-
-	public void add(SpeedController speedController) {
-		mSpeedControllers.add(speedController);
-	}
-
-	public void remove(SpeedController speedController) {
-		mSpeedControllers.remove(speedController);
-	}
-
-	public void remove(int speedControllerIndex) {
-		mSpeedControllers.remove(speedControllerIndex);
-	}
-
-	public SpeedController getSpeedController(int speedControllerIndex) {
-		return mSpeedControllers.get(speedControllerIndex);
-	}
-
-	public int getSpeedControllerIndex(SpeedController speedController) {
-		return mSpeedControllers.indexOf(speedController);
 	}
 
 	@Override
