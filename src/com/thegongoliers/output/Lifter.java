@@ -13,20 +13,47 @@ public class Lifter implements LifterInterface {
 	private DoubleSupplier position;
 	private BooleanSupplier atTop, atBottom;
 
-	public Lifter(SpeedController motor, DoubleSupplier position, BooleanSupplier atTop,
-			BooleanSupplier atBottom) {
+	/**
+	 * Create a lifter mechanism using the given motor and sensors.
+	 * 
+	 * @param motor
+	 *            The lifter's motor.
+	 * @param position
+	 *            The position of the lifter.
+	 * @param atTop
+	 *            Determines if the lifter is at the top.
+	 * @param atBottom
+	 *            Determines if the lifter is at the bottom.
+	 */
+	public Lifter(SpeedController motor, DoubleSupplier position, BooleanSupplier atTop, BooleanSupplier atBottom) {
 		this.motor = motor;
 		this.position = position;
 		this.atTop = atTop;
 		this.atBottom = atBottom;
 	}
 
+	/**
+	 * Create a lifter mechanism using the given motor.
+	 * 
+	 * @param motor
+	 *            The lifter's motor.
+	 */
 	public Lifter(SpeedController motor) {
 		this(motor, () -> 0.0, () -> false, () -> false);
 	}
 
+	/**
+	 * Create a lifter mechanism using the given motor and sensors.
+	 * 
+	 * @param motor
+	 *            The lifter's motor.
+	 * @param atTop
+	 *            Determines if the lifter is at the top.
+	 * @param atBottom
+	 *            Determines if the lifter is at the bottom.
+	 */
 	public Lifter(SpeedController motor, BooleanSupplier atTop, BooleanSupplier atBottom) {
-		this(motor, () -> 0.0, atTop, atBottom);
+		this(motor, () -> atTop.getAsBoolean() ? 1 : 0, atTop, atBottom);
 	}
 
 	@Override
@@ -57,7 +84,6 @@ public class Lifter implements LifterInterface {
 	@Override
 	public double getPosition() {
 		return position.getAsDouble();
-	}	
-
+	}
 
 }
