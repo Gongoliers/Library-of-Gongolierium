@@ -8,6 +8,12 @@ public class LinearAccelerationSensor implements Accelerometer {
 
 	private Accelerometer accel;
 
+	/**
+	 * Attempts to remove the gravitational acceleration from the accelerometer.
+	 * 
+	 * @param accel
+	 *            The accelerometer to filter out gravitational acceleration.
+	 */
 	public LinearAccelerationSensor(Accelerometer accel) {
 		this.accel = accel;
 	}
