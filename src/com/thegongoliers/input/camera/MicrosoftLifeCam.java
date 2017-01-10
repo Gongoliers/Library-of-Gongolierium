@@ -37,7 +37,7 @@ public class MicrosoftLifeCam extends AbstractCamera {
 	}
 
 	public double getViewAngle() {
-		return 60;
+		return 50.65;
 	}
 
 	public void setBrightness(int brightness) {
