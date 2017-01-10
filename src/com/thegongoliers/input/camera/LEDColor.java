@@ -49,4 +49,25 @@ public interface LEDColor {
 		}
 
 	};
+	
+	/**
+	 * A green superbright LED ring (variant 2)
+	 */
+	public static LEDColor GreenV2 = new LEDColor() {
+		@Override
+		public Range getHue() {
+			return new Range(70, 100);
+		}
+
+		@Override
+		public Range getSaturation() {
+			return new Range(170, 255);
+		}
+
+		@Override
+		public Range getValue() {
+			return new Range(40, 255);
+		}
+
+	};
 }
