@@ -8,6 +8,10 @@ public class GravitySensor implements Accelerometer {
 
 	private Accelerometer accel;
 
+	private Vector3 gravity;
+
+	private final double alpha = 0.8;
+
 	/**
 	 * Attempts to remove the linear acceleration from the accelerometer.
 	 * 
@@ -16,6 +20,7 @@ public class GravitySensor implements Accelerometer {
 	 */
 	public GravitySensor(Accelerometer accel) {
 		this.accel = accel;
+		gravity = new Vector3(accel.getX(), accel.getY(), accel.getZ());
 	}
 
 	@Override
@@ -25,20 +30,24 @@ public class GravitySensor implements Accelerometer {
 
 	@Override
 	public double getX() {
-		Vector3 original = new Vector3(accel.getX(), accel.getY(), accel.getZ());
-		return original.normalize().x;
+		gravity.x = lowPassFilter(gravity.x, accel.getX());
+		return gravity.x;
 	}
 
 	@Override
 	public double getY() {
-		Vector3 original = new Vector3(accel.getX(), accel.getY(), accel.getZ());
-		return original.normalize().y;
+		gravity.y = lowPassFilter(gravity.y, accel.getY());
+		return gravity.y;
 	}
 
 	@Override
 	public double getZ() {
-		Vector3 original = new Vector3(accel.getX(), accel.getY(), accel.getZ());
-		return original.normalize().z;
+		gravity.z = lowPassFilter(gravity.z, accel.getZ());
+		return gravity.z;
+	}
+
+	private double lowPassFilter(double prevVal, double newVal) {
+		return alpha * prevVal + (1 - alpha) * newVal;
 	}
 
 }
