@@ -204,10 +204,10 @@ public class Camera {
 		double angle = 90 - computeAngle(p.hsvThresholdOutput(), rawX);
 		double distance = computeDistance(p.hsvThresholdOutput(), boundary.width, targetSpecs.getWidth());
 		Point aimingCoordinates = toAimingCoordinates(new Point(rawX, rawY, 0));
-		double aspectRatio = (boundary.width / boundary.height);
+		double aspectRatio = (boundary.width / (double) boundary.height);
 		double aspectScore = Scorer.score(aspectRatio, targetSpecs.getWidth() / targetSpecs.getHeight());
 
-		double areaRatio = Imgproc.contourArea(contour) / boundary.area();
+		double areaRatio = Imgproc.contourArea(contour) / (double) boundary.area();
 		double areaScore = Scorer.score(areaRatio,
 				targetSpecs.getArea() / (targetSpecs.getHeight() * targetSpecs.getWidth()));
 
