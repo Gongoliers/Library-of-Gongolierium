@@ -7,7 +7,8 @@
 	<classpathentry kind="var" path="cscore" sourcepath="cscore.sources"/>
 	<classpathentry kind="var" path="opencv" sourcepath="opencv.sources"/>
 	<classpathentry kind="lib" path="C:/Users/Kylec/wpilib/user/java/lib/TalonSRXLibJava.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Kyle/workspace/Library-of-Gongolierium/libs/CoordinateFrames.jar"/>
+	<classpathentry kind="lib" path="libs/frc-vision-api.jar"/>
+	<classpathentry kind="lib" path="libs/CoordinateFrames.jar"/>
 	<classpathentry kind="var" path="USERLIBS_DIR/TalonSRXLibJava.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
