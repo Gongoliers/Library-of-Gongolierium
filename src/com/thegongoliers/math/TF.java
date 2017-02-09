@@ -9,6 +9,7 @@ import com.thegongoliers.geometry.Quaternion;
 import com.thegongoliers.geometry.Transform;
 import com.thegongoliers.geometry.Vector3;
 
+@Deprecated
 public class TF {
 	private HashMap<String, TreeNode<Transform>> frames;
 
