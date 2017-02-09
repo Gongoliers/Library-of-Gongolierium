@@ -27,6 +27,7 @@ import edu.wpi.first.wpilibj.CameraServer;
  * @author Kyle
  *
  */
+@Deprecated
 public class Camera {
 
 	private CameraInterface camera;

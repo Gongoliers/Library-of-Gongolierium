@@ -2,6 +2,7 @@ package com.thegongoliers.input.camera;
 
 import com.thegongoliers.geometry.Point;
 
+@Deprecated
 interface TargetReportInterface {
 
 	/**

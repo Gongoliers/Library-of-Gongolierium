@@ -2,6 +2,7 @@ package com.thegongoliers.input.camera;
 
 import org.opencv.core.Range;
 
+@Deprecated
 public interface TargetSpecifications {
 
 	/**

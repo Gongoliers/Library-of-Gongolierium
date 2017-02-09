@@ -7,6 +7,7 @@ import edu.wpi.cscore.UsbCamera;
 import edu.wpi.cscore.VideoSource;
 import edu.wpi.first.wpilibj.CameraServer;
 
+@Deprecated
 public class MicrosoftLifeCam extends AbstractCamera {
 
 	private boolean cameraStarted = false;

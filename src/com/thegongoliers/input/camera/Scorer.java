@@ -2,6 +2,7 @@ package com.thegongoliers.input.camera;
 
 import com.thegongoliers.math.MathExt;
 
+@Deprecated
 public class Scorer {
 	/**
 	 * Calculates the score of a ratio (observed/ideal) where the further from 1

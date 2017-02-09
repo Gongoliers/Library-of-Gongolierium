@@ -4,6 +4,7 @@ import org.opencv.core.Mat;
 
 import edu.wpi.cscore.VideoSource;
 
+@Deprecated
 public interface CameraInterface {
 	/**
 	 * Get the view angle of the camera in degrees.

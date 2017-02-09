@@ -6,6 +6,7 @@ import org.opencv.core.Range;
  * Represents the color of an LED in HSV
  *
  */
+@Deprecated
 public interface LEDColor {
 
 	/**

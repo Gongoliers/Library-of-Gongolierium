@@ -10,6 +10,7 @@ import com.thegongoliers.math.TF;
  * Used to transform TargetReports.
  *
  */
+@Deprecated
 public class TargetTF {
 
 	/**

@@ -3,6 +3,7 @@ package com.thegongoliers.input.camera;
 import org.opencv.core.Mat;
 import org.opencv.core.Size;
 
+@Deprecated
 public abstract class AbstractCamera implements CameraInterface {
 
 	protected Mat frame;
