@@ -4,6 +4,7 @@ package com.thegongoliers.geometry;
  * The position of a point in 3D
  *
  */
+@Deprecated
 public class Point {
 	public double x, y, z;
 

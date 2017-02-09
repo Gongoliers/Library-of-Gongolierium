@@ -4,6 +4,7 @@ package com.thegongoliers.geometry;
  * Represents a direction as a 3D vector
  *
  */
+@Deprecated
 public class Vector3 {
 
 	public static final Vector3 i = new Vector3(1, 0, 0);

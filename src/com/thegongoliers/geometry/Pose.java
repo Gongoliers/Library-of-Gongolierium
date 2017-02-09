@@ -1,5 +1,6 @@
 package com.thegongoliers.geometry;
 
+@Deprecated
 public class Pose {
 	public Point position;
 	public Quaternion orientation;

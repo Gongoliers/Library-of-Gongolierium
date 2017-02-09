@@ -1,5 +1,6 @@
 package com.thegongoliers.geometry;
 
+@Deprecated
 public class Quaternion {
 	public double x, y, z, w;
 	

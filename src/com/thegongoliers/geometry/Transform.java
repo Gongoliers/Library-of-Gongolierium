@@ -1,5 +1,6 @@
 package com.thegongoliers.geometry;
 
+@Deprecated
 public class Transform {
 	public Vector3 translation;
 	public Quaternion rotation;
