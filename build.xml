@@ -26,5 +26,7 @@
   <property file="${user.home}/wpilib/java/${version}/ant/build.properties"/>
   
   <import file="${wpilib.ant.dir}/build.xml"/>
+	
+  <property name="classpath" value="${userLibs.dir}/CoordinateFrames.jar;${userLibs.dir}/frc-vision-api.jar"/>
 
 </project> 
