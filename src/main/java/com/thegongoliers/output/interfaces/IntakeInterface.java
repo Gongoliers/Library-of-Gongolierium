@@ -1,7 +1,5 @@
 package com.thegongoliers.output.interfaces;
 
-import com.thegongoliers.output.Stoppable;
-
 public interface IntakeInterface extends Stoppable {
 	/**
 	 * Intake in at the given speed

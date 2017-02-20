@@ -1,7 +1,5 @@
 package com.thegongoliers.output.interfaces;
 
-import com.thegongoliers.output.Stoppable;
-
 public interface GripperInterface extends Stoppable {
 	/**
 	 * Close the gripper.

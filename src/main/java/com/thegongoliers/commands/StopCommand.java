@@ -1,7 +1,7 @@
 package com.thegongoliers.commands;
 
 
-import com.thegongoliers.output.Stoppable;
+import com.thegongoliers.output.interfaces.Stoppable;
 
 import edu.wpi.first.wpilibj.command.InstantCommand;
 import edu.wpi.first.wpilibj.command.Subsystem;

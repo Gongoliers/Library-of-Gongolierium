@@ -1,5 +1,6 @@
 package com.thegongoliers.output;
 
+import com.thegongoliers.output.interfaces.Relay;
 import edu.wpi.first.wpilibj.Solenoid;
 
 public class EnhancedSolenoid implements Relay {

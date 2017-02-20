@@ -3,6 +3,8 @@ package com.thegongoliers.output;
 import com.thegongoliers.input.EnhancedXboxController;
 import com.thegongoliers.output.interfaces.MecanumDriveTrainInterface;
 
+import com.thegongoliers.output.interfaces.Relay;
+import com.thegongoliers.output.interfaces.Stoppable;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotDrive;
 import edu.wpi.first.wpilibj.SpeedController;

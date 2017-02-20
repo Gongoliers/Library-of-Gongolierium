@@ -1,7 +1,5 @@
 package com.thegongoliers.output.interfaces;
 
-import com.thegongoliers.output.Stoppable;
-
 public interface DriveTrainInterface extends Stoppable {
 	/**
 	 * Drive forward at the given speed

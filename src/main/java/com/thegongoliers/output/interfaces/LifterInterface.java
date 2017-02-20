@@ -1,7 +1,5 @@
 package com.thegongoliers.output.interfaces;
 
-import com.thegongoliers.output.Stoppable;
-
 public interface LifterInterface extends Stoppable {
 	/**
 	 * Lift up at the give speed
