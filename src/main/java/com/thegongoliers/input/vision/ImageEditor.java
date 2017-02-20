@@ -1,4 +1,4 @@
-package com.thegongoliers.input.camera;
+package com.thegongoliers.input.vision;
 
 import org.opencv.core.Mat;
 import org.opencv.core.Rect;

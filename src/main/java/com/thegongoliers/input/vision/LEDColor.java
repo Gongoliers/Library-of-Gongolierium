@@ -1,4 +1,4 @@
-package com.thegongoliers.input.camera;
+package com.thegongoliers.input.vision;
 
 import org.opencv.core.Range;
 
@@ -32,7 +32,7 @@ public interface LEDColor {
 	/**
 	 * A green superbright LED ring which produces light at 518 nm.
 	 */
-	public static LEDColor Green = new LEDColor() {
+	LEDColor Green = new LEDColor() {
 		@Override
 		public Range getHue() {
 			return new Range(75, 125);
@@ -53,7 +53,7 @@ public interface LEDColor {
 	/**
 	 * A green superbright LED ring (variant 2)
 	 */
-	public static LEDColor GreenV2 = new LEDColor() {
+	LEDColor GreenV2 = new LEDColor() {
 		@Override
 		public Range getHue() {
 			return new Range(70, 100);
