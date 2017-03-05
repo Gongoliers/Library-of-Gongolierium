@@ -3,7 +3,7 @@ package com.thegongoliers.math;
 /**
  * A Hermite 3rd order spline.
  */
-public class HermiteSpline {
+public class HermiteSpline implements Spline{
 
     private double p0, p1, v0, v1, totalTime;
 
@@ -36,12 +36,7 @@ public class HermiteSpline {
         this.totalTime = totalTime;
     }
 
-    /**
-     * Calculate the position of the spline at a given time.
-     *
-     * @param time The time in seconds of the spline (between 0 and the totalTime - totalTime defaults to 1)
-     * @return The position of the spline at the given time.
-     */
+    @Override
     public double calculate(double time) {
         time /= totalTime;
         double first = (2 * Math.pow(time, 3) - 3 * Math.pow(time, 2) + 1) * p0;
