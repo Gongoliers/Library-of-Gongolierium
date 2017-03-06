@@ -1,5 +1,7 @@
 package com.thegongoliers.input;
 
+import com.kylecorry.geometry.Pose2D;
+
 /**
  * A class for calculating the odometry of a robot from wheel encoders.
  */
@@ -63,4 +65,21 @@ public class Odometry {
     public static double ticksToDistance(double ticks, double ticksPerRotation, double radius) {
         return 2 * Math.PI * radius * ticks / ticksPerRotation;
     }
+
+    /**
+     * Update the pose of the robot based on the new odometry.
+     *
+     * @param previousPose The previous pose of the robot.
+     * @param left         The distance traveled by the left wheels.
+     * @param right        The distance traveled by the right wheels.
+     * @param wheelBase    The distance between the center of the left and right wheels.
+     * @return The new pose of the robot.
+     */
+    public static Pose2D updatePose(Pose2D previousPose, double left, double right, double wheelBase) {
+        double x = previousPose.x + getX(left, right, previousPose.theta);
+        double y = previousPose.y + getY(left, right, previousPose.theta);
+        double theta = previousPose.theta + getAngle(left, right, wheelBase);
+        return new Pose2D(x, y, theta);
+    }
+
 }
