@@ -2,7 +2,7 @@ package com.thegongoliers.output.interfaces;
 
 public interface LifterInterface extends Stoppable {
 	/**
-	 * Lift up at the give speed
+	 * Lift up at the given speed
 	 * 
 	 * @param speed
 	 *            The speed of the lifting mechanism from 0 to 1 inclusive
