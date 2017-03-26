@@ -14,7 +14,7 @@ public class EnhancedRobotDrive implements Stoppable, MecanumDriveTrainInterface
 
 	private double relativeAngle = 0;
 	private Gyro gyro;
-	private double kp = 0.01;
+	private double kp = 0.03;
 	private RobotDrive robotDrive;
 	private Relay transmission;
 
