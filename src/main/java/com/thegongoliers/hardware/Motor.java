@@ -14,29 +14,34 @@ public class Motor {
     private SpeedController speedController;
     private PID pidController;
     private ExponentialMovingAverage ema;
+    private double pulsesPerRevolution;
 
     /**
      * Creates a motor which is monitored by an encoder.
      *
-     * @param speedController The speed controller for the motor.
-     * @param encoder         The encoder on the motor shaft. The encoder distance per pulse should be set to 1 / pulses per revolution.
-     * @param pidController   The PID controller for closed loop feedback.
+     * @param speedController            The speed controller for the motor.
+     * @param encoder                    The encoder on the motor shaft.
+     * @param encoderPulsesPerRevolution The number of pulses per revolution of the encoder.
+     * @param pidController              The PID controller for closed loop feedback.
      */
-    public Motor(SpeedController speedController, Encoder encoder, PID pidController) {
+    public Motor(SpeedController speedController, Encoder encoder, double encoderPulsesPerRevolution, PID pidController) {
         this.encoder = encoder;
         this.speedController = speedController;
         this.pidController = pidController;
+        this.pulsesPerRevolution = encoderPulsesPerRevolution;
+        encoder.setDistancePerPulse(1.0 / pulsesPerRevolution);
         ema = new ExponentialMovingAverage(10);
     }
 
     /**
      * Creates a motor which is monitored by an encoder.
      *
-     * @param speedController The speed controller for the motor.
-     * @param encoder         The encoder on the motor shaft. The encoder distance per pulse should be set to 1 / pulses per revolution.
+     * @param speedController            The speed controller for the motor.
+     * @param encoder                    The encoder on the motor shaft.
+     * @param encoderPulsesPerRevolution The number of pulses per revolution of the encoder.
      */
-    public Motor(SpeedController speedController, Encoder encoder) {
-        this(speedController, encoder, new PID(0.25, 0, 0.01, 0.01));
+    public Motor(SpeedController speedController, Encoder encoder, double encoderPulsesPerRevolution) {
+        this(speedController, encoder, encoderPulsesPerRevolution, new PID(0.05, 0, 0.1, 0.01));
     }
 
     /**
@@ -72,6 +77,7 @@ public class Motor {
      * @return The RPM of the motor.
      */
     public double getRPM() {
+        encoder.setDistancePerPulse(1.0 / pulsesPerRevolution);
         return ema.calculate(encoder.getRate() * 60.0);
     }
 
