@@ -48,6 +48,19 @@ public class JoystickTransformer {
 	}
 
 	/**
+	 * Smooth the output of the joystick to prevent jitter and allow ramping of speeds.
+	 * @param input The value of the joystick.
+	 * @param lastSpeed The last speed of the motor (preferably the last time this was called)
+	 * @param smoothConstant The smoothing constant, which is greater than or equal to 1.
+	 * @return The adjusted joystick value which is smoothed, save this for the next call to this method.
+	 */
+	public static double smooth(double input, double lastSpeed, double smoothConstant){
+		if(smoothConstant < 1)
+			smoothConstant = 1;
+		return input + ((lastSpeed - input) / smoothConstant);
+	}
+
+	/**
 	 * Blocks movement with a radius of (0, 0)
 	 * 
 	 * @param x

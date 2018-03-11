@@ -1,6 +1,6 @@
 package com.thegongoliers.pathFollowing;
 
-import com.thegongoliers.input.Odometry;
+import com.thegongoliers.input.odometry.Odometry;
 
 public class PathStraightAwayCommand extends PathTaskCommand {
 

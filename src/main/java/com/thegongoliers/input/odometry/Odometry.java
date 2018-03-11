@@ -1,4 +1,4 @@
-package com.thegongoliers.input;
+package com.thegongoliers.input.odometry;
 
 import com.kylecorry.geometry.Pose2D;
 
