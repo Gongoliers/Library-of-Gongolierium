@@ -1,6 +1,4 @@
-package com.thegongoliers.input;
-
-import edu.wpi.first.wpilibj.DriverStation;
+package com.thegongoliers.input.gameMessages;
 
 public class GameSpecificMessage2018 extends GameSpecificMessage {
 

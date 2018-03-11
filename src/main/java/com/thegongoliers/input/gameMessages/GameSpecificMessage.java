@@ -1,4 +1,4 @@
-package com.thegongoliers.input;
+package com.thegongoliers.input.gameMessages;
 
 import edu.wpi.first.wpilibj.DriverStation;
 
