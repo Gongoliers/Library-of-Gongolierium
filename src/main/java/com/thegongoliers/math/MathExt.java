@@ -285,4 +285,21 @@ public class MathExt {
         return Math.tan(angle);
     }
 
+    /**
+     * Limit the max rate of increase.
+     * @param max The maximum rate allowed.
+     * @param value The current input value.
+     * @param lastValue The last value returned by this function.
+     * @return The updated input value.
+     */
+    public static double rateLimit(double max, double value, double lastValue){
+        double delta = value - lastValue;
+        double signOfDelta = sign(delta);
+        double newValue = value;
+        if(Math.abs(delta) >= max){
+            newValue = lastValue + signOfDelta * max;
+        }
+        return newValue;
+    }
+
 }
