@@ -1,15 +1,23 @@
 package com.thegongoliers.input.gameMessages;
 
-public class GameSpecificMessage2018 extends GameSpecificMessage {
+public class GameSpecificMessage2018  {
 
-    enum Location {
+    public enum Location {
         LEFT, RIGHT, UNKNOWN
     }
 
+    private String message;
+
+    public GameSpecificMessage2018(String message) {
+        this.message = message;
+        if(message == null){
+            this.message = "";
+        }
+    }
+
     public Location getAllianceSwitch(){
-        String gameMessage = getMessage();
-        if(getMessage().length() > 0){
-            char pos = gameMessage.charAt(0);
+        if(message.length() > 0){
+            char pos = message.charAt(0);
             if(Character.toLowerCase(pos) == 'r'){
                 return Location.RIGHT;
             } else {
@@ -20,9 +28,8 @@ public class GameSpecificMessage2018 extends GameSpecificMessage {
     }
 
     public Location getOpposingAllianceSwitch(){
-        String gameMessage = getMessage();
-        if(getMessage().length() > 2){
-            char pos = gameMessage.charAt(2);
+        if(message.length() > 2){
+            char pos = message.charAt(2);
             if(Character.toLowerCase(pos) == 'r'){
                 return Location.RIGHT;
             } else {
@@ -33,9 +40,8 @@ public class GameSpecificMessage2018 extends GameSpecificMessage {
     }
 
     public Location getScale(){
-        String gameMessage = getMessage();
-        if(getMessage().length() > 1){
-            char pos = gameMessage.charAt(1);
+        if(message.length() > 1){
+            char pos = message.charAt(1);
             if(Character.toLowerCase(pos) == 'r'){
                 return Location.RIGHT;
             } else {

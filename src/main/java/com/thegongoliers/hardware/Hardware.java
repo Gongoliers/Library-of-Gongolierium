@@ -2,12 +2,31 @@ package com.thegongoliers.hardware;
 
 import com.thegongoliers.input.Switch;
 
+import edu.wpi.first.wpilibj.buttons.Button;
 import edu.wpi.first.wpilibj.buttons.Trigger;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
 
 import java.util.function.BooleanSupplier;
 
 public class Hardware {
+
+	public static Button makeButton(BooleanSupplier booleanSupplier){
+		return new Button() {
+			@Override
+			public boolean get() {
+				return booleanSupplier.getAsBoolean();
+			}
+		};
+	}
+
+	public static Button triggerToButton(Trigger t){
+		return new Button() {
+			@Override
+			public boolean get() {
+				return t.get();
+			}
+		};
+	}
 
 	public static Trigger switchToTrigger(Switch s){
 		return new Trigger() {
