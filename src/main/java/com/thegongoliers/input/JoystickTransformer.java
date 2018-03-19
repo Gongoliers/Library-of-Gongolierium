@@ -48,17 +48,25 @@ public class JoystickTransformer {
 	}
 
 	/**
-	 * Smooth the output of the joystick to prevent jitter and allow ramping of speeds.
+	 * Blocks movement within a threshold on an axis, but scales the output to be in [-1, 1]
 	 * @param input The value of the joystick.
-	 * @param lastSpeed The last speed of the motor (preferably the last time this was called)
-	 * @param smoothConstant The smoothing constant, which is greater than or equal to 1.
-	 * @return The adjusted joystick value which is smoothed, save this for the next call to this method.
+	 * @param thresh The deadzone threshold.
+	 * @return The adjusted joystick value with the deadzone.
 	 */
-	public static double smooth(double input, double lastSpeed, double smoothConstant){
-		if(smoothConstant < 1)
-			smoothConstant = 1;
-		return input + ((lastSpeed - input) / smoothConstant);
+	public static double scaledDeadzone(double input, double thresh){
+		double scaleIntercept = thresh / (1.0 - thresh);
+		double scaleSlope = 1.0 / (1.0 - thresh);
+
+		double output = 0;
+		if(input < -thresh){
+			output = input * scaleSlope + scaleIntercept;
+		} else if (input > thresh){
+			output = input * scaleSlope - scaleIntercept;
+		}
+
+		return output;
 	}
+
 
 	/**
 	 * Blocks movement with a radius of (0, 0)
