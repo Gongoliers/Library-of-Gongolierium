@@ -10,19 +10,22 @@ public class EncoderUtils {
     }
 
     public static void addMechanism(Encoder encoder, double distancePerRevolution){
-        double degPerPulse = encoder.getDistancePerPulse();
-        double distancePerDegree = distancePerRevolution / 360.0;
-        encoder.setDistancePerPulse(distancePerDegree * degPerPulse);
+        encoder.setDistancePerPulse(distancePerRevolution * encoder.getDistancePerPulse());
     }
 
     public static void setPulsesPerRevolution(Encoder encoder, double pulses){
-        double degreesPerPulse = pulses / 360.0;
-        encoder.setDistancePerPulse(degreesPerPulse);
+        if(pulses != 0) {
+            encoder.setDistancePerPulse(1 / pulses);
+        }
     }
 
     public static void addWheel(Encoder encoder, double diameter){
         double distancePerRevolution = diameter * Math.PI;
         addMechanism(encoder, distancePerRevolution);
+    }
+
+    public static void addFudgeFactor(Encoder encoder, double factor){
+        encoder.setDistancePerPulse(encoder.getDistancePerPulse() * factor);
     }
 
     public class EncoderDistanceBuilder {
@@ -45,6 +48,11 @@ public class EncoderUtils {
 
         public EncoderDistanceBuilder addWheel(double diameter){
             EncoderUtils.addWheel(encoder, diameter);
+            return this;
+        }
+
+        public EncoderDistanceBuilder addFudgeFactor(double fudgeFactor){
+            EncoderUtils.addFudgeFactor(encoder, fudgeFactor);
             return this;
         }
 
