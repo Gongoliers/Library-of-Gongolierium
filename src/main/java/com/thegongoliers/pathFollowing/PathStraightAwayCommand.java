@@ -13,26 +13,19 @@ public class PathStraightAwayCommand extends PathTaskCommand {
 
     @Override
     protected void initialize() {
-        drivetrain.resetEncoders();
+        drivetrain.resetDistance();
     }
 
     @Override
     protected void execute() {
-        double currentDistance = getCurrentDistance();
+        double currentDistance = drivetrain.getCenterDistance();
 
-        drivetrain.forward(drivetrain.getDriveDistancePID().getOutput(currentDistance, distance));
-    }
-
-    private double getCurrentDistance() {
-        double leftDistance = drivetrain.getLeftDistance();
-        double rightDistance = drivetrain.getRightDistance();
-
-        return Odometry.getDistance(leftDistance, rightDistance);
+        drivetrain.tank(drivetrain.getLeftDistanceController().calculate(currentDistance, distance), drivetrain.getRightDistanceController().calculate(currentDistance, distance));
     }
 
     @Override
     protected boolean isFinished() {
-        return drivetrain.getDriveDistancePID().isAtTargetPosition(getCurrentDistance(), distance);
+        return drivetrain.getLeftDistanceController().isOnTarget(drivetrain.getCenterDistance(), distance);
     }
 
     @Override

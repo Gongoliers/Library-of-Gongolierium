@@ -1,6 +1,6 @@
 package com.thegongoliers.output.interfaces;
 
-import com.thegongoliers.pathFollowing.PID;
+import com.thegongoliers.pathFollowing.MotionProfileController;
 
 public interface SmartDrivetrain extends DriveTrainInterface {
 
@@ -8,14 +8,23 @@ public interface SmartDrivetrain extends DriveTrainInterface {
 
     double getRightDistance();
 
-    void resetEncoders();
+    void resetDistance();
 
-    double getAngle();
+    double getHeading();
 
-    void resetGyro();
+    void resetHeading();
 
-    PID getDriveDistancePID();
+    MotionProfileController getLeftDistanceController();
+    
+    MotionProfileController getRightDistanceController();
 
-    PID getRotateAnglePID();
+    MotionProfileController getHeadingController();
 
+    double getMaxVelocity();
+
+    double getMaxAcceleration();
+
+    double getMaxJerk();
+
+    double getWheelbaseWidth();
 }

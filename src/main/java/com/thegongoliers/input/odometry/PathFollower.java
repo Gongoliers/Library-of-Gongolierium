@@ -1,6 +1,7 @@
 package com.thegongoliers.input.odometry;
 
-import edu.wpi.first.wpilibj.*;
+import com.thegongoliers.pathFollowing.MotionProfileController;
+import com.thegongoliers.pathFollowing.SmartDriveTrainSubsystem;
 import jaci.pathfinder.Pathfinder;
 import jaci.pathfinder.Trajectory;
 import jaci.pathfinder.Waypoint;
@@ -26,31 +27,28 @@ public class PathFollower {
         return modifier;
     }
 
-    public void followTrajectory(PIDController leftController, PIDController rightController, List<Waypoint> waypoints, double timestep, double currentTime){
+    public TankModifier generatePath(SmartDriveTrainSubsystem drivetrain, List<Waypoint> waypoints, double timestep){
+        return generateTankTrajectory(waypoints, timestep, drivetrain.getMaxVelocity(), drivetrain.getMaxAcceleration(), drivetrain.getMaxJerk(), drivetrain.getWheelbaseWidth());
+    }
 
+    public void followPath(SmartDriveTrainSubsystem drivetrain, TankModifier path, double timestep, double currentTime){
+        double left = calculateSpeed(drivetrain.getLeftDistanceController(), path.getLeftTrajectory(), drivetrain.getLeftDistance(), timestep, currentTime);
+        double right = calculateSpeed(drivetrain.getRightDistanceController(), path.getRightTrajectory(), drivetrain.getRightDistance(), timestep, currentTime);
+        drivetrain.tank(left, right);
     }
 
 
-    public void followTrajectory(PIDController velocityController, Trajectory trajectory, double timestep, double currentTime){
+    private double calculateSpeed(MotionProfileController controller, Trajectory trajectory, double currentPosition, double timestep, double currentTime){
         if(timestep == 0){
-            return;
+            return 0;
         }
 
         int pos = (int) Math.floor(currentTime / timestep);
         if (pos >= trajectory.length()){
-            return;
+            return 0;
         }
 
         Trajectory.Segment segment = trajectory.get(pos);
-
-        speedMotorToVelocity(velocityController, segment.velocity);
+        return controller.calculate(currentPosition, segment.position, segment.velocity, segment.acceleration);
     }
-
-    private void speedMotorToVelocity(PIDController controller, double velocity){
-        if(!controller.isEnabled())
-            controller.enable();
-        controller.setSetpoint(velocity);
-    }
-
-
 }

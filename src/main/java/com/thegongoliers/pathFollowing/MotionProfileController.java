@@ -4,13 +4,14 @@ import com.thegongoliers.input.time.Clock;
 import com.thegongoliers.input.time.RobotClock;
 import com.thegongoliers.math.MathExt;
 
-public class SimpleMotionProfileController {
+public class MotionProfileController {
 
     private double kp;
     private double ki;
     private double kd;
     private double kv;
     private double ka;
+    private double tolerance;
 
     private double prevError;
 
@@ -31,9 +32,10 @@ public class SimpleMotionProfileController {
      * @param kd The derivative feedback constant.
      * @param kv The velocity feed forward constant. Typically 1 / max velocity.
      * @param ka The acceleration feed forward constant.
+     * @param tolerance The absolute tolerance.
      */
-    public SimpleMotionProfileController(double kp, double ki, double kd, double kv, double ka) {
-        this(kp, ki, kd, kv, ka, new RobotClock());
+    public MotionProfileController(double kp, double ki, double kd, double kv, double ka, double tolerance) {
+        this(kp, ki, kd, kv, ka, tolerance, new RobotClock());
     }
 
     /**
@@ -43,14 +45,16 @@ public class SimpleMotionProfileController {
      * @param kd The derivative feedback constant.
      * @param kv The velocity feed forward constant. Typically 1 / max velocity.
      * @param ka The acceleration feed forward constant.
+     * @param tolerance The absolute tolerance.
      * @param clock The clock to use.
      */
-    public SimpleMotionProfileController(double kp, double ki, double kd, double kv, double ka, Clock clock) {
+    public MotionProfileController(double kp, double ki, double kd, double kv, double ka, double tolerance, Clock clock) {
         this.kp = kp;
         this.ki = ki;
         this.kd = kd;
         this.kv = kv;
         this.ka = ka;
+        this.tolerance = tolerance;
         this.clock = clock;
     }
 
@@ -141,6 +145,11 @@ public class SimpleMotionProfileController {
         iState = 0;
         prevError = 0;
         lastTime = -1;
+    }
+
+    public boolean isOnTarget(double currentPosition, double targetPosition){
+        double error = targetPosition - currentPosition;
+        return Math.abs(error) <= tolerance;
     }
 
     /**

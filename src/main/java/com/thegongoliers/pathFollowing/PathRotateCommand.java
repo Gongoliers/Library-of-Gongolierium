@@ -11,19 +11,19 @@ public class PathRotateCommand extends PathTaskCommand {
 
     @Override
     protected void initialize() {
-        drivetrain.resetGyro();
+        drivetrain.resetHeading();
     }
 
     @Override
     protected void execute() {
-        double currentAngle = drivetrain.getAngle();
+        double currentAngle = drivetrain.getHeading();
 
-        drivetrain.rotateRight(drivetrain.getRotateAnglePID().getOutput(currentAngle, angleDegrees));
+        drivetrain.rotateRight(drivetrain.getHeadingController().calculate(currentAngle, angleDegrees));
     }
 
     @Override
     protected boolean isFinished() {
-        return drivetrain.getRotateAnglePID().isAtTargetPosition(drivetrain.getAngle(), angleDegrees);
+        return drivetrain.getHeadingController().isOnTarget(drivetrain.getHeading(), angleDegrees);
     }
 
     @Override
