@@ -34,4 +34,14 @@ public class PathStraightAwayCommand extends PathTaskCommand {
     protected boolean isFinished() {
         return drivetrain.getDriveDistancePID().isAtTargetPosition(getCurrentDistance(), distance);
     }
+
+    @Override
+    protected void end() {
+        drivetrain.forward(0);
+    }
+
+    @Override
+    protected void interrupted() {
+        end();
+    }
 }

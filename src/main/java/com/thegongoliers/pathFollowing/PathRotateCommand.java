@@ -25,4 +25,14 @@ public class PathRotateCommand extends PathTaskCommand {
     protected boolean isFinished() {
         return drivetrain.getRotateAnglePID().isAtTargetPosition(drivetrain.getAngle(), angleDegrees);
     }
+
+    @Override
+    protected void end() {
+        drivetrain.rotateRight(0);
+    }
+
+    @Override
+    protected void interrupted() {
+        end();
+    }
 }

@@ -1,16 +1,25 @@
 package com.thegongoliers.output;
 
+import com.thegongoliers.math.MathExt;
+
 public class PID {
 
 	private final double kp;
 	private final double ki;
 	private final double kd;
+
+	private double iState = 0;
+	private double dState;
+
 	private final double threshold;
-	private double previousError;
-	private double sumError = 0;
 	private boolean first = true;
-	boolean continuous = false;
-	public double minInput = 0, maxInput = 1;
+	private boolean continuous = false;
+	private double minInput = 0;
+	private double maxInput = 1;
+	private double maxOutput = 1;
+	private double minOutput = -1;
+	private double maxI = maxOutput;
+	private double minI = minOutput;
 
 	/**
 	 * Creates a simple PID calculator.
@@ -80,13 +89,21 @@ public class PID {
 	public double getOutput(double currentPosition, double targetPosition) {
 		double error = getContinuousError(targetPosition - currentPosition);
 		if (first) {
-			previousError = error;
+			dState = currentPosition;
 			first = false;
 		}
-		sumError += error;
-		double pidOutput = error * kp + sumError * ki + (error - previousError) * kd;
-		previousError = error;
-		return pidOutput;
+		iState += error;
+		iState = MathExt.toRange(iState, minI, maxI);
+
+		double pTerm = kp * error;
+		double iTerm = ki * iState;
+		double dTerm = (dState - currentPosition) * kd;
+
+        dState = currentPosition;
+
+        double pidOutput = pTerm + iTerm + dTerm;
+
+		return MathExt.toRange(pidOutput, minOutput, maxOutput);
 	}
 
 	/**
