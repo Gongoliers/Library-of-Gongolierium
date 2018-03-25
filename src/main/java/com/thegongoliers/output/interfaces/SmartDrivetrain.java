@@ -1,6 +1,6 @@
 package com.thegongoliers.output.interfaces;
 
-import com.thegongoliers.output.PID;
+import com.thegongoliers.pathFollowing.PID;
 
 public interface SmartDrivetrain extends DriveTrainInterface {
 

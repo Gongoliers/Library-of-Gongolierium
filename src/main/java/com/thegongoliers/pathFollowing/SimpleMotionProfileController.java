@@ -1,9 +1,8 @@
-package com.thegongoliers.output;
+package com.thegongoliers.pathFollowing;
 
 import com.thegongoliers.input.time.Clock;
 import com.thegongoliers.input.time.RobotClock;
 import com.thegongoliers.math.MathExt;
-import edu.wpi.first.wpilibj.Timer;
 
 public class SimpleMotionProfileController {
 

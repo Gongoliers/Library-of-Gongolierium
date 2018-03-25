@@ -1,4 +1,4 @@
-package com.thegongoliers.output;
+package com.thegongoliers.pathFollowing;
 
 import com.thegongoliers.math.MathExt;
 

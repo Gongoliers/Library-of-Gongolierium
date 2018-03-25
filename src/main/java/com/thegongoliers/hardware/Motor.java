@@ -1,7 +1,7 @@
 package com.thegongoliers.hardware;
 
 import com.thegongoliers.math.ExponentialMovingAverage;
-import com.thegongoliers.output.PID;
+import com.thegongoliers.pathFollowing.PID;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.SpeedController;
 
