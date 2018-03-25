@@ -16,4 +16,14 @@ public abstract class PathTaskCommand extends Command {
 
     @Override
     abstract protected boolean isFinished();
+
+    @Override
+    protected void end() {
+        drivetrain.stop();
+    }
+
+    @Override
+    protected void interrupted() {
+        drivetrain.stop();
+    }
 }
