@@ -11,6 +11,12 @@ public abstract class PathTaskCommand extends Command {
         this.drivetrain = drivetrain;
     }
 
+    public PathTaskCommand(SmartDriveTrainSubsystem drivetrain, double timeout){
+        requires(drivetrain);
+        this.drivetrain = drivetrain;
+        setTimeout(timeout);
+    }
+
     @Override
     abstract protected void execute();
 

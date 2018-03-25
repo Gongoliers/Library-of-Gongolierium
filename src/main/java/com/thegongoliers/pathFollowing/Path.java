@@ -22,6 +22,14 @@ public class Path implements Iterable<PathTaskCommand> {
         path.add(new PathRotateCommand(drivetrain, degrees));
     }
 
+    public void addStraightAway(double distance, double timeout) {
+        path.add(new PathStraightAwayCommand(drivetrain, distance, timeout));
+    }
+
+    public void addRotation(double degrees, double timeout) {
+        path.add(new PathRotateCommand(drivetrain, degrees, timeout));
+    }
+
     @Override
     public Iterator<PathTaskCommand> iterator() {
         return path.iterator();

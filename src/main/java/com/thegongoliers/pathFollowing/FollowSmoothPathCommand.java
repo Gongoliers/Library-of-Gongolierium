@@ -1,11 +1,13 @@
 package com.thegongoliers.pathFollowing;
 
+import com.thegongoliers.math.PathWaypoint;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
 import jaci.pathfinder.Waypoint;
 import jaci.pathfinder.modifiers.TankModifier;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class FollowSmoothPathCommand extends Command {
 
@@ -14,10 +16,10 @@ public class FollowSmoothPathCommand extends Command {
     private double timestep = 20 / 1000.0;
     private double startTime = 0;
 
-    public FollowSmoothPathCommand(SmartDriveTrainSubsystem drivetrain, List<Waypoint> waypoints){
+    public FollowSmoothPathCommand(SmartDriveTrainSubsystem drivetrain, List<PathWaypoint> waypoints){
         requires(drivetrain);
         this.drivetrain = drivetrain;
-        path = PathFollower.generatePath(drivetrain, waypoints, timestep);
+        path = PathFollower.generatePath(drivetrain, waypoints.stream().map(PathWaypoint::toWaypoint).collect(Collectors.toList()), timestep);
     }
 
     @Override

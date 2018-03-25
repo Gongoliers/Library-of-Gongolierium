@@ -1,6 +1,5 @@
 package com.thegongoliers.pathFollowing;
 
-import com.thegongoliers.input.odometry.Odometry;
 
 public class PathStraightAwayCommand extends PathTaskCommand {
 
@@ -8,6 +7,11 @@ public class PathStraightAwayCommand extends PathTaskCommand {
 
     public PathStraightAwayCommand(SmartDriveTrainSubsystem drivetrain, double distance) {
         super(drivetrain);
+        this.distance = distance;
+    }
+
+    public PathStraightAwayCommand(SmartDriveTrainSubsystem drivetrain, double distance, double timeout) {
+        super(drivetrain, timeout);
         this.distance = distance;
     }
 

@@ -9,6 +9,11 @@ public class PathRotateCommand extends PathTaskCommand {
         this.angleDegrees = angleDegrees;
     }
 
+    public PathRotateCommand(SmartDriveTrainSubsystem drivetrain, double angleDegrees, double timeout) {
+        super(drivetrain, timeout);
+        this.angleDegrees = angleDegrees;
+    }
+
     @Override
     protected void initialize() {
         drivetrain.resetHeading();
