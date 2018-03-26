@@ -1,5 +1,6 @@
 package com.thegongoliers.math;
 
+import com.thegongoliers.math.spline.HermiteSpline;
 import org.junit.Test;
 
 import static org.junit.Assert.*;

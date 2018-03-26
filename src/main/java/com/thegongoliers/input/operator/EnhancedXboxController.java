@@ -1,4 +1,4 @@
-package com.thegongoliers.input;
+package com.thegongoliers.input.operator;
 
 import com.kylecorry.geometry.Point;
 import edu.wpi.first.wpilibj.XboxController;

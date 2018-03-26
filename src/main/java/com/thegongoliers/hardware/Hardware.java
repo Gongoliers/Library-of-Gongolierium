@@ -1,6 +1,6 @@
 package com.thegongoliers.hardware;
 
-import com.thegongoliers.input.Switch;
+import com.thegongoliers.input.switches.Switch;
 
 import edu.wpi.first.wpilibj.buttons.Button;
 import edu.wpi.first.wpilibj.buttons.Trigger;

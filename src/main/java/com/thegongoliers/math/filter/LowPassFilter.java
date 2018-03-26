@@ -1,4 +1,4 @@
-package com.thegongoliers.math;
+package com.thegongoliers.math.filter;
 
 public class LowPassFilter implements Filter{
 

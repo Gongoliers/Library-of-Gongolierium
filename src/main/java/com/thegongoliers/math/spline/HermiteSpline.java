@@ -1,4 +1,4 @@
-package com.thegongoliers.math;
+package com.thegongoliers.math.spline;
 
 /**
  * A Hermite 3rd order spline.

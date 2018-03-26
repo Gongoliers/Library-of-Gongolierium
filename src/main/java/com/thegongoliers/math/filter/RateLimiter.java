@@ -1,4 +1,6 @@
-package com.thegongoliers.math;
+package com.thegongoliers.math.filter;
+
+import com.thegongoliers.math.MathExt;
 
 public class RateLimiter implements Filter{
 

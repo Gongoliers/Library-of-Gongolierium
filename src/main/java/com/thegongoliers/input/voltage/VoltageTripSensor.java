@@ -1,6 +1,6 @@
 package com.thegongoliers.input.voltage;
 
-import com.thegongoliers.input.Switch;
+import com.thegongoliers.input.switches.Switch;
 
 public abstract class VoltageTripSensor implements Switch {
 	protected VoltageSensor sensor;

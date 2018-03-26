@@ -1,6 +1,7 @@
 package com.thegongoliers.input.vision;
 
-import org.opencv.core.Range;
+
+import com.kylecorry.geometry.Range;
 
 /**
  * Represents the color of an LED in HSV

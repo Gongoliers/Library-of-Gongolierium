@@ -1,6 +1,6 @@
 package com.thegongoliers.input.voltage;
 
-import com.thegongoliers.input.ResettableSwitch;
+import com.thegongoliers.input.switches.ResettableSwitch;
 
 public class VoltageSpikeSensor implements ResettableSwitch {
 

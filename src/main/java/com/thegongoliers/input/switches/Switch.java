@@ -1,4 +1,4 @@
-package com.thegongoliers.input;
+package com.thegongoliers.input.switches;
 
 public interface Switch {
 	/**
@@ -13,7 +13,7 @@ public interface Switch {
 	 * 
 	 * @return The inverted switch
 	 */
-	default public Switch invert() {
+	default Switch invert() {
 		return () -> !isTriggered();
 	}
 
@@ -26,7 +26,7 @@ public interface Switch {
 	 *            The second switch
 	 * @return The combined switch consisting of s1 and s2 in an and gate.
 	 */
-	public static Switch and(Switch s1, Switch s2) {
+	static Switch and(Switch s1, Switch s2) {
 		return () -> s1.isTriggered() && s2.isTriggered();
 	}
 
@@ -39,7 +39,7 @@ public interface Switch {
 	 *            The second switch
 	 * @return The combined switch consisting of s1 and s2 in an or gate.
 	 */
-	public static Switch or(Switch s1, Switch s2) {
+	static Switch or(Switch s1, Switch s2) {
 		return () -> s1.isTriggered() || s2.isTriggered();
 	}
 }

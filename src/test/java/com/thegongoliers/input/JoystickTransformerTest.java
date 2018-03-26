@@ -1,5 +1,6 @@
 package com.thegongoliers.input;
 
+import com.thegongoliers.input.operator.JoystickTransformer;
 import org.junit.Test;
 
 import static org.junit.Assert.*;

@@ -1,4 +1,4 @@
-package com.thegongoliers.math;
+package com.thegongoliers.math.spline;
 
 /**
  * A linear interpolation
