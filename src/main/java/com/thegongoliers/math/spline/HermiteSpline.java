@@ -46,4 +46,17 @@ public class HermiteSpline implements Spline{
         return first + second + third + fourth;
     }
 
+    public double calculateVelocity(double time){
+        double dt = 0.0001;
+        double pos = calculate(time);
+        return (pos - calculate(time - dt)) / dt;
+    }
+
+    public double calculateAcceleration(double time){
+        double dt = 0.0001;
+        return (calculateVelocity(time + dt) - calculateVelocity(time)) / (2 * dt);
+    }
+
+
+
 }

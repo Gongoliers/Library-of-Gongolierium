@@ -9,8 +9,8 @@ public class MotionProfileController {
     private double kp;
     private double ki;
     private double kd;
-    private double kv;
-    private double ka;
+    private double kffv;
+    private double kffa;
     private double tolerance;
 
     private double prevError;
@@ -30,12 +30,12 @@ public class MotionProfileController {
      * @param kp The proportional feedback constant.
      * @param ki The integral feedback constant.
      * @param kd The derivative feedback constant.
-     * @param kv The velocity feed forward constant. Typically 1 / max velocity.
-     * @param ka The acceleration feed forward constant.
+     * @param kffv The velocity feed forward constant. Typically 1 / max velocity.
+     * @param kffa The acceleration feed forward constant.
      * @param tolerance The absolute tolerance.
      */
-    public MotionProfileController(double kp, double ki, double kd, double kv, double ka, double tolerance) {
-        this(kp, ki, kd, kv, ka, tolerance, new RobotClock());
+    public MotionProfileController(double kp, double ki, double kd, double kffv, double kffa, double tolerance) {
+        this(kp, ki, kd, kffv, kffa, tolerance, new RobotClock());
     }
 
     /**
@@ -43,17 +43,17 @@ public class MotionProfileController {
      * @param kp The proportional feedback constant.
      * @param ki The integral feedback constant.
      * @param kd The derivative feedback constant.
-     * @param kv The velocity feed forward constant. Typically 1 / max velocity.
-     * @param ka The acceleration feed forward constant.
+     * @param kffv The velocity feed forward constant. Typically 1 / max velocity.
+     * @param kffa The acceleration feed forward constant.
      * @param tolerance The absolute tolerance.
      * @param clock The clock to use.
      */
-    public MotionProfileController(double kp, double ki, double kd, double kv, double ka, double tolerance, Clock clock) {
+    public MotionProfileController(double kp, double ki, double kd, double kffv, double kffa, double tolerance, Clock clock) {
         this.kp = kp;
         this.ki = ki;
         this.kd = kd;
-        this.kv = kv;
-        this.ka = ka;
+        this.kffv = kffv;
+        this.kffa = kffa;
         this.tolerance = tolerance;
         this.clock = clock;
     }
@@ -165,8 +165,8 @@ public class MotionProfileController {
 
         double pTerm = kp * error;
         double dTerm = 0;
-        double vTerm = kv * targetVelocity;
-        double aTerm = ka * targetAcceleration;
+        double vTerm = kffv * targetVelocity;
+        double aTerm = kffa * targetAcceleration;
 
         iState += error;
         iState = MathExt.toRange(iState, minI, maxI);
