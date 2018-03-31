@@ -1,11 +1,13 @@
 package com.thegongoliers.output;
 
+import com.thegongoliers.annotations.Untested;
 import com.thegongoliers.input.PDP;
 import com.thegongoliers.input.current.CurrentSensor;
 import com.thegongoliers.math.MathExt;
 import com.thegongoliers.output.interfaces.IMotor;
 import edu.wpi.first.wpilibj.SpeedController;
 
+@Untested
 public class Motor implements IMotor {
 
     private enum ControlType {
