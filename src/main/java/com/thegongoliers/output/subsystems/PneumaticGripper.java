@@ -1,20 +1,20 @@
 package com.thegongoliers.output.subsystems;
 
-import com.thegongoliers.output.EnhancedSolenoid;
+import com.thegongoliers.output.Piston;
 import com.thegongoliers.output.interfaces.GripperInterface;
 
 public class PneumaticGripper implements GripperInterface {
 
-	private final EnhancedSolenoid solenoid;
+	private final Piston piston;
 
 	/**
-	 * Creates a pneumatic gripper from a solenoid.
+	 * Creates a pneumatic gripper from a piston.
 	 * 
-	 * @param solenoid
-	 *            The gripper's solenoid.
+	 * @param piston
+	 *            The gripper's piston.
 	 */
-	public PneumaticGripper(EnhancedSolenoid solenoid) {
-		this.solenoid = solenoid;
+	public PneumaticGripper(Piston piston) {
+		this.piston = piston;
 	}
 
 	@Override
@@ -23,22 +23,22 @@ public class PneumaticGripper implements GripperInterface {
 
 	@Override
 	public void close() {
-		solenoid.extend();
+		piston.extend();
 	}
 
 	@Override
 	public boolean isClosed() {
-		return solenoid.isExtended();
+		return piston.isExtended();
 	}
 
 	@Override
 	public boolean isOpened() {
-		return solenoid.isRetracted();
+		return piston.isRetracted();
 	}
 
 	@Override
 	public void open() {
-		solenoid.retract();
+		piston.retract();
 	}
 
 }
