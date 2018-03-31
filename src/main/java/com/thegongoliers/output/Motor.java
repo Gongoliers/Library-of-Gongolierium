@@ -123,17 +123,19 @@ public class Motor implements IMotor {
 
     @Override
     public void follow(IMotor motor) {
-        motor.addFollower(this);
+        if(motor != null)
+            motor.addFollower(this);
     }
 
     @Override
     public void unfollow(IMotor motor) {
-        motor.removeFollower(this);
+        if(motor != null)
+            motor.removeFollower(this);
     }
 
     @Override
     public void addFollower(IMotor motor) {
-        if(motor != this && !followers.contains(motor)){
+        if(motor != null && motor != this && !followers.contains(motor)){
             followers.add(motor);
             motor.setPWM(getPWM(), getDirection());
         }
@@ -141,7 +143,7 @@ public class Motor implements IMotor {
 
     @Override
     public void removeFollower(IMotor motor) {
-        if(followers.contains(motor)){
+        if(motor != null && followers.contains(motor)){
             followers.remove(motor);
             motor.setPWM(0, Direction.Stopped);
         }
