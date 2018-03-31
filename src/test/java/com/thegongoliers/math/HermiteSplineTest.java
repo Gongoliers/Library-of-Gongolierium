@@ -16,6 +16,17 @@ public class HermiteSplineTest {
         assertEquals(hermiteSpline.calculate(1), 2, 0);
         assertEquals(hermiteSpline.calculate(0.5), 1, 0.0000001);
         assertEquals(hermiteSpline.calculate(0.75), 1.6875, 0.0001);
+
+        double dt = 0.0001;
+        double pos = hermiteSpline.calculate(0.5);
+        double vel = (pos - hermiteSpline.calculate(0.5 - dt)) / dt;
+
+        assertEquals(hermiteSpline.derivative(0.5), vel, 0.01);
+
+        double accel = (hermiteSpline.derivative(0.75 + dt) - hermiteSpline.derivative(0.75)) / dt;
+
+        assertEquals(hermiteSpline.doubleDerivative(0.75), accel, 0.01);
+
     }
 
     @Test

@@ -1,9 +1,12 @@
 package com.thegongoliers.pathFollowing;
 
+import com.thegongoliers.annotations.TestedBy;
+
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
+@TestedBy(team = "5112", year = "2018")
 public class Path implements Iterable<PathTaskCommand> {
 
     private List<PathTaskCommand> path;

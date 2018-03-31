@@ -16,6 +16,14 @@ public class LinearInterpolationTest {
         assertEquals(linearInterpolation.calculate(1), 2, 0);
         assertEquals(linearInterpolation.calculate(0), 0, 0);
         assertEquals(linearInterpolation.calculate(0.75), 1.5, 0);
+        LinearInterpolation lerp = new LinearInterpolation(2, -2);
+        assertEquals(lerp.calculate(0.5), 0, 0);
+        assertEquals(lerp.calculate(0.25), 1, 0);
+        assertEquals(lerp.calculate(0.75), -1, 0);
+        assertEquals(lerp.derivative(0.5), -4, 0);
+        assertEquals(lerp.doubleDerivative(0.5), 0, 0);
+        assertEquals(lerp.integral(1), 0, 0);
+        assertEquals(linearInterpolation.integral(1), 1, 0);
     }
 
     @Test

@@ -46,15 +46,34 @@ public class HermiteSpline implements Spline{
         return first + second + third + fourth;
     }
 
-    public double calculateVelocity(double time){
-        double dt = 0.0001;
-        double pos = calculate(time);
-        return (pos - calculate(time - dt)) / dt;
+    @Override
+    public double integral(double time) {
+        time /= totalTime;
+        double first = (0.5 * Math.pow(time, 4) - Math.pow(time, 2) + 1) * p0;
+        double second = (0.25 * Math.pow(time, 4) - 2/3.0 * Math.pow(time, 3) + 0.5 * Math.pow(time, 2)) * v0;
+        double third = (-0.5 * Math.pow(time, 4) + Math.pow(time, 3)) * p1;
+        double fourth = (0.25 * Math.pow(time, 3) - 1 / 3.0 * Math.pow(time, 3)) * v1;
+        return first + second + third + fourth;
     }
 
-    public double calculateAcceleration(double time){
-        double dt = 0.0001;
-        return (calculateVelocity(time + dt) - calculateVelocity(time)) / (2 * dt);
+    @Override
+    public double derivative(double time){
+        time /= totalTime;
+        double first = (6 * Math.pow(time, 2) - 6 * time) * p0;
+        double second = (3 * Math.pow(time, 2) - 4 * time + 1) * v0;
+        double third = (-6 * Math.pow(time, 2) + 6 * time) * p1;
+        double fourth = (3 * Math.pow(time, 2) - 2 * time) * v1;
+        return first + second + third + fourth;
+    }
+
+    @Override
+    public double doubleDerivative(double time){
+        time /= totalTime;
+        double first = (12 * time - 6) * p0;
+        double second = (6 * time - 4) * v0;
+        double third = (-12 * time + 6) * p1;
+        double fourth = (6 * time - 2) * v1;
+        return first + second + third + fourth;
     }
 
 

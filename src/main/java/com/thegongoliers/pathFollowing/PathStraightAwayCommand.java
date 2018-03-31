@@ -1,6 +1,8 @@
 package com.thegongoliers.pathFollowing;
 
+import com.thegongoliers.annotations.TestedBy;
 
+@TestedBy(team = "5112", year = "2018")
 public class PathStraightAwayCommand extends PathTaskCommand {
 
     private double distance;

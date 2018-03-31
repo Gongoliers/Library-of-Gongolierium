@@ -6,6 +6,8 @@ package com.thegongoliers.math.spline;
 public class LinearInterpolation implements Spline {
 
     private double p0, p1, totalTime;
+    private double slope, intercept;
+
 
     /**
      * Creates a linear interpolation from p0 to p1. The total time is 1 second.
@@ -28,11 +30,24 @@ public class LinearInterpolation implements Spline {
         this.p0 = p0;
         this.p1 = p1;
         this.totalTime = totalTime;
+        slope = (p1 - p0) / totalTime;
+        intercept = p0;
     }
 
     @Override
     public double calculate(double time) {
-        time /= totalTime;
-        return p0 + p1 * time;
+        return intercept + slope * time;
+    }
+
+    public double integral(double time){
+        return intercept * time + slope / 2 * Math.pow(time, 2);
+    }
+
+    public double derivative(double time){
+        return slope;
+    }
+
+    public double doubleDerivative(double time){
+        return 0;
     }
 }

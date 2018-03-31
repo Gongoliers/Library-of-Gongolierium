@@ -1,10 +1,12 @@
 package com.thegongoliers.pathFollowing;
 
+import com.thegongoliers.annotations.TestedBy;
 import com.thegongoliers.math.PathWaypoint;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 
 import java.util.List;
 
+@TestedBy(team = "5112", year = "2018")
 public class FollowPathCommand extends CommandGroup {
 
     public FollowPathCommand(Path path){
