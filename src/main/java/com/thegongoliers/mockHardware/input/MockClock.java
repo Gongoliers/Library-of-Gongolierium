@@ -1,4 +1,6 @@
-package com.thegongoliers.input.time;
+package com.thegongoliers.mockHardware.input;
+
+import com.thegongoliers.input.time.Clock;
 
 public class MockClock implements Clock {
 

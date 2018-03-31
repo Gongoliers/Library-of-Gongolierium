@@ -1,4 +1,4 @@
-package com.thegongoliers.input;
+package com.thegongoliers.mockHardware.input;
 
 import com.thegongoliers.input.voltage.VoltageSensor;
 

@@ -1,4 +1,4 @@
-package com.thegongoliers.output;
+package com.thegongoliers.mockHardware.output;
 
 import com.thegongoliers.output.interfaces.ISolenoid;
 

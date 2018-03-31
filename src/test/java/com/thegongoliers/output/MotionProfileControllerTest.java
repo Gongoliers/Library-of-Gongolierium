@@ -1,6 +1,6 @@
 package com.thegongoliers.output;
 
-import com.thegongoliers.input.time.MockClock;
+import com.thegongoliers.mockHardware.input.MockClock;
 import com.thegongoliers.pathFollowing.MotionProfileController;
 import org.junit.Test;
 

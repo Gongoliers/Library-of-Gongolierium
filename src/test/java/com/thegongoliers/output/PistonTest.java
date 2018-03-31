@@ -1,5 +1,6 @@
 package com.thegongoliers.output;
 
+import com.thegongoliers.mockHardware.output.MockSolenoid;
 import org.junit.Before;
 import org.junit.Test;
 

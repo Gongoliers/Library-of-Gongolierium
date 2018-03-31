@@ -1,6 +1,7 @@
 package com.thegongoliers.output;
 
-import com.thegongoliers.input.MockVoltageSensor;
+import com.thegongoliers.mockHardware.output.MockSpeedController;
+import com.thegongoliers.mockHardware.input.MockVoltageSensor;
 import com.thegongoliers.output.interfaces.IMotor;
 import org.junit.Before;
 import org.junit.Test;
