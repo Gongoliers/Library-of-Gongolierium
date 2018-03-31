@@ -1,8 +1,10 @@
 package com.thegongoliers.output;
 
+import com.thegongoliers.annotations.Untested;
 import com.thegongoliers.output.interfaces.ISolenoid;
 import edu.wpi.first.wpilibj.Solenoid;
 
+@Untested
 public class FRCSolenoid implements ISolenoid {
 
     private Solenoid solenoid;
