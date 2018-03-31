@@ -10,11 +10,11 @@ import edu.wpi.first.wpilibj.SpeedController;
 @Untested
 public class Motor implements IMotor {
 
-    private enum ControlType {
-        Voltage, Bus
+    enum ControlType {
+        Voltage, PWM
     }
 
-    private ControlType currentControlType = ControlType.Bus;
+    private ControlType currentControlType = ControlType.PWM;
     private SpeedController controller;
     private Direction currentDirection = Direction.Stopped;
     private VoltageSensor batteryVoltageSensor;
@@ -62,12 +62,12 @@ public class Motor implements IMotor {
 
     @Override
     public double getVoltage() {
-        return controller.get() * batteryVoltageSensor.getVoltage();
+        return Math.abs(controller.get()) * batteryVoltageSensor.getVoltage();
     }
 
     @Override
     public void setPWM(double pwm, Direction direction) {
-        this.currentControlType = ControlType.Bus;
+        this.currentControlType = ControlType.PWM;
 
         double proportion = MathExt.toRange(Math.abs(pwm), 0, 1);
 
