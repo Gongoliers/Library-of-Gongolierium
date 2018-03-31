@@ -6,7 +6,12 @@ import com.thegongoliers.math.MathExt;
 import com.thegongoliers.output.interfaces.IMotor;
 import edu.wpi.first.wpilibj.SpeedController;
 
+import java.util.LinkedList;
+import java.util.List;
+
 public class Motor implements IMotor {
+
+    private List<IMotor> followers;
 
     enum ControlType {
         Voltage, PWM
@@ -21,6 +26,7 @@ public class Motor implements IMotor {
     public Motor(SpeedController controller, VoltageSensor batteryVoltageSensor){
         this.controller = controller;
         this.batteryVoltageSensor = batteryVoltageSensor;
+        followers = new LinkedList<>();
     }
 
     public Motor(SpeedController controller){
@@ -42,6 +48,7 @@ public class Motor implements IMotor {
 
         this.currentDirection = direction;
         controller.set(proportion);
+        followers.forEach(motor -> motor.setVoltage(voltage, direction));
     }
 
     @Override
@@ -77,6 +84,7 @@ public class Motor implements IMotor {
 
         this.currentDirection = direction;
         controller.set(proportion);
+        followers.forEach(motor -> motor.setPWM(pwm, direction));
     }
 
     @Override
@@ -111,6 +119,32 @@ public class Motor implements IMotor {
     @Override
     public boolean isInverted() {
         return controller.getInverted();
+    }
+
+    @Override
+    public void follow(IMotor motor) {
+        motor.addFollower(this);
+    }
+
+    @Override
+    public void unfollow(IMotor motor) {
+        motor.removeFollower(this);
+    }
+
+    @Override
+    public void addFollower(IMotor motor) {
+        if(motor != this && !followers.contains(motor)){
+            followers.add(motor);
+            motor.setPWM(getPWM(), getDirection());
+        }
+    }
+
+    @Override
+    public void removeFollower(IMotor motor) {
+        if(followers.contains(motor)){
+            followers.remove(motor);
+            motor.setPWM(0, Direction.Stopped);
+        }
     }
 
     @Override

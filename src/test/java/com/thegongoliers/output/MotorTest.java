@@ -184,4 +184,42 @@ public class MotorTest {
         assertFalse(speedController.getInverted());
     }
 
+
+    @Test
+    public void follow(){
+        MockSpeedController controller = new MockSpeedController();
+        Motor secondMotor = new Motor(controller, voltageSensor);
+        secondMotor.follow(motor);
+
+
+        motor.setPWM(1, IMotor.Direction.Forward);
+
+        assertEquals(motor.getPWM(), secondMotor.getPWM(), 0.0);
+        assertEquals(motor.getDirection(), secondMotor.getDirection());
+
+        voltageSensor.setVoltage(12);
+        motor.setVoltage(-6);
+        assertEquals(motor.getVoltage(), secondMotor.getVoltage(), 0.0);
+        assertEquals(motor.getDirection(), secondMotor.getDirection());
+
+        secondMotor.unfollow(motor);
+
+        motor.setVoltage(3);
+        assertEquals(motor.getPWM(), 0.25, 0);
+        assertEquals(motor.getDirection(), IMotor.Direction.Forward);
+
+        assertEquals(secondMotor.getPWM(), 0, 0);
+        assertEquals(secondMotor.getDirection(), IMotor.Direction.Stopped);
+    }
+
+    @Test
+    public void stop(){
+        motor.setPWM(1);
+
+        motor.stop();
+
+        assertEquals(motor.getPWM(), 0, 0);
+        assertEquals(motor.getDirection(), IMotor.Direction.Stopped);
+    }
+
 }

@@ -66,4 +66,28 @@ public interface IMotor extends Stoppable {
      */
     boolean isInverted();
 
+    /**
+     * Follow the movement of another motor.
+     * @param motor The motor to follow.
+     */
+    void follow(IMotor motor);
+
+    /**
+     * Unfollow the movement of another motor.
+     * @param motor The motor to unfollow.
+     */
+    void unfollow(IMotor motor);
+
+    /**
+     * Add a follower.
+     * @param motor The motor which will follow this motor.
+     */
+    void addFollower(IMotor motor);
+
+    /**
+     * Remove a follower.
+     * @param motor The motor which will unfollow this motor.
+     */
+    void removeFollower(IMotor motor);
+
 }
