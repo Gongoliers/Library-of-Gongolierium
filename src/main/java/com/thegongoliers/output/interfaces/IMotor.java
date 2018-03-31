@@ -30,29 +30,23 @@ public interface IMotor extends Stoppable {
     double getVoltage();
 
     /**
-     * Set the bus percentage of the motor
-     * @param percentage The bus percentage from 0 to 100.
+     * Set the PWM proportion of the motor
+     * @param pwm The pwm from 0 to 1.
      * @param direction The direction of the motor.
      */
-    void setBusPercentage(double percentage, Direction direction);
+    void setPWM(double pwm, Direction direction);
 
     /**
-     * Set the bus percentage of the motor. Negative percentages are assumed to be Backward direction.
-     * @param percentage The bus percentage from -100 to 100.
+     * Set the PWM proportion of the motor. Negative proportions are assumed to be Backward direction.
+     * @param pwm The pwm from -1 to 1.
      */
-    void setBusPercentage(double percentage);
+    void setPWM(double pwm);
 
     /**
-     * Get the bus percentage of the motor.
-     * @return The bus percentage of the motor from 0 to 100.
+     * Get the PWM proportion of the motor.
+     * @return The PWM proportion of the motor from 0 to 1.
      */
-    double getBusPercentage();
-
-    /**
-     * Get the current of the motor.
-     * @return The current in amps.
-     */
-    double getCurrent();
+    double getPWM();
 
     /**
      * Get the direction of the motor.

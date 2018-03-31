@@ -29,6 +29,10 @@ public class PDP {
         return pdp.getVoltage();
     }
 
+    public double getBatteryPercent(){
+        return getBatteryVoltage() / 12.0 * 100;
+    }
+
     public CurrentSensor getCurrentSensor(int port){
         return new PDPCurrentSensor(pdp, port);
     }
