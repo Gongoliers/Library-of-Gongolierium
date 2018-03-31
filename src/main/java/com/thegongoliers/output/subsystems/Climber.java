@@ -1,4 +1,4 @@
-package com.thegongoliers.output;
+package com.thegongoliers.output.subsystems;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;

@@ -1,5 +1,6 @@
-package com.thegongoliers.output;
+package com.thegongoliers.output.subsystems;
 
+import com.thegongoliers.output.EnhancedSolenoid;
 import com.thegongoliers.output.interfaces.GripperInterface;
 
 public class PneumaticGripper implements GripperInterface {

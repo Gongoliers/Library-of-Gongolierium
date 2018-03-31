@@ -1,4 +1,4 @@
-package com.thegongoliers.output;
+package com.thegongoliers.output.subsystems;
 
 import com.thegongoliers.output.interfaces.FlywheelInterface;
 
