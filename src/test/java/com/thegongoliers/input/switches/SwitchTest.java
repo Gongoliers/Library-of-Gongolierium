@@ -78,4 +78,26 @@ public class SwitchTest {
         assertTrue(or.isTriggered());
     }
 
+    @Test
+    public void testXor(){
+        Switch xor = Switch.xor(switch1, switch2);
+
+        // F & F
+        assertFalse(xor.isTriggered());
+
+        // T & F
+        switch1.setTriggered(true);
+        assertTrue(xor.isTriggered());
+
+        // F & T
+        switch1.setTriggered(false);
+        switch2.setTriggered(true);
+        assertTrue(xor.isTriggered());
+
+        // T & T
+        switch1.setTriggered(true);
+        switch2.setTriggered(true);
+        assertFalse(xor.isTriggered());
+    }
+
 }

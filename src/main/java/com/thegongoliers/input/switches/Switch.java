@@ -42,4 +42,17 @@ public interface Switch {
 	static Switch or(Switch s1, Switch s2) {
 		return () -> s1.isTriggered() || s2.isTriggered();
 	}
+
+	/**
+	 * Combine two switches using the xor operator
+	 *
+	 * @param s1
+	 *            The first switch
+	 * @param s2
+	 *            The second switch
+	 * @return The combined switch consisting of s1 and s2 in an xor gate.
+	 */
+	static Switch xor(Switch s1, Switch s2) {
+		return () -> s1.isTriggered() ^ s2.isTriggered();
+	}
 }
