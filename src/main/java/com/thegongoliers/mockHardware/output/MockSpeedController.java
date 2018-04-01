@@ -9,7 +9,7 @@ public class MockSpeedController implements SpeedController {
 
     @Override
     public void set(double speed) {
-        this.speed = speed * (inverted ? -1 : 1);
+        this.speed = speed;
     }
 
     @Override
