@@ -20,72 +20,88 @@ public class TiltSensorTest {
     }
 
     @Test
-    public void testTilt(){
-        Vector3 angle = new Vector3(0, 0, 0);
-        // Y axis
-        mockAccelerometer.setY(1);
-        angle.y = 90;
-        vectorsEqual(angle, tiltSensor.getTilt(), 0.0001);
-
+    public void testRoll(){
         mockAccelerometer.setY(0.5);
-        angle.y = 30;
-        vectorsEqual(angle, tiltSensor.getTilt(), 0.0001);
+        mockAccelerometer.setZ(0.5);
+        assertEquals(45, tiltSensor.getRoll(), 0.0001);
+
+        mockAccelerometer.setY(1);
+        mockAccelerometer.setZ(0);
+        assertEquals(90, tiltSensor.getRoll(), 0.0001);
+
+        mockAccelerometer.setY(-1);
+        mockAccelerometer.setZ(0);
+        assertEquals(-90, tiltSensor.getRoll(), 0.0001);
 
         mockAccelerometer.setY(0);
-        angle.y = 0;
-        vectorsEqual(angle, tiltSensor.getTilt(), 0.0001);
-
-        // Z axis
         mockAccelerometer.setZ(1);
-        angle.z = 90;
-        vectorsEqual(angle, tiltSensor.getTilt(), 0.0001);
+        assertEquals(0, tiltSensor.getRoll(), 0.0001);
+    }
 
-        mockAccelerometer.setZ(-0.5);
-        angle.z = -30;
-        vectorsEqual(angle, tiltSensor.getTilt(), 0.0001);
+    @Test
+    public void testPitch(){
+        mockAccelerometer.setX(-0.5);
+        mockAccelerometer.setZ(0.5);
+        assertEquals(45, tiltSensor.getPitch(), 0.0001);
 
-        mockAccelerometer.setZ(0);
-        angle.z = 0;
-        vectorsEqual(angle, tiltSensor.getTilt(), 0.0001);
-
-        // X axis
         mockAccelerometer.setX(1);
-        angle.x = 90;
-        vectorsEqual(angle, tiltSensor.getTilt(), 0.0001);
+        mockAccelerometer.setZ(0);
+        assertEquals(-90, tiltSensor.getPitch(), 0.0001);
 
-        mockAccelerometer.setX(0.5);
-        angle.x = 30;
-        vectorsEqual(angle, tiltSensor.getTilt(), 0.0001);
+        mockAccelerometer.setX(-1);
+        mockAccelerometer.setZ(0);
+        assertEquals(90, tiltSensor.getPitch(), 0.0001);
 
         mockAccelerometer.setX(0);
-        angle.x = 0;
-        vectorsEqual(angle, tiltSensor.getTilt(), 0.0001);
+        mockAccelerometer.setZ(1);
+        assertEquals(0, tiltSensor.getPitch(), 0.0001);
     }
 
     @Test
     public void testCalibration(){
-        Vector3 angle = new Vector3(0, 0, 0);
 
-        mockAccelerometer.setY(0.5); // Accel. on a 30 deg tilt to start
+        mockAccelerometer.setX(-0.5); // Accel. on a 45 deg pitch to start
+        mockAccelerometer.setZ(0.5);
+
+        assertEquals(45, tiltSensor.getPitch(), 0.0001);
 
         tiltSensor.calibrate();
 
-        angle.y = 0;
-        vectorsEqual(angle, tiltSensor.getTilt(), 0.0001);
+        mockAccelerometer.setX(0.5);
+        mockAccelerometer.setZ(0.5);
+        assertEquals(-90, tiltSensor.getPitch(), 0.0001);
 
-        mockAccelerometer.setY(0.866025404);
-        angle.y = 30;
-        vectorsEqual(angle, tiltSensor.getTilt(), 0.0001);
+        mockAccelerometer.setX(-0.5);
+        mockAccelerometer.setZ(0.5);
+        assertEquals(0, tiltSensor.getPitch(), 0.0001);
+
+        mockAccelerometer.setX(-1);
+        mockAccelerometer.setZ(0);
+        assertEquals(45, tiltSensor.getPitch(), 0.0001);
+
+        mockAccelerometer.setX(1);
+        mockAccelerometer.setZ(0);
+        assertEquals(-135, tiltSensor.getPitch(), 0.0001);
+
+        mockAccelerometer.setY(0);
+        mockAccelerometer.setX(0);
+        mockAccelerometer.setZ(0);
+
+        tiltSensor.calibrate();
 
         mockAccelerometer.setY(1);
-        angle.y = 60;
-        vectorsEqual(angle, tiltSensor.getTilt(), 0.0001);
+
+        assertEquals(90, tiltSensor.getRoll(), 0.0001);
+
+        tiltSensor.calibrate();
+
+        assertEquals(0, tiltSensor.getRoll(), 0.0001);
+
+        mockAccelerometer.setY(0.5);
+        mockAccelerometer.setZ(0.5);
+        assertEquals(-45, tiltSensor.getRoll(), 0.0001);
+
     }
 
-    private void vectorsEqual(Vector3 v, Vector3 v2, double tolerance){
-        assertEquals(v.x, v2.x, tolerance);
-        assertEquals(v.y, v2.y, tolerance);
-        assertEquals(v.z, v2.z, tolerance);
-    }
 
 }

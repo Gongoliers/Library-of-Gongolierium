@@ -1,20 +1,32 @@
 package com.thegongoliers.input.accelerometer;
 
-import com.kylecorry.geometry.Vector3;
 import com.thegongoliers.math.MathExt;
 
 import edu.wpi.first.wpilibj.interfaces.Accelerometer;
 
+// TODO: make this return roll and pitch
 public class TiltSensor {
 	private Accelerometer accel;
-	private Vector3 calibration = new Vector3(0, 0, 0);
+	private double calibrationPitch, calibrationRoll;
+	private static final double CALIBRATION_SAMPLES = 100;
 
+	/**
+	 * Calibrate the tilt sensor by setting the current pitch and roll as the zero position.
+	 */
 	public void calibrate() {
-		Vector3 acceleration = getAcceleration();
-		acceleration.x = calculateAngle(acceleration.x);
-		acceleration.y = calculateAngle(acceleration.y);
-		acceleration.z = calculateAngle(acceleration.z);
-		calibration = acceleration;
+		calibrationRoll = 0;
+		calibrationPitch = 0;
+
+		double rollSum = 0;
+		double pitchSum = 0;
+
+		for (int i = 0; i < CALIBRATION_SAMPLES; i++) {
+			rollSum += getRoll();
+			pitchSum += getPitch();
+		}
+
+		calibrationRoll = rollSum / CALIBRATION_SAMPLES;
+		calibrationPitch = pitchSum / CALIBRATION_SAMPLES;
 	}
 
 
@@ -29,24 +41,21 @@ public class TiltSensor {
 	}
 
 	/**
-	 * Calculates the tilt in degrees of the accelerometer.
-	 * 
-	 * @return The tilt in degrees.
+	 * Calculates the roll.
+	 * @return The roll in degrees.
 	 */
-	public Vector3 getTilt() {
-		Vector3 acceleration = getAcceleration();
-		acceleration.x = calculateAngle(acceleration.x);
-		acceleration.y = calculateAngle(acceleration.y);
-		acceleration.z = calculateAngle(acceleration.z);
-		return acceleration.add(calibration.multiply(-1));
+	public double getRoll(){
+		return Math.toDegrees(Math.atan2(accel.getY(), accel.getZ())) - calibrationRoll;
 	}
 
-	private double calculateAngle(double accel){
-		double y = MathExt.toRange(accel, -1, 1);
-		return Math.toDegrees(Math.asin(y));
+	/**
+	 * Calculates the pitch.
+	 * @return The pitch in degrees.
+	 */
+	public double getPitch() {
+		return Math.toDegrees(Math.atan2(-accel.getX(), MathExt.magnitude(accel.getY(), accel.getZ()))) - calibrationPitch;
 	}
 
-	private Vector3 getAcceleration(){
-		return new Vector3(accel.getX(), accel.getY(), accel.getZ());
-	}
+
+
 }
