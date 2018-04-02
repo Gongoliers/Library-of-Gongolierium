@@ -1,7 +1,6 @@
 package com.thegongoliers.input.accelerometer;
 
-import com.kylecorry.geometry.Quaternion;
-import com.kylecorry.geometry.Vector3;
+import com.thegongoliers.input.orientation.TiltSensor;
 import com.thegongoliers.mockHardware.input.MockAccelerometer;
 import org.junit.Before;
 import org.junit.Test;

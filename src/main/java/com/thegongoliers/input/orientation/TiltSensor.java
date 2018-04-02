@@ -1,4 +1,4 @@
-package com.thegongoliers.input.accelerometer;
+package com.thegongoliers.input.orientation;
 
 import com.thegongoliers.math.MathExt;
 
