@@ -10,7 +10,7 @@ public class RateLimiter implements Filter {
     private double lastValue;
 
     public RateLimiter(double maxRate, double lastValue){
-        this.maxRate = maxRate;
+        this.maxRate = Math.abs(maxRate);
         this.lastValue = lastValue;
     }
 
