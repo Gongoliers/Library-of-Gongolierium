@@ -16,12 +16,12 @@ public class PID {
 	private final double threshold;
 	private boolean first = true;
 	private boolean continuous = false;
-	private double minInput = 0;
-	private double maxInput = 1;
-	private double maxOutput = 1;
-	private double minOutput = -1;
-	private double maxI = maxOutput;
-	private double minI = minOutput;
+	private final double minInput = 0;
+	private final double maxInput = 1;
+	private final double maxOutput = 1;
+	private final double minOutput = -1;
+	private final double maxI = maxOutput;
+	private final double minI = minOutput;
 
 	/**
 	 * Creates a simple PID calculator.

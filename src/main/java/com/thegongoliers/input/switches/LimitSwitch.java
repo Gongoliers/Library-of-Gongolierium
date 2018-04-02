@@ -4,7 +4,7 @@ import edu.wpi.first.wpilibj.DigitalInput;
 
 public class LimitSwitch implements Switch {
 
-	private DigitalInput input;
+	private final DigitalInput input;
 
 	/**
 	 * Defined a limit switch. By default it is normally open which means

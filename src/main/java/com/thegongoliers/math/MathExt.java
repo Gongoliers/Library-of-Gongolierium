@@ -119,8 +119,8 @@ public class MathExt {
      */
     public static List<Double> toList(double[] values) {
         ArrayList<Double> arrVals = new ArrayList<>();
-        for (int i = 0; i < values.length; i++) {
-            arrVals.add(values[i]);
+        for (double value : values) {
+            arrVals.add(value);
         }
         return arrVals;
     }

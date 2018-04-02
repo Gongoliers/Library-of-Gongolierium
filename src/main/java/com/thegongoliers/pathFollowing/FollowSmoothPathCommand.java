@@ -3,7 +3,6 @@ package com.thegongoliers.pathFollowing;
 import com.thegongoliers.math.PathWaypoint;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
-import jaci.pathfinder.Waypoint;
 import jaci.pathfinder.modifiers.TankModifier;
 
 import java.util.List;

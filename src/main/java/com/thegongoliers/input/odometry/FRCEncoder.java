@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj.Encoder;
 @Untested
 public class FRCEncoder implements IEncoder {
 
-    private Encoder encoder;
+    private final Encoder encoder;
     private boolean inverted = false;
 
     public FRCEncoder(final int channelA, final int channelB){

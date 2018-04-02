@@ -7,8 +7,8 @@ import edu.wpi.first.wpilibj.interfaces.Accelerometer;
 
 public class CollisionSensor implements Switch {
 
-	private Accelerometer accel;
-	private double collisionMagnitudeThreshold;
+	private final Accelerometer accel;
+	private final double collisionMagnitudeThreshold;
 
 	/**
 	 * Determines if a collision occurred

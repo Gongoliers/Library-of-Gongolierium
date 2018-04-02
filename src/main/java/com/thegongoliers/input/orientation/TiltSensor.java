@@ -5,7 +5,7 @@ import com.thegongoliers.math.MathExt;
 import edu.wpi.first.wpilibj.interfaces.Accelerometer;
 
 public class TiltSensor {
-	private Accelerometer accel;
+	private final Accelerometer accel;
 	private double calibrationPitch, calibrationRoll;
 	private static final double CALIBRATION_SAMPLES = 100;
 

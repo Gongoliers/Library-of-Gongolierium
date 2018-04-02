@@ -7,7 +7,7 @@ import edu.wpi.first.wpilibj.Solenoid;
 @Untested
 public class FRCSolenoid implements ISolenoid {
 
-    private Solenoid solenoid;
+    private final Solenoid solenoid;
 
     public FRCSolenoid(int channel){
         solenoid = new Solenoid(channel);

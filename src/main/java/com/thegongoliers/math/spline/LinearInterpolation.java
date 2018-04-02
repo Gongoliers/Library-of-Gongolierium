@@ -5,8 +5,8 @@ package com.thegongoliers.math.spline;
  */
 public class LinearInterpolation implements Spline {
 
-    private double p0, p1, totalTime;
-    private double slope, intercept;
+    private final double slope;
+    private final double intercept;
 
 
     /**
@@ -27,9 +27,6 @@ public class LinearInterpolation implements Spline {
      * @param totalTime The total time of the spline.
      */
     public LinearInterpolation(double p0, double p1, double totalTime) {
-        this.p0 = p0;
-        this.p1 = p1;
-        this.totalTime = totalTime;
         slope = (p1 - p0) / totalTime;
         intercept = p0;
     }

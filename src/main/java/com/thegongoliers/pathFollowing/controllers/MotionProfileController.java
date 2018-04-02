@@ -6,12 +6,12 @@ import com.thegongoliers.math.MathExt;
 
 public class MotionProfileController {
 
-    private double kp;
-    private double ki;
-    private double kd;
-    private double kffv;
-    private double kffa;
-    private double tolerance;
+    private final double kp;
+    private final double ki;
+    private final double kd;
+    private final double kffv;
+    private final double kffa;
+    private final double tolerance;
 
     private double prevError;
 

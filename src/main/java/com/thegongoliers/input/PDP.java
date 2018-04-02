@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj.PowerDistributionPanel;
 public class PDP {
 
     private static PDP instance;
-    private PowerDistributionPanel pdp;
+    private final PowerDistributionPanel pdp;
 
     private PDP(){
         pdp = new PowerDistributionPanel();

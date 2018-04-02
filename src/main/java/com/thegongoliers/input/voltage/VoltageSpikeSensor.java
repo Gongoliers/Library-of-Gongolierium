@@ -4,7 +4,7 @@ import com.thegongoliers.input.switches.ResettableSwitch;
 
 public class VoltageSpikeSensor implements ResettableSwitch {
 
-	private VoltageTripSensor sensor;
+	private final VoltageTripSensor sensor;
 	private boolean wasTriggered = false;
 
 	/**

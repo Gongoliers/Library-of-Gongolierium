@@ -5,7 +5,7 @@ import com.thegongoliers.output.interfaces.ISolenoid;
 
 public class Piston implements IPiston {
 
-    private ISolenoid solenoid;
+    private final ISolenoid solenoid;
     private boolean inverted = false;
 
     public Piston(ISolenoid solenoid) {

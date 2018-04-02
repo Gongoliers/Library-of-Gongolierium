@@ -233,7 +233,7 @@ public class EnhancedXboxController extends XboxController {
 	 * The direction of the DPAD.
 	 *
 	 */
-	public static enum DPAD {
+	public enum DPAD {
 		NORTH(0), NORTHEAST(45), EAST(90), SOUTHEAST(135), SOUTH(180), SOUTHWEST(225), WEST(270), NORTHWEST(315);
 
 		private final int direction;

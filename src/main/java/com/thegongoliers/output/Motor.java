@@ -11,16 +11,16 @@ import java.util.List;
 
 public class Motor implements IMotor {
 
-    private List<IMotor> followers;
+    private final List<IMotor> followers;
 
     enum ControlType {
         Voltage, PWM
     }
 
     private ControlType currentControlType = ControlType.PWM;
-    private SpeedController controller;
+    private final SpeedController controller;
     private Direction currentDirection = Direction.Stopped;
-    private VoltageSensor batteryVoltageSensor;
+    private final VoltageSensor batteryVoltageSensor;
 
 
     public Motor(SpeedController controller, VoltageSensor batteryVoltageSensor){

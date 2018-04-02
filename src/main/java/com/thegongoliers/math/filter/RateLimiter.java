@@ -1,10 +1,12 @@
 package com.thegongoliers.math.filter;
 
+import com.thegongoliers.annotations.TestedBy;
 import com.thegongoliers.math.MathExt;
 
-public class RateLimiter implements Filter{
+@TestedBy(team = "5112", year = "2018")
+public class RateLimiter implements Filter {
 
-    private double maxRate;
+    private final double maxRate;
     private double lastValue;
 
     public RateLimiter(double maxRate, double lastValue){

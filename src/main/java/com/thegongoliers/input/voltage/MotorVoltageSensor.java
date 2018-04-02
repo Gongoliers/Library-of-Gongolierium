@@ -5,7 +5,7 @@ import edu.wpi.first.wpilibj.SpeedController;
 
 public class MotorVoltageSensor implements VoltageSensor {
 
-    private SpeedController motor;
+    private final SpeedController motor;
 
     public MotorVoltageSensor(SpeedController motor) {
         this.motor = motor;

@@ -1,10 +1,13 @@
 package com.thegongoliers.math.filter;
 
+import com.thegongoliers.annotations.TestedBy;
+
+@TestedBy(team = "5112", year = "2018")
 public class LowPassFilter implements Filter{
 
     private double lastValue;
 
-    private double filterCoef;
+    private final double filterCoef;
 
     public LowPassFilter(double filterCoef) {
         this(filterCoef, 0.0);
