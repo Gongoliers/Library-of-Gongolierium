@@ -4,7 +4,6 @@ import com.thegongoliers.math.MathExt;
 
 import edu.wpi.first.wpilibj.interfaces.Accelerometer;
 
-// TODO: make this return roll and pitch
 public class TiltSensor {
 	private Accelerometer accel;
 	private double calibrationPitch, calibrationRoll;
