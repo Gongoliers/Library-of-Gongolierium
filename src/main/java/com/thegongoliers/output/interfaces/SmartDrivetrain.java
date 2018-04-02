@@ -1,6 +1,6 @@
 package com.thegongoliers.output.interfaces;
 
-import com.thegongoliers.pathFollowing.MotionProfileController;
+import com.thegongoliers.pathFollowing.controllers.MotionProfileController;
 
 public interface SmartDrivetrain extends DriveTrainInterface {
 

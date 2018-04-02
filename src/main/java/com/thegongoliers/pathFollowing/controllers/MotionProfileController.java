@@ -1,4 +1,4 @@
-package com.thegongoliers.pathFollowing;
+package com.thegongoliers.pathFollowing.controllers;
 
 import com.thegongoliers.input.time.Clock;
 import com.thegongoliers.input.time.RobotClock;

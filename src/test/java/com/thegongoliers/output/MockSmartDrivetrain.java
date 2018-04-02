@@ -1,6 +1,6 @@
 package com.thegongoliers.output;
 
-import com.thegongoliers.pathFollowing.MotionProfileController;
+import com.thegongoliers.pathFollowing.controllers.MotionProfileController;
 import com.thegongoliers.pathFollowing.SmartDriveTrainSubsystem;
 
 public class MockSmartDrivetrain extends SmartDriveTrainSubsystem {

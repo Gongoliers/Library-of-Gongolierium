@@ -1,7 +1,7 @@
 package com.thegongoliers.output;
 
 import com.thegongoliers.mockHardware.input.MockClock;
-import com.thegongoliers.pathFollowing.MotionProfileController;
+import com.thegongoliers.pathFollowing.controllers.MotionProfileController;
 import org.junit.Test;
 
 import static org.junit.Assert.*;

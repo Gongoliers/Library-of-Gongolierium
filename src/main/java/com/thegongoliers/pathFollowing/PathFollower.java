@@ -1,5 +1,6 @@
 package com.thegongoliers.pathFollowing;
 
+import com.thegongoliers.pathFollowing.controllers.MotionProfileController;
 import jaci.pathfinder.Pathfinder;
 import jaci.pathfinder.Trajectory;
 import jaci.pathfinder.Waypoint;

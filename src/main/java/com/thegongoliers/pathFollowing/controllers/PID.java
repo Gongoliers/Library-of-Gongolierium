@@ -1,4 +1,4 @@
-package com.thegongoliers.pathFollowing;
+package com.thegongoliers.pathFollowing.controllers;
 
 import com.thegongoliers.annotations.TestedBy;
 import com.thegongoliers.math.MathExt;
