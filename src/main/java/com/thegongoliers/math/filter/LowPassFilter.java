@@ -1,6 +1,7 @@
 package com.thegongoliers.math.filter;
 
 import com.thegongoliers.annotations.TestedBy;
+import com.thegongoliers.math.MathExt;
 
 @TestedBy(team = "5112", year = "2018")
 public class LowPassFilter implements Filter{
@@ -14,7 +15,7 @@ public class LowPassFilter implements Filter{
     }
 
     public LowPassFilter(double filterCoef, double initialValue) {
-        this.filterCoef = filterCoef;
+        this.filterCoef = MathExt.toRange(filterCoef, 0, 1);
         this.lastValue = initialValue;
     }
 
