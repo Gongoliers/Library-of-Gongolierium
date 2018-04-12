@@ -302,4 +302,82 @@ public class MathExt {
         return newValue;
     }
 
+
+    /**
+     * Computes the standard deviation of a variable.
+     * @param x The set of data.
+     * @return The standard deviation of x.
+     */
+    public static double standardDeviation(double[] x){
+        if(x == null || x.length < 2){
+            return 0;
+        }
+        double mean = mean(x);
+        double variance = 0;
+        for (double val: x){
+            variance += Math.pow(val - mean, 2);
+        }
+        variance /= (x.length - 1);
+        return Math.sqrt(variance);
+    }
+
+    /**
+     * Computes the correlation between two variables.
+     * @param x The first set of data.
+     * @param y The second set of data.
+     * @return The Pearson correlation from -1 to 1
+     */
+    public static double correlation(double[] x, double[] y){
+        if(x == null || y == null){
+            return 0;
+        }
+
+        if(x.length != y.length){
+            throw new UnequalLengthException();
+        }
+
+        double xSum = 0;
+        double ySum = 0;
+        double x2Sum = 0;
+        double y2Sum = 0;
+        double xySum = 0;
+        int n = x.length;
+
+        for (int i = 0; i < n; i++) {
+            xSum += x[i];
+            ySum += y[i];
+            x2Sum += Math.pow(x[i], 2);
+            y2Sum += Math.pow(y[i], 2);
+            xySum += x[i] * y[i];
+        }
+
+        double top = n * xySum - xSum * ySum;
+        double bottom = Math.sqrt(n * x2Sum - Math.pow(xSum, 2)) * Math.sqrt(n * y2Sum - Math.pow(ySum, 2));
+        if (bottom == 0){
+            return 0;
+        }
+        return top / bottom;
+    }
+
+    /**
+     * Computes the mean of a variable.
+     * @param x The set of data
+     * @return The mean of x.
+     */
+    public static double mean(double[] x) {
+        if(x == null || x.length == 0){
+            return 0;
+        }
+        double sum = 0;
+        for (double val: x){
+            sum += val;
+        }
+        return sum / x.length;
+    }
+
+    public static class UnequalLengthException extends RuntimeException {
+        public UnequalLengthException(){
+            super("Lengths are not equal");
+        }
+    }
 }
