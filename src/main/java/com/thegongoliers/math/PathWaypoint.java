@@ -1,7 +1,5 @@
 package com.thegongoliers.math;
 
-import jaci.pathfinder.Waypoint;
-
 public class PathWaypoint {
 
     private double x, y, heading;
@@ -18,14 +16,6 @@ public class PathWaypoint {
         this.heading = heading;
     }
 
-
-    /**
-     * Convert the path waypoint to a waypoint for trajectory calculations.
-     * @return The waypoint.
-     */
-    public Waypoint toWaypoint(){
-        return new Waypoint(x, y, Math.toRadians(heading));
-    }
 
     /**
      * Gets the x position in meters.

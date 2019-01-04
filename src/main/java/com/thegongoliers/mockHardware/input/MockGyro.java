@@ -39,4 +39,8 @@ public class MockGyro implements Gyro {
     public void free() {
 
     }
+
+    @Override
+    public void close() throws Exception {
+    }
 }

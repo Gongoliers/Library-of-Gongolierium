@@ -57,6 +57,11 @@ public class Hardware {
 		return new Gyro() {
 
 			@Override
+			public void close() throws Exception {
+				gyro.close();
+			}
+
+			@Override
 			public void reset() {
 				gyro.reset();
 			}
