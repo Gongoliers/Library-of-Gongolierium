@@ -8,8 +8,16 @@ import edu.wpi.first.wpilibj.interfaces.Gyro;
 
 import java.util.function.BooleanSupplier;
 
+/**
+ * Miscellaneous hardware functions.
+ */
 public class Hardware {
 
+	/**
+	 * Creates a button from a boolean supplier.
+	 * @param booleanSupplier The boolean supplier to become a button.
+	 * @return The button which is pressed when the boolean supplier is true.
+	 */
 	public static Button makeButton(BooleanSupplier booleanSupplier){
 		return new Button() {
 			@Override
@@ -19,24 +27,29 @@ public class Hardware {
 		};
 	}
 
-	public static Button triggerToButton(Trigger t){
-		return new Button() {
-			@Override
-			public boolean get() {
-				return t.get();
-			}
-		};
+	/**
+	 * Creates a button from a trigger.
+	 * @param trigger The trigger to become a button.
+	 * @return The button which is pressed when the trigger is triggered.
+	 */
+	public static Button triggerToButton(Trigger trigger){
+		return Hardware.makeButton(trigger::get);
 	}
 
-	public static Trigger switchToTrigger(Switch s){
-		return new Trigger() {
-			@Override
-			public boolean get() {
-				return s.isTriggered();
-			}
-		};
+	/**
+	 * Creates a trigger from a switch.
+	 * @param aSwitch The switch to become a trigger.
+	 * @return The trigger which is triggered when the switch is triggered.
+	 */
+	public static Trigger switchToTrigger(Switch aSwitch){
+		return Hardware.makeTrigger(aSwitch::isTriggered);
 	}
 
+	/**
+	 * Creates a trigger from a boolean supplier.
+	 * @param booleanSupplier The boolean supplier to become a trigger.
+	 * @return The trigger which is triggered when the boolean supplier is true.
+	 */
 	public static Trigger makeTrigger(BooleanSupplier booleanSupplier){
 		return new Trigger() {
 			@Override
