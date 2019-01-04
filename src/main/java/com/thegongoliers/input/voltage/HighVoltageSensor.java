@@ -14,10 +14,10 @@ public class HighVoltageSensor extends VoltageTripSensor {
 		super(voltageSensor, threshold);
 	}
 
-	@Override
 	/**
 	 * Determines if the voltage is greater or equal to the threshold
 	 */
+	@Override
 	public boolean isTriggered() {
 		return sensor.getVoltage() >= thresh;
 	}

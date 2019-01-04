@@ -9,7 +9,7 @@ public class GravitySensor implements Accelerometer {
 
 	private Vector3 gravity;
 
-	private final double alpha = 0.8;
+	private static final double alpha = 0.8;
 
 	/**
 	 * Attempts to remove the linear acceleration from the accelerometer.

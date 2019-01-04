@@ -1,6 +1,6 @@
 package com.thegongoliers.input.current;
 
-import com.thegongoliers.input.Switch;
+import com.thegongoliers.input.switches.Switch;
 
 public abstract class CurrentTripSensor implements Switch {
 

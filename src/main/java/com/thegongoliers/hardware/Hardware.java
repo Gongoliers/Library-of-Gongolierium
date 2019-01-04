@@ -1,24 +1,49 @@
 package com.thegongoliers.hardware;
 
-import com.thegongoliers.output.JoinedSpeedController;
+import com.thegongoliers.input.switches.Switch;
 
-import edu.wpi.first.wpilibj.SpeedController;
-
+import edu.wpi.first.wpilibj.buttons.Button;
+import edu.wpi.first.wpilibj.buttons.Trigger;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
+
+import java.util.function.BooleanSupplier;
 
 public class Hardware {
 
-	/**
-	 * Join motors together to control synchronously with a single
-	 * SpeedController.
-	 * 
-	 * @param controllers
-	 *            The controllers to join together.
-	 * @return A SpeedController which combines all the SpeedControllers
-	 *         together.
-	 */
-	public static SpeedController joinMotors(SpeedController... controllers) {
-		return new JoinedSpeedController(controllers);
+	public static Button makeButton(BooleanSupplier booleanSupplier){
+		return new Button() {
+			@Override
+			public boolean get() {
+				return booleanSupplier.getAsBoolean();
+			}
+		};
+	}
+
+	public static Button triggerToButton(Trigger t){
+		return new Button() {
+			@Override
+			public boolean get() {
+				return t.get();
+			}
+		};
+	}
+
+	public static Trigger switchToTrigger(Switch s){
+		return new Trigger() {
+			@Override
+			public boolean get() {
+				return s.isTriggered();
+			}
+		};
+	}
+
+	public static Trigger makeTrigger(BooleanSupplier booleanSupplier){
+		return new Trigger() {
+			@Override
+			public boolean get() {
+				return booleanSupplier.getAsBoolean();
+			}
+		};
 	}
 
 	/**
