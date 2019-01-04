@@ -24,11 +24,11 @@ public class CollisionSensor implements Switch {
 		this.collisionMagnitudeThreshold = collisionMagnitudeThreshold;
 	}
 
-	@Override
 	/**
 	 * Triggers if the magnitude of the acceleration is greater or equal to the
 	 * collision threshold
 	 */
+	@Override
 	public boolean isTriggered() {
 		return MathExt.magnitude(accel.getX(), accel.getY(), accel.getZ()) >= collisionMagnitudeThreshold;
 	}
