@@ -1,5 +1,7 @@
 package com.thegongoliers.math;
 
+import com.thegongoliers.math.exceptions.OutOfBoundsException;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -97,6 +99,9 @@ public class MathExt {
      * @return The normalized value in the range.
      */
     public static double normalize(double value, double min, double max) {
+        if (value > max || value < min){
+            throw new OutOfBoundsException();
+        }
         return (value - min) / (max - min);
     }
 
@@ -227,7 +232,7 @@ public class MathExt {
      */
     public static double roundPlaces(double value, int numPlaces) {
         double multiplier = Math.pow(10, numPlaces);
-        return snap(value, 1 / multiplier);
+        return Math.round(value * multiplier) / multiplier;
     }
 
     /**
