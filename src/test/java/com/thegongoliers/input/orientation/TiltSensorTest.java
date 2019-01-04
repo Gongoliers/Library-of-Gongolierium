@@ -1,6 +1,5 @@
-package com.thegongoliers.input.accelerometer;
+package com.thegongoliers.input.orientation;
 
-import com.thegongoliers.input.orientation.TiltSensor;
 import com.thegongoliers.mockHardware.input.MockAccelerometer;
 import org.junit.Before;
 import org.junit.Test;

@@ -1,4 +1,4 @@
-package com.thegongoliers.math;
+package com.thegongoliers.math.spline;
 
 import com.thegongoliers.math.spline.HermiteSpline;
 import org.junit.Test;

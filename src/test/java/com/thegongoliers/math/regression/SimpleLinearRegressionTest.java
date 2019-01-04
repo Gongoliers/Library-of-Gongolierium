@@ -1,4 +1,4 @@
-package com.thegongoliers.math;
+package com.thegongoliers.math.regression;
 
 import com.kylecorry.geometry.Point;
 import com.thegongoliers.math.regression.SimpleLinearRegression;
