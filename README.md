@@ -7,11 +7,19 @@ A library to help teams develop more complex robot programs quicker.
 Download the jar file from the [releases page](https://github.com/Gongoliers/Library-of-Gongolierium/releases) add it to your project.
 
 ### FRC 2019
-Move the jar to a libs folder in your project along with the latest [Geometry jar (0.X version)](https://github.com/kylecorry31/Geometry/releases). In your `build.gradle` file, add the following line to the dependencies section:
+To use the the Library of Gongolierium with Gradle projects, you can use Jitpack.io by adding the following lines to your `build.gradle` file:
 
-`compile fileTree(dir: 'libs', include: '*.jar')`
+```Gradle
+repositories {
+    ...
+    maven { url 'https://jitpack.io' }
+}
 
-Here is an example [build.gradle file](https://github.com/kylecorry31/FRC-Sample-Robot-2019/blob/master/build.gradle).
+dependencies {
+    ...
+    compile 'com.github.Gongoliers:Library-of-Gongolierium:v3.0-beta'
+}
+```
 
 ## Contributing
 Please fork this repo and submit a pull request to contribute. I will review all changes and respond if they are accepted or rejected (as well as reasons, so it will be accepted).
