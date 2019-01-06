@@ -4,9 +4,6 @@
 A library to help teams develop more complex robot programs quicker. 
 
 ## Installation
-Download the jar file from the [releases page](https://github.com/Gongoliers/Library-of-Gongolierium/releases) add it to your project.
-
-### FRC 2019
 To use the the Library of Gongolierium with Gradle projects, you can use Jitpack.io by adding the following lines to your `build.gradle` file:
 
 ```Gradle
