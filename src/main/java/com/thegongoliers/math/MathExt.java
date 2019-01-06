@@ -12,24 +12,20 @@ public class MathExt {
     }
 
     /**
-     * isOdd : int -> boolean
-     * <p>
-     * Determines if a number is odd
+     * Determines if a number is odd.
      *
-     * @param value
-     * @return
+     * @param value The value to check.
+     * @return True if the value is odd.
      */
     public static boolean isOdd(int value) {
-        return divisibleBy(value, 2);
+        return !divisibleBy(value, 2);
     }
 
     /**
-     * isEven : int -> boolean
-     * <p>
-     * Determines if a number is even
+     * Determines if a number is even.
      *
-     * @param value
-     * @return
+     * @param value The value to check.
+     * @return True if the value is even.
      */
     public static boolean isEven(int value) {
         return !isOdd(value);
@@ -51,22 +47,13 @@ public class MathExt {
 
     /**
      * Determines the sign of a value
-     * <p>
-     * Produces 1 if the value if positive, -1 if it is negative, and 0 if it is
-     * 0
      *
      * @param value The value which to get the sign from
      * @return 1 if the value if positive, -1 if it is negative, and 0 if it is
      * 0
      */
     public static int sign(double value) {
-        if (value > 0) {
-            return 1;
-        } else if (value < 0) {
-            return -1;
-        } else {
-            return 0;
-        }
+        return (int) Math.signum(value);
     }
 
     /**

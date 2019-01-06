@@ -8,18 +8,40 @@ import static org.junit.Assert.*;
 public class MathExtTest {
 
     @Test
+    public void testIsOdd(){
+        assertTrue(MathExt.isOdd(1));
+        assertTrue(MathExt.isOdd(3));
+        assertTrue(MathExt.isOdd(-1));
+
+        assertFalse(MathExt.isOdd(0));
+        assertFalse(MathExt.isOdd(2));
+        assertFalse(MathExt.isOdd(-2));
+    }
+
+    @Test
+    public void testIsEven(){
+        assertTrue(MathExt.isEven(0));
+        assertTrue(MathExt.isEven(2));
+        assertTrue(MathExt.isEven(-2));
+
+        assertFalse(MathExt.isEven(1));
+        assertFalse(MathExt.isEven(3));
+        assertFalse(MathExt.isEven(-1));
+    }
+
+    @Test
+    public void testMagnitude(){
+        assertEquals(1, MathExt.magnitude(1), 0.0001);
+        assertEquals(0, MathExt.magnitude(0), 0.0001);
+        assertEquals(10, MathExt.magnitude(6, 8), 0.0001);
+        assertEquals(Math.sqrt(14), MathExt.magnitude(1, -2, 3), 0.0001);
+    }
+
+    @Test
     public void testSign(){
         assertEquals(1, MathExt.sign(10));
         assertEquals(0, MathExt.sign(0));
         assertEquals(-1, MathExt.sign(-10));
-    }
-
-    @Test
-    public void testSquare(){
-        assertEquals(0, MathExt.square(0), 0.0001);
-        assertEquals(1, MathExt.square(1), 0.0001);
-        assertEquals(4, MathExt.square(2), 0.0001);
-        assertEquals(4, MathExt.square(-2), 0.0001);
     }
 
     @Test
@@ -29,6 +51,14 @@ public class MathExtTest {
         assertEquals(5, MathExt.percent(10, 50), 0.0001);
         assertEquals(10, MathExt.percent(10, 100), 0.0001);
         assertEquals(15, MathExt.percent(10, 150), 0.0001);
+    }
+
+    @Test
+    public void testSquare(){
+        assertEquals(0, MathExt.square(0), 0.0001);
+        assertEquals(1, MathExt.square(1), 0.0001);
+        assertEquals(4, MathExt.square(2), 0.0001);
+        assertEquals(4, MathExt.square(-2), 0.0001);
     }
 
     @Test
