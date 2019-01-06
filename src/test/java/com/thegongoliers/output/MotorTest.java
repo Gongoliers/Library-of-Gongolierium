@@ -1,5 +1,6 @@
 package com.thegongoliers.output;
 
+import com.thegongoliers.input.voltage.MotorVoltageSensor;
 import com.thegongoliers.mockHardware.output.MockSpeedController;
 import com.thegongoliers.mockHardware.input.MockVoltageSensor;
 import com.thegongoliers.output.interfaces.IMotor;
