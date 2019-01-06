@@ -3,6 +3,11 @@ package com.thegongoliers.math;
 import com.thegongoliers.math.exceptions.OutOfBoundsException;
 import org.junit.Test;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 import static org.junit.Assert.*;
 
 public class MathExtTest {
@@ -79,6 +84,53 @@ public class MathExtTest {
     }
 
     @Test
+    public void testNormalizeArray(){
+        assertArrayEquals(new double[]{1}, MathExt.normalize(new double[]{1}), 0.0001);
+        assertArrayEquals(new double[]{}, MathExt.normalize(new double[]{}), 0.0001);
+        assertArrayEquals(new double[]{0}, MathExt.normalize(new double[]{0}), 0.0001);
+        assertArrayEquals(new double[]{0, 1}, MathExt.normalize(new double[]{1, 10}), 0.0001);
+        assertArrayEquals(new double[]{1, 0.5, 0}, MathExt.normalize(new double[]{-1, -2, -3}), 0.0001);
+    }
+
+    @Test
+    public void testToList(){
+        assertEquals(Collections.singletonList(1.0), MathExt.toList(new double[]{1}));
+        assertEquals(Arrays.asList(1.0, 2.0, 3.0), MathExt.toList(new double[]{1, 2, 3}));
+        assertEquals(new ArrayList<Double>(), MathExt.toList(new double[]{}));
+    }
+
+    @Test
+    public void testToPrimitiveArray(){
+        assertArrayEquals(new double[]{1}, MathExt.toPrimitiveArray(Collections.singletonList(1.0)), 0.0001);
+        assertArrayEquals(new double[]{1, 2, 3}, MathExt.toPrimitiveArray(Arrays.asList(1.0, 2.0, 3.0)), 0.0001);
+        assertArrayEquals(new double[]{}, MathExt.toPrimitiveArray(new ArrayList<>()), 0.0001);
+    }
+
+    @Test
+    public void testSum(){
+        assertEquals(1, MathExt.sum(new double[]{1}), 0.0001);
+        assertEquals(0, MathExt.sum(new double[]{}), 0.0001);
+        assertEquals(11, MathExt.sum(new double[]{1, 10}), 0.0001);
+        assertEquals(-6, MathExt.sum(new double[]{-1, -2, -3}), 0.0001);
+    }
+
+    @Test
+    public void testMin(){
+        assertEquals(1, MathExt.min(new double[]{1}), 0.0001);
+        assertEquals(Double.NEGATIVE_INFINITY, MathExt.min(new double[]{}), 0.0001);
+        assertEquals(1, MathExt.min(new double[]{1, 10}), 0.0001);
+        assertEquals(-3, MathExt.min(new double[]{-1, -2, -3}), 0.0001);
+    }
+
+    @Test
+    public void testMax(){
+        assertEquals(1, MathExt.max(new double[]{1}), 0.0001);
+        assertEquals(Double.POSITIVE_INFINITY, MathExt.max(new double[]{}), 0.0001);
+        assertEquals(10, MathExt.max(new double[]{1, 10}), 0.0001);
+        assertEquals(-1, MathExt.max(new double[]{-1, -2, -3}), 0.0001);
+    }
+
+    @Test
     public void testToRange(){
         assertEquals(0, MathExt.toRange(0, 0, 100), 0.0001);
         assertEquals(50, MathExt.toRange(50, 0, 100), 0.0001);
@@ -116,6 +168,19 @@ public class MathExtTest {
     }
 
     @Test
+    public void testDivisibleBy(){
+        assertTrue(MathExt.divisibleBy(12, 6));
+        assertTrue(MathExt.divisibleBy(1, 1));
+        assertTrue(MathExt.divisibleBy(0, 6));
+        assertTrue(MathExt.divisibleBy(-2, 2));
+
+        assertFalse(MathExt.divisibleBy(1, 0));
+        assertFalse(MathExt.divisibleBy(0, 0));
+        assertFalse(MathExt.divisibleBy(1, 2));
+        assertFalse(MathExt.divisibleBy(21, 6));
+    }
+
+    @Test
     public void testApproxEqual(){
         assertTrue(MathExt.approxEqual(1, 1, 0.0001));
         assertFalse(MathExt.approxEqual(1.2, 1, 0.0001));
@@ -124,11 +189,50 @@ public class MathExtTest {
     }
 
     @Test
+    public void testSlopeFromAngleDegrees(){
+        assertEquals(1, MathExt.slopeFromAngleDegrees(45), 0.0001);
+        assertEquals(1.732, MathExt.slopeFromAngleDegrees(60), 0.001);
+        assertEquals(1.5, MathExt.slopeFromAngleDegrees(56.31), 0.001);
+    }
+
+    @Test
+    public void testSlopeFromAngleRadians(){
+        assertEquals(1, MathExt.slopeFromAngleRadians(Math.toRadians(45)), 0.0001);
+        assertEquals(1.732, MathExt.slopeFromAngleRadians(Math.toRadians(60)), 0.001);
+        assertEquals(1.5, MathExt.slopeFromAngleRadians(Math.toRadians(56.31)), 0.001);
+    }
+
+    @Test
     public void testRateLimit(){
         assertEquals(0, MathExt.rateLimit(0.1, 0, 0), 0.0001);
         assertEquals(0.1, MathExt.rateLimit(0.1, 1, 0), 0.0001);
         assertEquals(0.3, MathExt.rateLimit(0.2, 1, 0.1), 0.0001);
         assertEquals(1.5, MathExt.rateLimit(1.5, 1.5, 0.3), 0.0001);
+    }
+
+    @Test
+    public void testStandardDeviation(){
+        assertEquals(Double.NaN, MathExt.standardDeviation(new double[]{1}), 0.0001);
+        assertEquals(Double.NaN, MathExt.standardDeviation(new double[]{}), 0.0001);
+        assertEquals(5.656854249, MathExt.standardDeviation(new double[]{2, 10}), 0.0001);
+        assertEquals(1, MathExt.standardDeviation(new double[]{-1, -2, -3}), 0.0001);
+        assertEquals(0, MathExt.standardDeviation(new double[]{0, 0, 0}), 0.0001);
+    }
+
+    @Test
+    public void testCorrelation(){
+        assertEquals(1, MathExt.correlation(new double[]{1, 2, 3, 4, 5, 6}, new double[]{4, 5, 6, 7, 8, 9}), 0.0001);
+        assertEquals(-1, MathExt.correlation(new double[]{6, 5, 4, 3, 2, 1}, new double[]{4, 5, 6, 7, 8, 9}), 0.0001);
+        assertEquals(-0.0275, MathExt.correlation(new double[]{1, 4, 3, 4, 5, 0}, new double[]{4, 5, 6, 7, 8, 9}), 0.0001);
+    }
+
+    @Test
+    public void testMean(){
+        assertEquals(1, MathExt.mean(new double[]{1}), 0.0001);
+        assertEquals(Double.NaN, MathExt.mean(new double[]{}), 0.0001);
+        assertEquals(6, MathExt.mean(new double[]{2, 10}), 0.0001);
+        assertEquals(-2, MathExt.mean(new double[]{-1, -2, -3}), 0.0001);
+        assertEquals(0, MathExt.mean(new double[]{0, 0, 0}), 0.0001);
     }
 
 }

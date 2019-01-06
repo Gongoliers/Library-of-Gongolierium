@@ -93,14 +93,22 @@ public class MathExt {
     }
 
     /**
-     * Normalize the values to the max of the array.
+     * Normalize the values of an array.
      *
      * @param values The values to normalize.
      * @return The normalized values.
      */
     public static double[] normalize(double[] values) {
         double max = max(values);
-        return toPrimitiveArray(toList(values).stream().map(x -> x / max).collect(Collectors.toList()));
+        double min = min(values);
+
+        if (min == max && min == 0){
+            return values;
+        } else if (min == max){
+            return toPrimitiveArray(toList(values).stream().map(x -> 1.0).collect(Collectors.toList()));
+        }
+
+        return toPrimitiveArray(toList(values).stream().map(x -> normalize(x, min, max)).collect(Collectors.toList()));
     }
 
     /**
@@ -171,7 +179,7 @@ public class MathExt {
      * @param values The array.
      * @return The max value of the array.
      */
-    public static double max(double[] values) {
+        public static double max(double[] values) {
         if (values.length == 0) {
             return Double.POSITIVE_INFINITY;
         }
@@ -241,6 +249,9 @@ public class MathExt {
      * @return True if the value is divisible by the divider.
      */
     public static boolean divisibleBy(int value, int divisor) {
+        if (divisor == 0){
+            return false;
+        }
         return value % divisor == 0;
     }
 
@@ -302,7 +313,7 @@ public class MathExt {
      */
     public static double standardDeviation(double[] x){
         if(x == null || x.length < 2){
-            return 0;
+            return Double.NaN;
         }
         double mean = mean(x);
         double variance = 0;
@@ -358,7 +369,7 @@ public class MathExt {
      */
     public static double mean(double[] x) {
         if(x == null || x.length == 0){
-            return 0;
+            return Double.NaN;
         }
         double sum = 0;
         for (double val: x){
