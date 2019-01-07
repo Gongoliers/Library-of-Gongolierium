@@ -1,4 +1,4 @@
-package com.thegongoliers.output;
+package com.thegongoliers.pathFollowing.controllers;
 
 import com.thegongoliers.mockHardware.input.MockClock;
 import com.thegongoliers.pathFollowing.controllers.MotionProfileController;
