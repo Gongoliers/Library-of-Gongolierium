@@ -3,6 +3,11 @@
 
 A library to help teams develop more complex robot programs quicker. View the [Wiki](https://github.com/Gongoliers/Library-of-Gongolierium/wiki) for examples.
 
+### Features
+- Unit test your robot code using mock hardware components
+- Use higher level joystick, sensor, and actuator components
+- Use built in math functions
+
 ## Installation
 To use the the Library of Gongolierium with Gradle projects, you can use [JitPack](https://jitpack.io/) by adding the following lines to your `build.gradle` file:
 
