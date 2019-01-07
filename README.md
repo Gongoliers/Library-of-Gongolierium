@@ -1,7 +1,11 @@
 # Library of Gongolierium
 <!--[![Build Status](https://travis-ci.org/Gongoliers/Library-of-Gongolierium.svg?branch=master)](https://travis-ci.org/Gongoliers/Library-of-Gongolierium)-->
 
-A library to help teams develop more complex robot programs quicker. View the [Wiki](https://github.com/Gongoliers/Library-of-Gongolierium/wiki) for examples.
+A library to help teams develop more complex robot programs quicker. 
+
+View the [Wiki](https://github.com/Gongoliers/Library-of-Gongolierium/wiki) for examples.
+
+View the [JavaDocs](https://gongoliers.github.io/Library-of-Gongolierium/).
 
 ### Features
 - Unit test your robot code using mock hardware components
