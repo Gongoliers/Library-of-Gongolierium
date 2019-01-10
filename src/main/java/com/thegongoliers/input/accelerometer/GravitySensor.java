@@ -29,20 +29,26 @@ public class GravitySensor implements Accelerometer {
 
 	@Override
 	public double getX() {
-		gravity.x = lowPassFilter(gravity.x, accel.getX());
+		updateGravity();
 		return gravity.x;
 	}
 
 	@Override
 	public double getY() {
-		gravity.y = lowPassFilter(gravity.y, accel.getY());
+		updateGravity();
 		return gravity.y;
 	}
 
 	@Override
 	public double getZ() {
-		gravity.z = lowPassFilter(gravity.z, accel.getZ());
+		updateGravity();
 		return gravity.z;
+	}
+
+	private void updateGravity(){
+		gravity.x = lowPassFilter(gravity.x, accel.getX());
+		gravity.y = lowPassFilter(gravity.y, accel.getY());
+		gravity.z = lowPassFilter(gravity.z, accel.getZ());
 	}
 
 	private double lowPassFilter(double prevVal, double newVal) {
