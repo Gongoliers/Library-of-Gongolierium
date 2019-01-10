@@ -24,7 +24,7 @@ public class LinearAccelerationSensorTest {
         mockAccelerometer.setZ(0);
 
         assertEquals(-9.81 * 0.8, linearAccelerationSensor.getZ(), 0.0001);
-        assertEquals(9.81 - (9.81 * 0.2 * 0.8 + 9.81 * 0.2), linearAccelerationSensor.getX(), 0.0001);
+        assertEquals(9.81 - 9.81 * 0.2, linearAccelerationSensor.getX(), 0.0001);
         assertEquals(0, linearAccelerationSensor.getY(), 0.0001);
     }
 

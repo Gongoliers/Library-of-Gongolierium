@@ -25,7 +25,7 @@ public class GravitySensorTest {
         mockAccelerometer.setZ(0);
 
         assertEquals(9.81 * 0.8, gravitySensor.getZ(), 0.0001);
-        assertEquals(9.81 * 0.2 * 0.8 + 9.81 * 0.2, gravitySensor.getX(), 0.0001);
+        assertEquals(9.81 * 0.2, gravitySensor.getX(), 0.0001);
         assertEquals(0, gravitySensor.getY(), 0.0001);
 
     }
