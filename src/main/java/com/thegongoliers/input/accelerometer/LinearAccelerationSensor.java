@@ -7,7 +7,7 @@ public class LinearAccelerationSensor implements Accelerometer {
 
 	private Accelerometer accel;
 
-	private Vector3 gravity;
+	private GravitySensor gravity;
 
 	private static final double alpha = 0.8;
 
@@ -19,7 +19,7 @@ public class LinearAccelerationSensor implements Accelerometer {
 	 */
 	public LinearAccelerationSensor(Accelerometer accel) {
 		this.accel = accel;
-		gravity = new Vector3(accel.getX(), accel.getY(), accel.getZ());
+		gravity = new GravitySensor(accel);
 	}
 
 	@Override
@@ -29,24 +29,16 @@ public class LinearAccelerationSensor implements Accelerometer {
 
 	@Override
 	public double getX() {
-		gravity.x = lowPassFilter(gravity.x, accel.getX());
-		return accel.getX() - gravity.x;
+		return accel.getX() - gravity.getX();
 	}
 
 	@Override
 	public double getY() {
-		gravity.y = lowPassFilter(gravity.y, accel.getY());
-		return accel.getY() - gravity.y;
+		return accel.getY() - gravity.getY();
 	}
 
 	@Override
 	public double getZ() {
-		gravity.z = lowPassFilter(gravity.z, accel.getZ());
-		return accel.getZ() - gravity.z;
+		return accel.getZ() - gravity.getZ();
 	}
-
-	private double lowPassFilter(double prevVal, double newVal) {
-		return alpha * prevVal + (1 - alpha) * newVal;
-	}
-
 }
