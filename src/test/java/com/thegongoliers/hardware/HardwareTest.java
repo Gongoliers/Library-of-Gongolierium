@@ -1,5 +1,7 @@
 package com.thegongoliers.hardware;
 
+import com.thegongoliers.input.switches.ResettableSwitch;
+import com.thegongoliers.input.switches.Switch;
 import com.thegongoliers.mockHardware.input.MockGyro;
 import com.thegongoliers.mockHardware.input.MockSwitch;
 import edu.wpi.first.wpilibj.buttons.Button;
@@ -66,6 +68,41 @@ public class HardwareTest {
 
         s.setTriggered(true);
         assertTrue(b.get());
+    }
+
+    @Test
+    public void testMakeSwitch(){
+        MockSwitch mockSwitch = new MockSwitch();
+
+        Switch s = Hardware.makeSwitch(mockSwitch::isTriggered);
+
+        assertNotNull(s);
+
+        mockSwitch.setTriggered(false);
+        assertFalse(s.isTriggered());
+
+        mockSwitch.setTriggered(true);
+        assertTrue(s.isTriggered());
+    }
+
+    @Test
+    public void testMakeResettableSwitchFromSwitch(){
+        MockSwitch mockSwitch = new MockSwitch();
+
+        ResettableSwitch s = Hardware.makeResettableSwitch(mockSwitch);
+        assertNotNull(s);
+
+        mockSwitch.setTriggered(false);
+        assertFalse(s.isTriggered());
+
+        mockSwitch.setTriggered(true);
+        assertTrue(s.isTriggered());
+
+        mockSwitch.setTriggered(false);
+        assertTrue(s.isTriggered());
+
+        s.reset();
+        assertFalse(s.isTriggered());
     }
 
     @Test

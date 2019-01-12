@@ -1,5 +1,6 @@
 package com.thegongoliers.hardware;
 
+import com.thegongoliers.input.switches.ResettableSwitch;
 import com.thegongoliers.input.switches.Switch;
 
 import edu.wpi.first.wpilibj.buttons.Button;
@@ -55,6 +56,38 @@ public class Hardware {
 			@Override
 			public boolean get() {
 				return booleanSupplier.getAsBoolean();
+			}
+		};
+	}
+
+	/**
+	 * Creates a switch from a boolean supplier.
+	 * @param booleanSupplier The boolean supplier to become a switch.
+	 * @return The switch which is triggered when the boolean supplier is true.
+	 */
+	public static Switch makeSwitch(BooleanSupplier booleanSupplier){
+		return booleanSupplier::getAsBoolean;
+	}
+
+	/**
+	 * Creates a resettable switch from a switch.
+	 * @param aSwitch The switch to become a resettable switch.
+	 * @return The resettable switch, which will remain true if the switch becomes triggered.
+	 */
+	public static ResettableSwitch makeResettableSwitch(Switch aSwitch){
+		return new ResettableSwitch() {
+
+			private boolean wasTriggered = false;
+
+			@Override
+			public void reset() {
+				wasTriggered = false;
+			}
+
+			@Override
+			public boolean isTriggered() {
+				wasTriggered |= aSwitch.isTriggered();
+				return wasTriggered;
 			}
 		};
 	}
