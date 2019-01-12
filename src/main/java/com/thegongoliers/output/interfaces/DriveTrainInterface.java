@@ -37,16 +37,16 @@ public interface DriveTrainInterface extends Stoppable {
 	 * Operate the robot with an arcade control.
 	 * 
 	 * @param speed
-	 *            The speed to drive at from -1 to 1 inclusive. Negative speed
+	 *            The speed to drive at from -1 to 1 inclusive. Positive speed
 	 *            is forward.
 	 * @param rotation
-	 *            The rotation to drive at from -1 to 1 inclusive. Negative
-	 *            rotation is left.
+	 *            The rotation to drive at from -1 to 1 inclusive. Positive
+	 *            rotation is right/clockwise.
 	 */
 	void arcade(double speed, double rotation);
 
 	/**
-	 * Operate the robot with a tank control.
+	 * Operate the robot with a tank control. Positive speeds are forward.
 	 * 
 	 * @param left
 	 *            The speed to drive the left train at.

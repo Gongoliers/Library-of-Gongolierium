@@ -8,7 +8,7 @@ public class LowPassFilter implements Filter{
 
     private double lastValue;
 
-    private final double filterCoef;
+    private double filterCoef;
 
     public LowPassFilter(double filterCoef) {
         this(filterCoef, 0.0);
@@ -17,6 +17,14 @@ public class LowPassFilter implements Filter{
     public LowPassFilter(double filterCoef, double initialValue) {
         this.filterCoef = MathExt.toRange(filterCoef, 0, 1);
         this.lastValue = initialValue;
+    }
+
+    /**
+     * Set the filter coefficient.
+     * @param filterCoef The filter coefficient between 0 and 1.
+     */
+    public void setFilterCoefficient(double filterCoef){
+        this.filterCoef = filterCoef;
     }
 
     @Override

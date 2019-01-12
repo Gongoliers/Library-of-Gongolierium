@@ -6,7 +6,7 @@ import com.thegongoliers.math.MathExt;
 @TestedBy(team = "5112", year = "2018")
 public class RateLimiter implements Filter {
 
-    private final double maxRate;
+    private double maxRate;
     private double lastValue;
 
     public RateLimiter(double maxRate, double lastValue){
@@ -16,6 +16,14 @@ public class RateLimiter implements Filter {
 
     public RateLimiter(double maxRate){
         this(maxRate, 0.0);
+    }
+
+    /**
+     * Set the max rate.
+     * @param maxRate The max rate.
+     */
+    public void setMaxRate(double maxRate){
+        this.maxRate = maxRate;
     }
 
     @Override
