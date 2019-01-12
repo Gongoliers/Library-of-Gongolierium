@@ -7,13 +7,11 @@ import com.thegongoliers.math.filter.RateLimiter;
 import com.thegongoliers.output.interfaces.DriveTrainInterface;
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
-import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 
-public class Drivetrain6CIM extends Subsystem implements DriveTrainInterface {
+public abstract class Drivetrain6CIM extends Subsystem implements DriveTrainInterface {
 
-    private Command defaultCommand;
     private DifferentialDrive differentialDrive;
     private RateLimiter speedRateLimit, turnRateLimit;
     private LowPassFilter speedNoiseFilter, turnNoiseFilter;
@@ -27,13 +25,18 @@ public class Drivetrain6CIM extends Subsystem implements DriveTrainInterface {
      * @param right1 One of the right motors.
      * @param right2 One of the right motors.
      * @param right3 One of the right motors.
-     * @param defaultCommand The default command to run.
      */
-    public Drivetrain6CIM(SpeedController left1, SpeedController left2, SpeedController left3, SpeedController right1, SpeedController right2, SpeedController right3, Command defaultCommand){
-        this.defaultCommand = defaultCommand;
-        SpeedController leftMotors = new SpeedControllerGroup(left1, left2, left3);
-        SpeedController rightMotors = new SpeedControllerGroup(right1, right2, right3);
-        differentialDrive = new DifferentialDrive(leftMotors, rightMotors);
+    public Drivetrain6CIM(SpeedController left1, SpeedController left2, SpeedController left3, SpeedController right1, SpeedController right2, SpeedController right3){
+        this(new SpeedControllerGroup(left1, left2, left3), new SpeedControllerGroup(right1, right2, right3));
+    }
+
+    /**
+     * Creates a drivetrain with 6 CIM motors (as used by the Gongoliers).
+     * @param left The left speed controller.
+     * @param right The right speed controller.
+     */
+    public Drivetrain6CIM(SpeedController left, SpeedController right){
+        differentialDrive = new DifferentialDrive(left, right);
         speedRateLimit = new RateLimiter(Double.POSITIVE_INFINITY);
         turnRateLimit = new RateLimiter(Double.POSITIVE_INFINITY);
         speedNoiseFilter = new LowPassFilter(0.0);
@@ -157,10 +160,5 @@ public class Drivetrain6CIM extends Subsystem implements DriveTrainInterface {
         double reducedNoise = turnNoiseFilter.filter(limited);
         double constrained = MathExt.toRange(reducedNoise, -maxTurn, maxTurn);
         return JoystickTransformer.deadzone(constrained, stopTurnThreshold);
-    }
-
-    @Override
-    protected void initDefaultCommand() {
-        setDefaultCommand(defaultCommand);
     }
 }
