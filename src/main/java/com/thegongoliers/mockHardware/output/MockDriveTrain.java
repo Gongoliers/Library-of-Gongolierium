@@ -24,6 +24,7 @@ public class MockDriveTrain implements DriveTrainInterface {
 
     @Override
     public void forward(double speed) {
+        speed = limit(speed);
         this.forwardSpeed = speed;
         this.rotationSpeed = 0;
         this.leftSpeed = speed;
@@ -32,6 +33,7 @@ public class MockDriveTrain implements DriveTrainInterface {
 
     @Override
     public void backward(double speed) {
+        speed = limit(speed);
         this.forwardSpeed = -speed;
         this.rotationSpeed = 0;
         this.leftSpeed = -speed;
@@ -40,6 +42,7 @@ public class MockDriveTrain implements DriveTrainInterface {
 
     @Override
     public void rotateLeft(double speed) {
+        speed = limit(speed);
         this.forwardSpeed = 0;
         this.rotationSpeed = -speed;
         this.leftSpeed = -speed;
@@ -48,6 +51,7 @@ public class MockDriveTrain implements DriveTrainInterface {
 
     @Override
     public void rotateRight(double speed) {
+        speed = limit(speed);
         this.forwardSpeed = 0;
         this.rotationSpeed = speed;
         this.leftSpeed = speed;
@@ -56,6 +60,8 @@ public class MockDriveTrain implements DriveTrainInterface {
 
     @Override
     public void arcade(double speed, double rotation) {
+        speed = limit(speed);
+        rotation = limit(rotation);
         this.forwardSpeed = speed;
         this.rotationSpeed = rotation;
         this.leftSpeed = 0; // TODO: calculate these
@@ -64,6 +70,8 @@ public class MockDriveTrain implements DriveTrainInterface {
 
     @Override
     public void tank(double left, double right) {
+        left = limit(left);
+        right = limit(right);
         this.leftSpeed = left;
         this.rightSpeed = right;
         this.forwardSpeed = 0; // TODO: calculate these
@@ -76,5 +84,9 @@ public class MockDriveTrain implements DriveTrainInterface {
         this.rotationSpeed = 0;
         this.leftSpeed = 0;
         this.rightSpeed = 0;
+    }
+
+    private double limit(double speed){
+        return Math.min(1, Math.max(speed, -1));
     }
 }

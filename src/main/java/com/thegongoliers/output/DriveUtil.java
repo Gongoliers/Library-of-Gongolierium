@@ -32,6 +32,12 @@ public class DriveUtil {
      * @return True if the robot is at the target distance within the threshold.
      */
     public static boolean bangBangDriveDistance(double distance, double currentDistance, double threshold, double maxSpeed, DriveTrainInterface driveTrain) {
+
+        if (maxSpeed < 0){
+            driveTrain.stop();
+            return false;
+        }
+
         double error = distance - currentDistance;
         if (error > threshold) {
             driveTrain.forward(maxSpeed);
