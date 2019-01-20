@@ -1,8 +1,6 @@
 package com.thegongoliers.output;
 
-import com.kylecorry.geometry.Path;
 import com.thegongoliers.output.interfaces.DriveTrainInterface;
-import edu.wpi.first.wpilibj.RobotDrive;
 
 /**
  * Created by Kylec on 3/27/2017.
