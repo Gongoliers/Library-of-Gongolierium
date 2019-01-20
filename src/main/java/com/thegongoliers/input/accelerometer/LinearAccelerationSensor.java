@@ -1,6 +1,5 @@
 package com.thegongoliers.input.accelerometer;
 
-import com.kylecorry.geometry.Vector3;
 import edu.wpi.first.wpilibj.interfaces.Accelerometer;
 
 public class LinearAccelerationSensor implements Accelerometer {

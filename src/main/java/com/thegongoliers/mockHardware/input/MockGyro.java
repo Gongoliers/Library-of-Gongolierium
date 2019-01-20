@@ -41,6 +41,6 @@ public class MockGyro implements Gyro {
     }
 
     @Override
-    public void close() throws Exception {
+    public void close() {
     }
 }
