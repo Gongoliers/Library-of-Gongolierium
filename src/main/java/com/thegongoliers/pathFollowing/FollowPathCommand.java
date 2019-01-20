@@ -9,22 +9,36 @@ import java.util.List;
 @TestedBy(team = "5112", year = "2018")
 public class FollowPathCommand extends CommandGroup {
 
+    /**
+     * Creates a command to follow a path.
+     * @param path The path to follow.
+     */
     public FollowPathCommand(Path path){
         generatePath(path);
     }
 
+    /**
+     * Creates a command to follow a path.
+     * @param drivetrain The robot drivetrain.
+     * @param waypoints The waypoints in the path (assumes the robot starts at (0, 0) and is facing 90 degrees).
+     */
     public FollowPathCommand(SmartDriveTrainSubsystem drivetrain, List<PathWaypoint> waypoints){
         Path path = new Path(drivetrain);
         double x = 0, y = 0, angle = 90;
         for (PathWaypoint waypoint: waypoints){
+            // Rotate to face the next waypoint
             double angleToPosition = calculateAngle(x, y, waypoint.getX(), waypoint.getY());
             double rotation = angleToPosition - angle;
             angle += rotation;
             path.addRotation(rotation);
 
+            // Drive to the next waypoint
             double distance = calculateDistance(x, y, waypoint.getX(), waypoint.getY());
             path.addStraightAway(distance);
+            x = waypoint.getX();
+            y = waypoint.getY();
 
+            // Face the correct direction of the waypoint
             double finalAngle = waypoint.getHeading() - angle;
             angle += finalAngle;
             path.addRotation(finalAngle);
