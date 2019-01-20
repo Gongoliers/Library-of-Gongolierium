@@ -17,13 +17,13 @@ public class FollowPathCommand extends CommandGroup {
         Path path = new Path(drivetrain);
         double x = 0, y = 0, angle = 90;
         for (PathWaypoint waypoint: waypoints){
-            double angleToPosition = Math.atan2(waypoint.getY() - y, waypoint.getX() - x) * 180 / Math.PI;
+            double angleToPosition = calculateAngle(x, y, waypoint.getX(), waypoint.getY());
             double rotation = angleToPosition - angle;
             angle += rotation;
             path.addRotation(rotation);
 
-            double magnitude = Math.sqrt(Math.pow(waypoint.getY() - y, 2) + Math.pow(waypoint.getX() - x, 2));
-            path.addStraightAway(magnitude);
+            double distance = calculateDistance(x, y, waypoint.getX(), waypoint.getY());
+            path.addStraightAway(distance);
 
             double finalAngle = waypoint.getHeading() - angle;
             angle += finalAngle;
@@ -36,6 +36,30 @@ public class FollowPathCommand extends CommandGroup {
         for (PathTaskCommand command: path){
             addSequential(command);
         }
+    }
+
+    /**
+     * Calculates the distance between two points.
+     * @param x1 The starting x position.
+     * @param y1 The starting y position.
+     * @param x2 The ending x position.
+     * @param y2 The ending y position.
+     * @return The distance between the two points.
+     */
+    static double calculateDistance(double x1, double y1, double x2, double y2){
+        return Math.sqrt(Math.pow(y2 - y1, 2) + Math.pow(x2 - x1, 2));
+    }
+
+    /**
+     * Calculates the angle between two points in degrees.
+     * @param x1 The starting x position.
+     * @param y1 The starting y position.
+     * @param x2 The ending x position.
+     * @param y2 The ending y position.
+     * @return The angle between the two points in degrees.
+     */
+    static double calculateAngle(double x1, double y1, double x2, double y2){
+        return Math.toDegrees(Math.atan2(y2 - y1, x2 - x1));
     }
 
 }
