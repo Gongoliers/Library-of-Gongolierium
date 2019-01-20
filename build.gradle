@@ -4,7 +4,7 @@ plugins {
 }
 
 group 'com.thegongoliers'
-version '3.0-beta'
+version '3.0-beta-2.0'
 
 repositories {
     mavenCentral()

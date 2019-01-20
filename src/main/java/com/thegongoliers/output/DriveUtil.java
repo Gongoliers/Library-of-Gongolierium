@@ -17,7 +17,7 @@ public class DriveUtil {
      * @param targetSpeed   The max speed to drive this distance from 0 to 1 inclusive.
      * @return The time to drive a given distance.
      */
-    public double timeToDriveDistanceDeadReckoning(double distance, double robotMaxSpeed, double targetSpeed) {
+    public static double timeToDriveDistanceDeadReckoning(double distance, double robotMaxSpeed, double targetSpeed) {
         double distancePerSecond = robotMaxSpeed * targetSpeed;
         return distance / distancePerSecond;
     }
@@ -33,7 +33,7 @@ public class DriveUtil {
      * @param driveTrain      The drive train of the robot.
      * @return True if the robot is at the target distance within the threshold.
      */
-    public boolean bangBangDriveDistance(double distance, double currentDistance, double threshold, double maxSpeed, DriveTrainInterface driveTrain) {
+    public static boolean bangBangDriveDistance(double distance, double currentDistance, double threshold, double maxSpeed, DriveTrainInterface driveTrain) {
         double error = distance - currentDistance;
         if (error > threshold) {
             driveTrain.forward(maxSpeed);
@@ -55,8 +55,19 @@ public class DriveUtil {
      * @param ka           The acceleration constant.
      * @param driveTrain   The drive train of the robot.
      */
-    public void feedForwardControl(double velocity, double acceleration, double kv, double ka, DriveTrainInterface driveTrain) {
+    public static void feedForwardControl(double velocity, double acceleration, double kv, double ka, DriveTrainInterface driveTrain) {
         driveTrain.forward(kv * velocity + ka * acceleration);
+    }
+
+    /**
+     * Drive in a straight line.
+     * @param driveTrain The drive train of the robot.
+     * @param speed The speed to drive at from [-1, 1] where positive numbers are forward.
+     * @param currentHeading The current heading of the robot in degrees (assumes desired heading is 0 degrees). Positive numbers are a rotation to the right.
+     * @param correctionFactor The correction factor (kp) which is multiplied by the heading error. Small positive numbers are recommended (such as 0.03).
+     */
+    public static void driveStraight(DriveTrainInterface driveTrain, double speed, double currentHeading, double correctionFactor){
+        driveTrain.arcade(speed, -correctionFactor * currentHeading);
     }
 
 
