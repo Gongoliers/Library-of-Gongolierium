@@ -24,7 +24,7 @@ repositories {
 
 dependencies {
     ...
-    compile 'com.github.Gongoliers:Library-of-Gongolierium:v3.0-beta'
+    compile 'com.github.Gongoliers:Library-of-Gongolierium:v3.0'
 }
 ```
 
