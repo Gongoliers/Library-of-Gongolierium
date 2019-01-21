@@ -2,18 +2,16 @@ package com.thegongoliers.math;
 
 public class PathWaypoint {
 
-    private double x, y, heading;
+    private double x, y;
 
     /**
      * Create a path waypoint.
      * @param x The x position relative to the robot in meters.
      * @param y The y position relative to the robot in meters.
-     * @param heading The heading of the robot in degrees.
      */
-    public PathWaypoint(double x, double y, double heading) {
+    public PathWaypoint(double x, double y) {
         this.x = x;
         this.y = y;
-        this.heading = heading;
     }
 
 
@@ -47,21 +45,5 @@ public class PathWaypoint {
      */
     public void setY(double y) {
         this.y = y;
-    }
-
-    /**
-     * Sets the heading in degrees.
-     * @return  The heading.
-     */
-    public double getHeading() {
-        return heading;
-    }
-
-    /**
-     * Sets the heading in degrees.
-     * @param heading The heading..
-     */
-    public void setHeading(double heading) {
-        this.heading = heading;
     }
 }

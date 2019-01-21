@@ -43,4 +43,19 @@ public class PathRotateCommand extends PathTaskCommand {
     protected void interrupted() {
         end();
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        PathRotateCommand that = (PathRotateCommand) o;
+        return Double.compare(that.angleDegrees, angleDegrees) == 0;
+    }
+
+    @Override
+    public String toString() {
+        return "PathRotateCommand{" +
+                "angleDegrees=" + angleDegrees +
+                '}';
+    }
 }

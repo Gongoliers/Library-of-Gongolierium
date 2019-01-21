@@ -21,28 +21,10 @@ public class FollowPathCommand extends CommandGroup {
      * Creates a command to follow a path.
      * @param drivetrain The robot drivetrain.
      * @param waypoints The waypoints in the path (assumes the robot starts at (0, 0) and is facing 90 degrees).
+     * @param endingHeading The ending heading in degrees (0 to 360).
      */
-    public FollowPathCommand(SmartDriveTrainSubsystem drivetrain, List<PathWaypoint> waypoints){
-        Path path = new Path(drivetrain);
-        double x = 0, y = 0, angle = 90;
-        for (PathWaypoint waypoint: waypoints){
-            // Rotate to face the next waypoint
-            double angleToPosition = calculateAngle(x, y, waypoint.getX(), waypoint.getY());
-            double rotation = angleToPosition - angle;
-            angle += rotation;
-            path.addRotation(rotation);
-
-            // Drive to the next waypoint
-            double distance = calculateDistance(x, y, waypoint.getX(), waypoint.getY());
-            path.addStraightAway(distance);
-            x = waypoint.getX();
-            y = waypoint.getY();
-
-            // Face the correct direction of the waypoint
-            double finalAngle = waypoint.getHeading() - angle;
-            angle += finalAngle;
-            path.addRotation(finalAngle);
-        }
+    public FollowPathCommand(SmartDriveTrainSubsystem drivetrain, List<PathWaypoint> waypoints, double endingHeading){
+        Path path = waypointsToPath(drivetrain, waypoints, endingHeading);
         generatePath(path);
     }
 
@@ -50,6 +32,39 @@ public class FollowPathCommand extends CommandGroup {
         for (PathTaskCommand command: path){
             addSequential(command);
         }
+    }
+
+    static Path waypointsToPath(SmartDriveTrainSubsystem drivetrain, List<PathWaypoint> waypoints, double endingHeading){
+        Path path = new Path(drivetrain);
+        double x = 0, y = 0, angle = 90;
+        for (PathWaypoint waypoint: waypoints){
+
+            // Don't do anything if it is already at position
+            if (waypoint.getX() == x && waypoint.getY() == y){
+                continue;
+            }
+
+            // Rotate to face the next waypoint
+            double angleToPosition = calculateAngle(x, y, waypoint.getX(), waypoint.getY());
+            if (angle != angleToPosition) {
+                double rotation = calculateRotation(angle, angleToPosition);
+                angle = angleToPosition;
+                path.addRotation(rotation);
+            }
+
+            // Drive to the next waypoint
+            double distance = calculateDistance(x, y, waypoint.getX(), waypoint.getY());
+            path.addStraightAway(distance);
+            x = waypoint.getX();
+            y = waypoint.getY();
+        }
+
+        // Rotate to final heading
+        if (endingHeading != angle) {
+            double finalAngle = calculateRotation(angle, endingHeading);
+            path.addRotation(finalAngle);
+        }
+        return path;
     }
 
     /**
@@ -65,7 +80,7 @@ public class FollowPathCommand extends CommandGroup {
     }
 
     /**
-     * Calculates the angle between two points in degrees.
+     * Calculates the angle between two points in degrees (0 to 360 degrees).
      * @param x1 The starting x position.
      * @param y1 The starting y position.
      * @param x2 The ending x position.
@@ -73,7 +88,35 @@ public class FollowPathCommand extends CommandGroup {
      * @return The angle between the two points in degrees.
      */
     static double calculateAngle(double x1, double y1, double x2, double y2){
-        return Math.toDegrees(Math.atan2(y2 - y1, x2 - x1));
+        double angle = Math.toDegrees(Math.atan2(y2 - y1, x2 - x1));
+
+        if (angle < 0){
+            angle = 360 + angle;
+        }
+
+        return angle;
+    }
+
+
+    /**
+     * Calculates the shortest angle of rotation between the two angles. Positive is clockwise.
+     * @param currentAngle The current angle in degrees.
+     * @param targetAngle The target angle in degrees.
+     * @return The shortest angle between the two angles.
+     */
+    static double calculateRotation(double currentAngle, double targetAngle){
+        currentAngle %= 360;
+        targetAngle %= 360;
+
+        double difference = currentAngle - targetAngle;
+
+        if (difference < -180){
+            difference += 360;
+        } else if (difference > 180){
+            difference -= 360;
+        }
+
+        return difference;
     }
 
 }

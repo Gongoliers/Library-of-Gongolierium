@@ -2,6 +2,8 @@ package com.thegongoliers.pathFollowing;
 
 import com.thegongoliers.annotations.TestedBy;
 
+import java.util.Objects;
+
 @TestedBy(team = "5112", year = "2018")
 public class PathStraightAwayCommand extends PathTaskCommand {
 
@@ -42,5 +44,20 @@ public class PathStraightAwayCommand extends PathTaskCommand {
     @Override
     protected void interrupted() {
         end();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        PathStraightAwayCommand that = (PathStraightAwayCommand) o;
+        return Double.compare(that.distance, distance) == 0;
+    }
+
+    @Override
+    public String toString() {
+        return "PathStraightAwayCommand{" +
+                "distance=" + distance +
+                '}';
     }
 }
