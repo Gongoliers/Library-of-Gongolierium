@@ -188,3 +188,4 @@ gradle-app.setting
 
 *.iml
 *.ipr
+.vscode/settings.json
