@@ -8,6 +8,7 @@ com.thegongoliers.input.gameMessages
 com.thegongoliers.input.odometry
 com.thegongoliers.input.operator
 com.thegongoliers.input.orientation
+com.thegongoliers.input.rotation
 com.thegongoliers.input.switches
 com.thegongoliers.input.time
 com.thegongoliers.input.vision

@@ -137,6 +137,11 @@ public class Hardware {
 		};
 	}
 
+	/**
+	 * Inverts a potentiometer. If a potentiometer goes from 0 to -100 degrees (after scale and zero point), but should be 0 to 100, use this method. 
+	 * @param potentiometer The potentiometer to invert.
+	 * @return The inverted potentiometer. 
+	 */
 	public static Potentiometer invertPotentiometer(Potentiometer potentiometer){
 		return new Potentiometer(){
 		
@@ -162,10 +167,21 @@ public class Hardware {
 		};
 	}
 
+	/**
+	 * Creates a 10 turn potentiometer as sold by Andymark.
+	 * @param port The analog port that the potentiometer is plugged into.
+     * @param zeroPoint The zero point of the potentiometer. If you expect a position to be 0, but it is reading X degrees, put X here. (ex. actual 1000 to 1100 degrees, expected 0 to 100 degrees. Put 1000 here.)
+	 * @return A 10 turn potentiometer.
+     */
 	public static Potentiometer create10TurnPotentiometer(int port, double zeroPoint){
         return new GPotentiometer(port, 3600, zeroPoint);
     }
 
+	/**
+	 * Creates a 10 turn potentiometer as sold by Andymark. Assumes the zero point is 0 degrees.
+	 * @param port The analog port that the potentiometer is plugged into.
+	 * @return A 10 turn potentiometer.
+     */
     public static Potentiometer create10TurnPotentiometer(int port){
         return create10TurnPotentiometer(port, 0);
     }
