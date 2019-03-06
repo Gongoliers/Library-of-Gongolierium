@@ -3,10 +3,13 @@ package com.thegongoliers.hardware;
 import com.thegongoliers.input.switches.ResettableSwitch;
 import com.thegongoliers.input.switches.Switch;
 import com.thegongoliers.mockHardware.input.MockGyro;
+import com.thegongoliers.mockHardware.input.MockPotentiometer;
 import com.thegongoliers.mockHardware.input.MockSwitch;
 import edu.wpi.first.wpilibj.buttons.Button;
 import edu.wpi.first.wpilibj.buttons.Trigger;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
+import edu.wpi.first.wpilibj.interfaces.Potentiometer;
+
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -126,6 +129,32 @@ public class HardwareTest {
 
         gyro.reset();
         assertEquals(0, g.getAngle(), 0.0001);
+    }
+
+
+    @Test
+    public void testInvertPotentiometer(){
+        MockPotentiometer potentiometer = new MockPotentiometer();
+        Potentiometer p = Hardware.invertPotentiometer(potentiometer);
+
+        // Goes from 1000 -> 900, but it should be 0 -> 100
+
+        double rawAngle = 1000;
+        double offset = 1000;
+
+        assertNotNull(p);
+
+        potentiometer.setAngle(rawAngle - offset);
+        assertEquals(0, p.get(), 0.001);
+
+        rawAngle = 900;
+        potentiometer.setAngle(rawAngle - offset);
+        assertEquals(100, p.get(), 0.001);
+
+        rawAngle = 1100;
+        potentiometer.setAngle(rawAngle - offset);
+        assertEquals(-100, p.get(), 0.001);
+
     }
 
 }

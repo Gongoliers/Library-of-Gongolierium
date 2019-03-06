@@ -1,11 +1,14 @@
 package com.thegongoliers.hardware;
 
+import com.thegongoliers.input.rotation.GPotentiometer;
 import com.thegongoliers.input.switches.ResettableSwitch;
 import com.thegongoliers.input.switches.Switch;
 
+import edu.wpi.first.wpilibj.PIDSourceType;
 import edu.wpi.first.wpilibj.buttons.Button;
 import edu.wpi.first.wpilibj.buttons.Trigger;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
+import edu.wpi.first.wpilibj.interfaces.Potentiometer;
 
 import java.util.function.BooleanSupplier;
 
@@ -133,5 +136,38 @@ public class Hardware {
 			}
 		};
 	}
+
+	public static Potentiometer invertPotentiometer(Potentiometer potentiometer){
+		return new Potentiometer(){
+		
+			@Override
+			public void setPIDSourceType(PIDSourceType pidSource) {
+				potentiometer.setPIDSourceType(pidSource);
+			}
+		
+			@Override
+			public double pidGet() {
+				return -potentiometer.pidGet();
+			}
+		
+			@Override
+			public PIDSourceType getPIDSourceType() {
+				return potentiometer.getPIDSourceType();
+			}
+		
+			@Override
+			public double get() {
+				return -potentiometer.get();
+			}
+		};
+	}
+
+	public static Potentiometer create10TurnPotentiometer(int port, double zeroPoint){
+        return new GPotentiometer(port, 3600, zeroPoint);
+    }
+
+    public static Potentiometer create10TurnPotentiometer(int port){
+        return create10TurnPotentiometer(port, 0);
+    }
 
 }
