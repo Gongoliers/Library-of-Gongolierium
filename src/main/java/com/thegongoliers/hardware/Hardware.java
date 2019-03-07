@@ -18,6 +18,26 @@ import java.util.function.BooleanSupplier;
 public class Hardware {
 
 	/**
+     * Combines multiple buttons into a single button.
+     * @param button1 The first button.
+     * @param buttons The rest of the buttons.
+     * @return A Button which is pressed only when ALL of the buttons are pressed. 
+     */
+    public static Button combineButtons(Button button1, Button... buttons){
+        return new Button(){
+            @Override
+            public boolean get() {
+                for (Button button: buttons){
+                    if (!button.get()){
+                        return false;
+                    }
+                }
+                return button1.get();
+            }
+        };
+    }
+
+	/**
 	 * Creates a button from a boolean supplier.
 	 * @param booleanSupplier The boolean supplier to become a button.
 	 * @return The button which is pressed when the boolean supplier is true.

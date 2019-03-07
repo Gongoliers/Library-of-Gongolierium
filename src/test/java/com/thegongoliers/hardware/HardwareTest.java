@@ -59,6 +59,48 @@ public class HardwareTest {
     }
 
     @Test
+    public void testCombineButtons(){
+        MockSwitch s1 = new MockSwitch();
+        MockSwitch s2 = new MockSwitch();
+        MockSwitch s3 = new MockSwitch();
+
+        Button button1 = Hardware.makeButton(s1::isTriggered);
+        Button button2 = Hardware.makeButton(s2::isTriggered);
+        Button button3 = Hardware.makeButton(s3::isTriggered);
+
+        Button combined = Hardware.combineButtons(button1, button2, button3);
+
+        // When all buttons are released, it should be false
+        s1.setTriggered(false);
+        s2.setTriggered(false);
+        s3.setTriggered(false);
+
+        assertFalse(combined.get());
+
+        // When only one button is pressed, it should be false
+        s1.setTriggered(true);
+        s2.setTriggered(false);
+        s3.setTriggered(false);
+
+        assertFalse(combined.get());
+
+        // When only two buttons are pressed, it should be false
+        s1.setTriggered(false);
+        s2.setTriggered(true);
+        s3.setTriggered(true);
+
+        assertFalse(combined.get());
+
+        // When all buttons are pressed, it should be true
+        s1.setTriggered(true);
+        s2.setTriggered(true);
+        s3.setTriggered(true);
+
+        assertTrue(combined.get());
+
+    }
+
+    @Test
     public void testTriggerToButton(){
         MockSwitch s = new MockSwitch();
         Trigger t = Hardware.switchToTrigger(s);
@@ -156,5 +198,7 @@ public class HardwareTest {
         assertEquals(-100, p.get(), 0.001);
 
     }
+
+    
 
 }
