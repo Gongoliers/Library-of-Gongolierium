@@ -1,5 +1,7 @@
 package com.thegongoliers.output.subsystems;
 
+import com.thegongoliers.input.time.Clock;
+import com.thegongoliers.input.time.RobotClock;
 import com.thegongoliers.output.interfaces.Drivetrain;
 
 import edu.wpi.first.wpilibj.interfaces.Gyro;
@@ -14,18 +16,47 @@ public class StabilizedDrivetrain implements Drivetrain {
     private Gyro gyro;
     private double lastHeading;
     private double kp;
+    private double lastStopTime;
+    private final double settlingTime;
+    private Clock clock;
 
     /**
-     * Default constructor
+     * Constructor
      * @param drivetrain the drivetrain
      * @param gyro the gyroscope
      * @param correctionFactor the correction factor to remain stabilized (multiplied by the heading error in degrees). 0.01 has worked well in the past for the Gongoliers
      */
     public StabilizedDrivetrain(Drivetrain drivetrain, Gyro gyro, double correctionFactor){
+        this(drivetrain, gyro, correctionFactor, 0);
+    }
+
+    /**
+     * Constructor
+     * @param drivetrain the drivetrain
+     * @param gyro the gyroscope
+     * @param correctionFactor the correction factor to remain stabilized (multiplied by the heading error in degrees). 0.01 has worked well in the past for the Gongoliers
+     * @param settlingTime the time to allow the drivetrain to settle to a stop before correcting the heading
+     */
+    public StabilizedDrivetrain(Drivetrain drivetrain, Gyro gyro, double correctionFactor, double settlingTime){
+        this(drivetrain, gyro, correctionFactor, settlingTime, new RobotClock());
+    }
+
+    /**
+     * Constructor
+     * @param drivetrain the drivetrain
+     * @param gyro the gyroscope
+     * @param correctionFactor the correction factor to remain stabilized (multiplied by the heading error in degrees). 0.01 has worked well in the past for the Gongoliers
+     * @param settlingTime the time to allow the drivetrain to settle to a stop before correcting the heading
+     * @param clock the clock to use to monitor the settling time
+     */
+    public StabilizedDrivetrain(Drivetrain drivetrain, Gyro gyro, double correctionFactor, double settlingTime, Clock clock){
         this.drivetrain = drivetrain;
         this.gyro = gyro;
         lastHeading = gyro.getAngle();
         kp = correctionFactor;
+        this.settlingTime = settlingTime;
+        this.clock = clock;
+        lastStopTime = 0;
     }
 
 
@@ -39,7 +70,11 @@ public class StabilizedDrivetrain implements Drivetrain {
         if (turn != 0){
             drivetrain.arcade(speed, turn);
             lastHeading = gyro.getAngle();
+            lastStopTime = clock.getTime();
         } else {
+            if (clock.getTime() - lastStopTime < settlingTime){
+                lastHeading = gyro.getAngle();
+            }
             drivetrain.arcade(speed, -kp * (gyro.getAngle() - lastHeading));
         }
     }

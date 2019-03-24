@@ -3,10 +3,13 @@ package com.thegongoliers.hardware;
 import com.thegongoliers.input.rotation.GPotentiometer;
 import com.thegongoliers.input.switches.ResettableSwitch;
 import com.thegongoliers.input.switches.Switch;
+import com.thegongoliers.output.interfaces.Drivetrain;
 
 import edu.wpi.first.wpilibj.PIDSourceType;
+import edu.wpi.first.wpilibj.RobotDrive;
 import edu.wpi.first.wpilibj.buttons.Button;
 import edu.wpi.first.wpilibj.buttons.Trigger;
+import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.interfaces.Potentiometer;
 
@@ -204,6 +207,26 @@ public class Hardware {
      */
     public static Potentiometer create10TurnPotentiometer(int port){
         return create10TurnPotentiometer(port, 0);
+    }
+
+    public static Drivetrain createDrivetrain(DifferentialDrive robotDrive){
+        return new Drivetrain(){
+        
+            @Override
+            public void stop() {
+                robotDrive.stopMotor();
+            }
+        
+            @Override
+            public void tank(double leftSpeed, double rightSpeed) {
+                robotDrive.tankDrive(leftSpeed, rightSpeed);
+            }
+        
+            @Override
+            public void arcade(double speed, double turn) {
+                robotDrive.arcadeDrive(speed, turn);
+            }
+        };
     }
 
 }

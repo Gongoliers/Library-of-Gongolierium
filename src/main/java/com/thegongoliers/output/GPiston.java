@@ -1,14 +1,15 @@
 package com.thegongoliers.output;
 
-import com.thegongoliers.output.interfaces.IPiston;
-import com.thegongoliers.output.interfaces.ISolenoid;
+import com.thegongoliers.output.interfaces.Piston;
 
-public class Piston implements IPiston {
+import edu.wpi.first.wpilibj.Solenoid;
 
-    private final ISolenoid solenoid;
+public class GPiston implements Piston {
+
+    private final Solenoid solenoid;
     private boolean inverted = false;
 
-    public Piston(ISolenoid solenoid) {
+    public GPiston(Solenoid solenoid) {
         this.solenoid = solenoid;
     }
 

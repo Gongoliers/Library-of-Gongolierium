@@ -4,7 +4,7 @@ import com.thegongoliers.annotations.TestedBy;
 import com.thegongoliers.math.MathExt;
 
 @TestedBy(team = "5112", year = "2018")
-public class PID {
+public class PID implements MotionController {
 
 	private final double kp;
 	private final double ki;
@@ -88,7 +88,7 @@ public class PID {
 	 * @return The output of the PID which calculates how to get to the target
 	 *         position from the current position.
 	 */
-	public double getOutput(double currentPosition, double targetPosition) {
+	public double calculate(double currentPosition, double targetPosition) {
 		double error = getContinuousError(targetPosition - currentPosition);
 		if (first) {
 			dState = currentPosition;
@@ -118,7 +118,7 @@ public class PID {
 	 *            The target position.
 	 * @return True if it is at the target position (within the threshold).
 	 */
-	public boolean isAtTargetPosition(double currentPosition, double targetPosition) {
+	public boolean isOnTarget(double currentPosition, double targetPosition) {
 		return Math.abs(currentPosition - targetPosition) <= threshold;
 	}
 }

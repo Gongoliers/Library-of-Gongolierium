@@ -4,7 +4,7 @@ import com.thegongoliers.input.time.Clock;
 import com.thegongoliers.input.time.RobotClock;
 import com.thegongoliers.math.MathExt;
 
-public class MotionProfileController {
+public class MotionProfileController implements MotionController {
 
     private final double kp;
     private final double ki;
@@ -147,6 +147,9 @@ public class MotionProfileController {
         lastTime = -1;
     }
 
+    /**
+     * @see MotionController#isOnTarget(double, double)
+     */
     public boolean isOnTarget(double currentPosition, double targetPosition){
         double error = targetPosition - currentPosition;
         return Math.abs(error) <= tolerance;
@@ -200,10 +203,7 @@ public class MotionProfileController {
     }
 
     /**
-     * Calculate the output value of the controller.
-     * @param currentPosition The current position of the system.
-     * @param targetPosition The target position of the system.
-     * @return The output of the controller.
+     * @see MotionController#calculate(double, double)
      */
     public double calculate(double currentPosition, double targetPosition){
         return calculate(currentPosition, targetPosition, 0, 0);

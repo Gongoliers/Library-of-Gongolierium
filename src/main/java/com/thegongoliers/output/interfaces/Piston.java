@@ -1,6 +1,6 @@
 package com.thegongoliers.output.interfaces;
 
-public interface IPiston {
+public interface Piston {
 
     /**
      * Extend the piston.

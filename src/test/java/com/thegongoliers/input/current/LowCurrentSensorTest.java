@@ -1,24 +1,24 @@
 package com.thegongoliers.input.current;
 
-import com.thegongoliers.mockHardware.input.MockCurrentSensor;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 public class LowCurrentSensorTest {
 
     @Test
     public void testIsTriggered() {
-        MockCurrentSensor currentSensor = new MockCurrentSensor();
+        CurrentSensor currentSensor = mock(CurrentSensor.class);
         LowCurrentSensor lowCurrentSensor = new LowCurrentSensor(currentSensor, 0);
 
-        currentSensor.setCurrent(0);
+        when(currentSensor.getCurrent()).thenReturn(0.0);
         assertTrue(lowCurrentSensor.isTriggered());
 
-        currentSensor.setCurrent(1);
+        when(currentSensor.getCurrent()).thenReturn(1.0);
         assertFalse(lowCurrentSensor.isTriggered());
 
-        currentSensor.setCurrent(-1);
+        when(currentSensor.getCurrent()).thenReturn(-1.0);
         assertTrue(lowCurrentSensor.isTriggered());
     }
 
