@@ -1,9 +1,11 @@
 package com.thegongoliers.output;
 
+import com.thegongoliers.annotations.UsedInCompetition;
 import com.thegongoliers.output.interfaces.Piston;
 
 import edu.wpi.first.wpilibj.Solenoid;
 
+@UsedInCompetition(team = "5112", year = "2019")
 public class GPiston implements Piston {
 
     private final Solenoid solenoid;

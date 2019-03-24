@@ -1,5 +1,6 @@
 package com.thegongoliers.input.vision;
 
+import com.thegongoliers.annotations.UsedInCompetition;
 import edu.wpi.cscore.MjpegServer;
 import edu.wpi.cscore.VideoCamera;
 import edu.wpi.first.cameraserver.CameraServer;
@@ -10,6 +11,7 @@ import java.util.Map;
 /**
  * A camera server which allows for swapping between multiple cameras (only one streams at a time)
  */
+@UsedInCompetition(team = "5112", year = "2019")
 public class MultipleCameraServer {
 
     private MjpegServer server;

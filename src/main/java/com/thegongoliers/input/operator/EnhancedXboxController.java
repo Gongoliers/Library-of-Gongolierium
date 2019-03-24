@@ -1,10 +1,12 @@
 package com.thegongoliers.input.operator;
 
 import com.kylecorry.geometry.Point;
+import com.thegongoliers.annotations.UsedInCompetition;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.buttons.Button;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 
+@UsedInCompetition(team = "5112", year = "2016")
 public class EnhancedXboxController extends XboxController {
 
 	public final Button A = new JoystickButton(this, 1);

@@ -1,12 +1,12 @@
  package com.thegongoliers.pathFollowing;
 
- import com.thegongoliers.annotations.TestedBy;
+ import com.thegongoliers.annotations.UsedInCompetition;
  import com.thegongoliers.output.interfaces.Drivetrain;
  import com.thegongoliers.pathFollowing.controllers.MotionController;
  import edu.wpi.first.wpilibj.command.Subsystem;
  import edu.wpi.first.wpilibj.interfaces.Gyro;
 
- @TestedBy(team = "5112", year = "2018")
+ @UsedInCompetition(team = "5112", year = "2018")
  public class PathRotateCommand extends PathTaskCommand {
 
      private double angleDegrees;

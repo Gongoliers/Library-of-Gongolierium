@@ -1,9 +1,9 @@
 package com.thegongoliers.math.filter;
 
-import com.thegongoliers.annotations.TestedBy;
+import com.thegongoliers.annotations.UsedInCompetition;
 import com.thegongoliers.math.MathExt;
 
-@TestedBy(team = "5112", year = "2018")
+@UsedInCompetition(team = "5112", year = "2018")
 public class RateLimiter implements Filter {
 
     private double maxRate;

@@ -1,5 +1,6 @@
 package com.thegongoliers.output.subsystems;
 
+import com.thegongoliers.annotations.UsedInCompetition;
 import com.thegongoliers.input.time.Clock;
 import com.thegongoliers.input.time.RobotClock;
 import com.thegongoliers.output.interfaces.Drivetrain;
@@ -10,6 +11,7 @@ import edu.wpi.first.wpilibj.interfaces.Gyro;
  * A wrapper class for a drivetrain which stabilizes it (maintains heading when driving straight). 
  * This is useful to keep the robot driving straight when driving over obstacles or being hit by another robot.
  */
+@UsedInCompetition(team = "5112", year = "2019")
 public class StabilizedDrivetrain implements Drivetrain {
 
     private Drivetrain drivetrain;

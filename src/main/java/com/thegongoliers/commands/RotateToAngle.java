@@ -1,5 +1,6 @@
 package com.thegongoliers.commands;
 
+import com.thegongoliers.annotations.UsedInCompetition;
 import com.thegongoliers.output.interfaces.Drivetrain;
 import com.thegongoliers.pathFollowing.controllers.MotionController;
 import edu.wpi.first.wpilibj.command.Command;
@@ -10,6 +11,7 @@ import edu.wpi.first.wpilibj.interfaces.Gyro;
  * A command to rotate the robot by an angle
  *
  */
+@UsedInCompetition(team = "5112", year = "2019")
 public class RotateToAngle extends Command {
 
 	private double targetAngle;

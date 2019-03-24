@@ -1,6 +1,6 @@
  package com.thegongoliers.pathFollowing;
 
- import com.thegongoliers.annotations.TestedBy;
+ import com.thegongoliers.annotations.UsedInCompetition;
  import com.thegongoliers.input.odometry.IEncoder;
  import com.thegongoliers.math.PathWaypoint;
  import com.thegongoliers.output.interfaces.Drivetrain;
@@ -11,7 +11,7 @@
 
  import java.util.List;
 
- @TestedBy(team = "5112", year = "2018")
+ @UsedInCompetition(team = "5112", year = "2018")
  public class FollowPathCommand extends CommandGroup {
 
      /**

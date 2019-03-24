@@ -1,10 +1,12 @@
 package com.thegongoliers.input.rotation;
 
+import com.thegongoliers.annotations.UsedInCompetition;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.PIDSourceType;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.interfaces.Potentiometer;
 
+@UsedInCompetition(team = "5112", year = "2019")
 public class GPotentiometer implements Potentiometer {
 
     private PIDSourceType pidSource;

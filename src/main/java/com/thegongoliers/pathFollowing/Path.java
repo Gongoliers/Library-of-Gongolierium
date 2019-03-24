@@ -1,6 +1,6 @@
  package com.thegongoliers.pathFollowing;
 
- import com.thegongoliers.annotations.TestedBy;
+ import com.thegongoliers.annotations.UsedInCompetition;
  import com.thegongoliers.input.odometry.IEncoder;
  import com.thegongoliers.output.interfaces.Drivetrain;
  import com.thegongoliers.pathFollowing.controllers.MotionController;
@@ -12,7 +12,7 @@
  import java.util.List;
  import java.util.Objects;
 
- @TestedBy(team = "5112", year = "2018")
+ @UsedInCompetition(team = "5112", year = "2018")
  public class Path implements Iterable<PathTaskCommand> {
      private List<PathTaskCommand> path;
      private Subsystem subsystem;
