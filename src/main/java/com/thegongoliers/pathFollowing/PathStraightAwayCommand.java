@@ -1,63 +1,62 @@
-// package com.thegongoliers.pathFollowing;
+ package com.thegongoliers.pathFollowing;
 
-// import com.thegongoliers.annotations.TestedBy;
+ import com.thegongoliers.annotations.TestedBy;
+ import com.thegongoliers.input.odometry.IEncoder;
+ import com.thegongoliers.output.interfaces.Drivetrain;
+ import com.thegongoliers.pathFollowing.controllers.MotionController;
+ import edu.wpi.first.wpilibj.command.Subsystem;
 
-// import java.util.Objects;
 
-// @TestedBy(team = "5112", year = "2018")
-// public class PathStraightAwayCommand extends PathTaskCommand {
+ @TestedBy(team = "5112", year = "2018")
+ public class PathStraightAwayCommand extends PathTaskCommand {
 
-//     private double distance;
+     private double distance;
+     private IEncoder encoder;
+     private MotionController motionController;
 
-//     public PathStraightAwayCommand(SmartDriveTrainSubsystem drivetrain, double distance) {
-//         super(drivetrain);
-//         this.distance = distance;
-//     }
+     public PathStraightAwayCommand(Subsystem subsystem, Drivetrain drivetrain, IEncoder encoder, MotionController controller, double distance) {
+         super(subsystem, drivetrain);
+         this.distance = distance;
+         this.encoder = encoder;
+         motionController = controller;
+     }
 
-//     public PathStraightAwayCommand(SmartDriveTrainSubsystem drivetrain, double distance, double timeout) {
-//         super(drivetrain, timeout);
-//         this.distance = distance;
-//     }
+     public PathStraightAwayCommand(Subsystem subsystem, Drivetrain drivetrain, IEncoder encoder, MotionController controller, double distance, double timeout) {
+         super(subsystem, drivetrain, timeout);
+         this.distance = distance;
+         this.encoder = encoder;
+         motionController = controller;
+     }
 
-//     @Override
-//     protected void initialize() {
-//         drivetrain.resetDistance();
-//     }
+     @Override
+     protected void initialize() {
+         distance += encoder.getDistance();
+     }
 
-//     @Override
-//     protected void execute() {
-//         double currentDistance = drivetrain.getCenterDistance();
+     @Override
+     protected void execute() {
+         double currentDistance = encoder.getDistance();
+         double pwm = motionController.calculate(currentDistance, distance);
+         drivetrain.arcade(pwm, 0);
+     }
 
-//         drivetrain.tank(drivetrain.getLeftDistanceController().calculate(currentDistance, distance), drivetrain.getRightDistanceController().calculate(currentDistance, distance));
-//     }
+     @Override
+     protected boolean isFinished() {
+         return motionController.isOnTarget(encoder.getDistance(), distance);
+     }
 
-//     @Override
-//     protected boolean isFinished() {
-//         return drivetrain.getLeftDistanceController().isOnTarget(drivetrain.getCenterDistance(), distance);
-//     }
+     @Override
+     public boolean equals(Object o) {
+         if (this == o) return true;
+         if (o == null || getClass() != o.getClass()) return false;
+         PathStraightAwayCommand that = (PathStraightAwayCommand) o;
+         return Double.compare(that.distance, distance) == 0;
+     }
 
-//     @Override
-//     protected void end() {
-//         drivetrain.forward(0);
-//     }
-
-//     @Override
-//     protected void interrupted() {
-//         end();
-//     }
-
-//     @Override
-//     public boolean equals(Object o) {
-//         if (this == o) return true;
-//         if (o == null || getClass() != o.getClass()) return false;
-//         PathStraightAwayCommand that = (PathStraightAwayCommand) o;
-//         return Double.compare(that.distance, distance) == 0;
-//     }
-
-//     @Override
-//     public String toString() {
-//         return "PathStraightAwayCommand{" +
-//                 "distance=" + distance +
-//                 '}';
-//     }
-// }
+     @Override
+     public String toString() {
+         return "PathStraightAwayCommand{" +
+                 "distance=" + distance +
+                 '}';
+     }
+ }
