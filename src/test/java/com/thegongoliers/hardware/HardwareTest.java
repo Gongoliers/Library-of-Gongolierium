@@ -5,14 +5,17 @@ import com.thegongoliers.input.switches.Switch;
 import com.thegongoliers.mockHardware.input.MockGyro;
 import com.thegongoliers.mockHardware.input.MockPotentiometer;
 import com.thegongoliers.mockHardware.input.MockSwitch;
+import com.thegongoliers.output.interfaces.Drivetrain;
 import edu.wpi.first.wpilibj.buttons.Button;
 import edu.wpi.first.wpilibj.buttons.Trigger;
+import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.interfaces.Potentiometer;
 
 import org.junit.Test;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 public class HardwareTest {
 
@@ -196,6 +199,22 @@ public class HardwareTest {
         rawAngle = 1100;
         potentiometer.setAngle(rawAngle - offset);
         assertEquals(-100, p.get(), 0.001);
+
+    }
+
+    @Test
+    public void testCreatingDrivetrain(){
+        DifferentialDrive differentialDrive = mock(DifferentialDrive.class);
+        Drivetrain drivetrain = Hardware.createDrivetrain(differentialDrive);
+
+        drivetrain.stop();
+        verify(differentialDrive).stopMotor();
+
+        drivetrain.arcade(1.0, 0.5);
+        verify(differentialDrive).arcadeDrive(1.0, 0.5);
+
+        drivetrain.tank(-1.0, 1.0);
+        verify(differentialDrive).tankDrive(-1.0, 1.0);
 
     }
 
