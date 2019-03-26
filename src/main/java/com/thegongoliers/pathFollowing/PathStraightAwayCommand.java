@@ -1,7 +1,7 @@
  package com.thegongoliers.pathFollowing;
 
  import com.thegongoliers.annotations.UsedInCompetition;
- import com.thegongoliers.input.odometry.IEncoder;
+ import com.thegongoliers.input.odometry.DistanceSensor;
  import com.thegongoliers.output.interfaces.Drivetrain;
  import com.thegongoliers.pathFollowing.controllers.MotionController;
  import edu.wpi.first.wpilibj.command.Subsystem;
@@ -11,17 +11,17 @@
  public class PathStraightAwayCommand extends PathTaskCommand {
 
      private double distance;
-     private IEncoder encoder;
+     private DistanceSensor encoder;
      private MotionController motionController;
 
-     public PathStraightAwayCommand(Subsystem subsystem, Drivetrain drivetrain, IEncoder encoder, MotionController controller, double distance) {
+     public PathStraightAwayCommand(Subsystem subsystem, Drivetrain drivetrain, DistanceSensor encoder, MotionController controller, double distance) {
          super(subsystem, drivetrain);
          this.distance = distance;
          this.encoder = encoder;
          motionController = controller;
      }
 
-     public PathStraightAwayCommand(Subsystem subsystem, Drivetrain drivetrain, IEncoder encoder, MotionController controller, double distance, double timeout) {
+     public PathStraightAwayCommand(Subsystem subsystem, Drivetrain drivetrain, DistanceSensor encoder, MotionController controller, double distance, double timeout) {
          super(subsystem, drivetrain, timeout);
          this.distance = distance;
          this.encoder = encoder;

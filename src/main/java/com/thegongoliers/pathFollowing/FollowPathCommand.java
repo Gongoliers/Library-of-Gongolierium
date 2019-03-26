@@ -1,7 +1,7 @@
  package com.thegongoliers.pathFollowing;
 
  import com.thegongoliers.annotations.UsedInCompetition;
- import com.thegongoliers.input.odometry.IEncoder;
+ import com.thegongoliers.input.odometry.DistanceSensor;
  import com.thegongoliers.math.PathWaypoint;
  import com.thegongoliers.output.interfaces.Drivetrain;
  import com.thegongoliers.pathFollowing.controllers.MotionController;
@@ -28,7 +28,7 @@
       * @param waypoints The waypoints in the path (assumes the robot starts at (0, 0) and is facing 90 degrees).
       * @param endingHeading The ending heading in degrees (0 to 360).
       */
-     public FollowPathCommand(Subsystem subsystem, Drivetrain drivetrain, Gyro gyro, IEncoder encoder, MotionController turnController, MotionController straightController, List<PathWaypoint> waypoints, double endingHeading){
+     public FollowPathCommand(Subsystem subsystem, Drivetrain drivetrain, Gyro gyro, DistanceSensor encoder, MotionController turnController, MotionController straightController, List<PathWaypoint> waypoints, double endingHeading){
          Path path = waypointsToPath(subsystem, drivetrain, gyro, encoder, turnController, straightController, waypoints, endingHeading);
          generatePath(path);
      }
@@ -39,7 +39,7 @@
          }
      }
 
-     static Path waypointsToPath(Subsystem subsystem, Drivetrain drivetrain, Gyro gyro, IEncoder encoder, MotionController turnController, MotionController straightController, List<PathWaypoint> waypoints, double endingHeading){
+     static Path waypointsToPath(Subsystem subsystem, Drivetrain drivetrain, Gyro gyro, DistanceSensor encoder, MotionController turnController, MotionController straightController, List<PathWaypoint> waypoints, double endingHeading){
          Path path = new Path(subsystem, drivetrain, gyro, encoder, turnController, straightController);
          double x = 0, y = 0, angle = 90;
          for (PathWaypoint waypoint: waypoints){

@@ -1,7 +1,7 @@
  package com.thegongoliers.pathFollowing;
 
  import com.thegongoliers.annotations.UsedInCompetition;
- import com.thegongoliers.input.odometry.IEncoder;
+ import com.thegongoliers.input.odometry.DistanceSensor;
  import com.thegongoliers.output.interfaces.Drivetrain;
  import com.thegongoliers.pathFollowing.controllers.MotionController;
  import edu.wpi.first.wpilibj.command.Subsystem;
@@ -18,10 +18,10 @@
      private Subsystem subsystem;
      private Drivetrain drivetrain;
      private Gyro gyro;
-     private IEncoder encoder;
+     private DistanceSensor encoder;
      private MotionController turnController, straightController;
 
-     public Path(Subsystem subsystem, Drivetrain drivetrain, Gyro gyro, IEncoder encoder, MotionController turnController, MotionController straightController) {
+     public Path(Subsystem subsystem, Drivetrain drivetrain, Gyro gyro, DistanceSensor encoder, MotionController turnController, MotionController straightController) {
          path = new LinkedList<>();
          this.subsystem = subsystem;
          this.drivetrain = drivetrain;

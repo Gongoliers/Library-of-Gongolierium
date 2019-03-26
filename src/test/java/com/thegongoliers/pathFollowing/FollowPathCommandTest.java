@@ -1,6 +1,6 @@
  package com.thegongoliers.pathFollowing;
 
- import com.thegongoliers.input.odometry.IEncoder;
+ import com.thegongoliers.input.odometry.DistanceSensor;
  import com.thegongoliers.math.PathWaypoint;
  import com.thegongoliers.output.interfaces.Drivetrain;
  import com.thegongoliers.pathFollowing.controllers.MotionController;
@@ -127,7 +127,7 @@
          Subsystem subsystem = mock(Subsystem.class);
          Drivetrain drivetrain = mock(Drivetrain.class);
          Gyro gyro = mock(Gyro.class);
-         IEncoder encoder = mock(IEncoder.class);
+         DistanceSensor encoder = mock(DistanceSensor.class);
          MotionController controller = new PID(0, 0, 0, 0);
 
 
