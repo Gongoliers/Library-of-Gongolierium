@@ -3,6 +3,8 @@ package com.thegongoliers.hardware;
 import com.thegongoliers.input.rotation.GPotentiometer;
 import com.thegongoliers.input.switches.ResettableSwitch;
 import com.thegongoliers.input.switches.Switch;
+import com.thegongoliers.input.voltage.VoltageSensor;
+import com.thegongoliers.math.MathExt;
 import com.thegongoliers.output.interfaces.Drivetrain;
 
 import edu.wpi.first.wpilibj.PIDSourceType;
@@ -228,5 +230,19 @@ public class Hardware {
             }
         };
     }
+
+	/**
+	 * Convert a voltage to a PWM signal (percent power) based on the current voltage of the battery
+	 * @param voltage the desired voltage
+	 * @param batteryVoltageSensor the battery voltage sensor
+	 * @return the PWM signal [-1, 1] which delivers the desired voltage
+	 */
+    public static double voltageToPWM(double voltage, VoltageSensor batteryVoltageSensor){
+    	if (batteryVoltageSensor == null || batteryVoltageSensor.getVoltage() == 0){
+    		return 0;
+		}
+    	double rawPWM = voltage / batteryVoltageSensor.getVoltage();
+		return MathExt.toRange(rawPWM, -1, 1);
+	}
 
 }

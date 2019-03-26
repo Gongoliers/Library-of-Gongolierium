@@ -218,6 +218,18 @@ public class HardwareTest {
 
     }
 
+
+    @Test
+    public void convertsVoltageToPWM(){
+        assertEquals(0, Hardware.voltageToPWM(0, () -> 10), 0.0001);
+        assertEquals(0, Hardware.voltageToPWM(0, null), 0.0001);
+        assertEquals(0, Hardware.voltageToPWM(0, () -> 0), 0.0001);
+        assertEquals(0.4, Hardware.voltageToPWM(4, () -> 10), 0.0001);
+        assertEquals(-0.4, Hardware.voltageToPWM(-4, () -> 10), 0.0001);
+        assertEquals(1, Hardware.voltageToPWM(12, () -> 10), 0.0001);
+        assertEquals(-1, Hardware.voltageToPWM(-12, () -> 10), 0.0001);
+    }
+
     
 
 }
