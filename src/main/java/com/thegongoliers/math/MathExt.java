@@ -1,5 +1,6 @@
 package com.thegongoliers.math;
 
+import com.thegongoliers.annotations.UsedInCompetition;
 import com.thegongoliers.math.exceptions.OutOfBoundsException;
 
 import java.util.ArrayList;
@@ -84,6 +85,7 @@ public class MathExt {
      * @param power the power to raise the value by
      * @return the value to the power, with its sign preserved
      */
+    @UsedInCompetition(team = "5112", year = "2015")
     public static double signPreservingPower(double value, double power){
         return Math.copySign(Math.pow(value, power), value);
     }
