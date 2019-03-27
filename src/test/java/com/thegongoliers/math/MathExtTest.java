@@ -66,6 +66,14 @@ public class MathExtTest {
     }
 
     @Test
+    public void testSignPreservingPower(){
+        assertEquals(0, MathExt.signPreservingPower(0, 2), 0.0001);
+        assertEquals(4, MathExt.signPreservingPower(2, 2), 0.0001);
+        assertEquals(-4, MathExt.signPreservingPower(-2, 2), 0.0001);
+        assertEquals(-8, MathExt.signPreservingPower(-2, 3), 0.0001);
+    }
+
+    @Test
     public void testNormalize(){
         assertEquals(0, MathExt.normalize(0, 0, 100), 0.0001);
         assertEquals(0.5, MathExt.normalize(50, 0, 100), 0.0001);

@@ -77,6 +77,17 @@ public class MathExt {
         return Math.pow(value, 2);
     }
 
+
+    /**
+     * Calculates a value to some power, but preserves the sign if it is negative.
+     * @param value the value to raise to a power
+     * @param power the power to raise the value by
+     * @return the value to the power, with its sign preserved
+     */
+    public static double signPreservingPower(double value, double power){
+        return Math.copySign(Math.pow(value, power), value);
+    }
+
     /**
      * Normalizes a value to the given range.
      *
