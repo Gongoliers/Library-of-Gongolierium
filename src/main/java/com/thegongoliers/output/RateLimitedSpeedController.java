@@ -5,6 +5,9 @@ import com.thegongoliers.math.filter.Filter;
 import com.thegongoliers.math.filter.RateLimiter;
 import edu.wpi.first.wpilibj.SpeedController;
 
+/**
+ * A rate limited speed controller, which limits the rate of change of the speed.
+ */
 public class RateLimitedSpeedController implements SpeedController {
 
     private Filter rateLimiter;
@@ -12,6 +15,11 @@ public class RateLimitedSpeedController implements SpeedController {
     private double lastSpeed;
     private double maxRate;
 
+    /**
+     * Default constructor
+     * @param controller the speed controller
+     * @param maxRate the maximum rate of change per call to set()
+     */
     public RateLimitedSpeedController(SpeedController controller, double maxRate){
         if (controller == null){
             throw new GongolieriumException("Speed controller can't be null");
