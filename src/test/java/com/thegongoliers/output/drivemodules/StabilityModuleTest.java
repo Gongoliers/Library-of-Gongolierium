@@ -1,4 +1,4 @@
-package com.thegongoliers.output.subsystems;
+package com.thegongoliers.output.drivemodules;
 
 import com.thegongoliers.input.time.Clock;
 import org.junit.Before;
@@ -9,16 +9,20 @@ import edu.wpi.first.wpilibj.interfaces.Gyro;
 
 import static org.mockito.Mockito.*;
 
+import com.thegongoliers.output.drivemodules.DriveModule;
+import com.thegongoliers.output.drivemodules.StabilityModule;
 import com.thegongoliers.output.interfaces.Drivetrain;
+import com.thegongoliers.output.subsystems.ModularDrivetrain;
 
 /**
- * StabilizedDrivetrainTest
+ * StabilityModuleTest
  */
-public class StabilizedDrivetrainTest {
+public class StabilityModuleTest {
 
     private Drivetrain drivetrain;
     private Gyro gyro;
-    private Drivetrain stabilizedDrivetrain;
+    private ModularDrivetrain stabilizedDrivetrain;
+    private DriveModule stabilityModule;
 
     @Before
     public void setup(){
@@ -26,7 +30,11 @@ public class StabilizedDrivetrainTest {
         gyro = mock(Gyro.class);
         double kp = 0.01;
 
-        stabilizedDrivetrain = new StabilizedDrivetrain(drivetrain, gyro, kp);
+        stabilizedDrivetrain = new ModularDrivetrain(drivetrain);
+
+        stabilityModule = new StabilityModule(gyro, kp, 0);
+        
+        stabilizedDrivetrain.addModule(stabilityModule);
     }
 
     @Test
@@ -68,7 +76,9 @@ public class StabilizedDrivetrainTest {
     @Test
     public void allowsSettling(){
         Clock clock = mock(Clock.class);
-        stabilizedDrivetrain = new StabilizedDrivetrain(drivetrain, gyro, 0.01, 1.0, clock);
+
+        stabilityModule.setValue(StabilityModule.VALUE_SETTLING_TIME, 1.0);
+        stabilityModule.setValue(StabilityModule.VALUE_CLOCK, clock);
 
         when(clock.getTime()).thenReturn(0.0);
         when(gyro.getAngle()).thenReturn(10.0);
@@ -88,8 +98,6 @@ public class StabilizedDrivetrainTest {
         when(gyro.getAngle()).thenReturn(25.0);
         stabilizedDrivetrain.arcade(1.0, 0);
         verify(drivetrain).arcade(AdditionalMatchers.eq(1.0, 0.001), AdditionalMatchers.eq(-0.05, 0.001));
-
-
     }
 
 }

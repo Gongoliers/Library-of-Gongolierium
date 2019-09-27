@@ -1,6 +1,8 @@
 package com.thegongoliers.output.drivemodules;
 
-import edu.wpi.first.wpilibj.Timer;
+import com.thegongoliers.input.time.Clock;
+import com.thegongoliers.input.time.RobotClock;
+
 import edu.wpi.first.wpilibj.interfaces.Gyro;
 
 /**
@@ -8,10 +10,35 @@ import edu.wpi.first.wpilibj.interfaces.Gyro;
  */
 public class StabilityModule extends BaseDriveModule {
 
+    /**
+     * The gyroscope which determines the robot's heading
+     * Type: edu.wpi.first.wpilibj.interfaces.Gyro
+     */
     public static final String VALUE_GYRO = "gyro";
+
+    /**
+     * The stabilizing strength (higher values may become unstable, recommended ~0.02. Values must be >= 0).
+     * Type: double
+     */
     public static final String VALUE_STRENGTH = "strength";
+
+    /**
+     * The amount of time to allow the drivetrain to settle after turn inputs stop before applying turn corrections.
+     * Type: double
+     */
     public static final String VALUE_SETTLING_TIME = "settling_time";
+
+    /**
+     * The input threshold for turning to activate the stability module (between 0 and 1, defaults to 0)
+     * Type: double
+     */
     public static final String VALUE_THRESHOLD = "threshold";
+
+    /**
+     * The clock to use to calculate the settling time (defaults to the robot's clock).
+     * Type: com.thegongoliers.input.time.Clock
+     */
+    public static final String VALUE_CLOCK = "clock";
 
     private double lastHeading;
     private double lastStopTime;
@@ -27,7 +54,8 @@ public class StabilityModule extends BaseDriveModule {
         values.put(VALUE_GYRO, gyro);
         values.put(VALUE_STRENGTH, strength);
         values.put(VALUE_SETTLING_TIME, settlingTime);
-        values.put(VALUE_THRESHOLD, 0);
+        values.put(VALUE_THRESHOLD, 0.0);
+        values.put(VALUE_CLOCK, new RobotClock());
 
         lastHeading = gyro.getAngle();
         lastStopTime = 0;
@@ -39,15 +67,16 @@ public class StabilityModule extends BaseDriveModule {
         Gyro gyro = (Gyro) getValue(VALUE_GYRO);
         double settlingTime = (double) getValue(VALUE_SETTLING_TIME);
         double threshold = (double) getValue(VALUE_THRESHOLD);
+        Clock clock = (Clock) getValue(VALUE_CLOCK);
 
         double speed = desiredSpeed.getForwardSpeed();
         double turnSpeed = desiredSpeed.getTurnSpeed();
 
         if (Math.abs(turnSpeed) > threshold){
             lastHeading = gyro.getAngle();
-            lastStopTime = Timer.getFPGATimestamp();
+            lastStopTime = clock.getTime();
         } else {
-            if (Timer.getFPGATimestamp() - lastStopTime < settlingTime){
+            if (clock.getTime() - lastStopTime < settlingTime){
                 lastHeading = gyro.getAngle();
             }
             turnSpeed = -strength * (gyro.getAngle() - lastHeading);
