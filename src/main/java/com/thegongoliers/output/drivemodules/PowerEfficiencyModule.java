@@ -7,7 +7,16 @@ import com.thegongoliers.math.MathExt;
  */
 public class PowerEfficiencyModule extends BaseDriveModule {
 
+    /**
+     * The forward ramping strength from 0 to 1 (0 provides no constraints, 1 prevents drivetrain from accelerating)
+     * Type: double
+     */
     public static final String VALUE_FORWARD_STRENGTH = "forward_strength";
+
+    /**
+     * The turning ramping strength from 0 to 1 (0 provides no constraints, 1 prevents drivetrain from accelerating).
+     * Type: double
+     */
     public static final String VALUE_TURN_STRENGTH = "turn_strength";
 
     /**

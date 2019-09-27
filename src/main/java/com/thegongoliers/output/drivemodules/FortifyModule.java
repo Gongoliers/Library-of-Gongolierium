@@ -10,8 +10,22 @@ import edu.wpi.first.wpilibj.buttons.Trigger;
  */
 public class FortifyModule extends BaseDriveModule {
 
+    /**
+     * The encoders that are used to determine the average distance traveled by the drivetrain
+     * Type: java.util.List<edu.wpi.first.wpilibj.Encoder>
+     */
     public static final String VALUE_ENCODERS = "encoders";
+
+    /**
+     * The fortify strength (higher values may become unstable, small values recommended. Values must be >= 0)
+     * Type: double
+     */
     public static final String VALUE_STRENGTH = "strength";
+
+    /**
+     * The trigger which will lock the drivetrain in place
+     * Type: edu.wpi.first.wpilibj.buttons.Trigger
+     */
     public static final String VALUE_TRIGGER = "trigger";
 
     private double lastDistance;
@@ -19,8 +33,8 @@ public class FortifyModule extends BaseDriveModule {
 
     /**
      * Default constructor
-     * @param gyro the gyroscope which determines the robot's heading
-     * @param strength the stabilizing strength (higher values may become unstable, recommended ~0.02. Values must be >= 0)
+     * @param encoders the encoders that are used to determine the average distance traveled by the drivetrain
+     * @param strength the fortify strength (higher values may become unstable, small values recommended. Values must be >= 0)
      * @param trigger the trigger which will lock the drivetrain in place
      */
     public FortifyModule(List<Encoder> encoders, double strength, Trigger trigger){
@@ -47,7 +61,7 @@ public class FortifyModule extends BaseDriveModule {
         }
 
         if (currentTrigger){
-            speed = -strength * (getDistance() - lastDistance); // TODO: Verify direction
+            speed = -strength * (getDistance() - lastDistance);
             turnSpeed = 0;
         }
 

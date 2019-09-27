@@ -7,8 +7,22 @@ import com.thegongoliers.math.MathExt;
  */
 public class SpeedConstraintModule extends BaseDriveModule {
 
+    /**
+     * The maximum forward speed
+     * Type: double
+     */
     public static final String VALUE_MAX_SPEED = "max_speed";
+
+    /**
+     * The maximum turn speed
+     * Type: double
+     */
     public static final String VALUE_MAX_TURN_SPEED = "max_turn_speed";
+
+    /**
+     * True if the speeds should be scaled to the clamped range, or false otherwise
+     * Type: boolean
+     */
     public static final String VALUE_SCALE_SPEEDS = "scale_speeds";
 
     /**

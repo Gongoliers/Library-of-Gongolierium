@@ -4,6 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * A base drive module from which new drive modules should extend. Includes support for the values map.
+ */
 public abstract class BaseDriveModule implements DriveModule {
 
     protected Map<String, Object> values;
