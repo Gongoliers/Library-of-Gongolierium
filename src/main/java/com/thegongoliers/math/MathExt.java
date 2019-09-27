@@ -214,8 +214,23 @@ public class MathExt {
      * @param min   The min of the range.
      * @param max   The max of the range.
      * @return The value which is constrained to the range.
+     * @depricated Use MathExt.clamp instead
      */
+    @Deprecated
     public static double toRange(double value, double min, double max) {
+        return clamp(value, min, max);
+    }
+
+    /**
+     * Constrain a value to the range, where if the value is out of the range it
+     * is converted to the nearest range bound.
+     *
+     * @param value The value to constrain.
+     * @param min   The min of the range.
+     * @param max   The max of the range.
+     * @return The value which is constrained to the range.
+     */
+    public static double clamp(double value, double min, double max) {
         double newVal = Math.max(min, value);
         newVal = Math.min(newVal, max);
         return newVal;
