@@ -221,12 +221,12 @@ public class Hardware {
         
             @Override
             public void tank(double leftSpeed, double rightSpeed) {
-                robotDrive.tankDrive(leftSpeed, rightSpeed);
+                robotDrive.tankDrive(leftSpeed, rightSpeed, false);
             }
         
             @Override
             public void arcade(double speed, double turn) {
-                robotDrive.arcadeDrive(speed, turn);
+                robotDrive.arcadeDrive(speed, turn, false);
             }
         };
     }
