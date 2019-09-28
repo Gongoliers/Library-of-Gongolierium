@@ -8,7 +8,10 @@ import org.mockito.AdditionalMatchers;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.*;
+
+import java.util.List;
 
 import com.thegongoliers.output.drivemodules.BaseDriveModule;
 import com.thegongoliers.output.drivemodules.DriveModule;
@@ -73,6 +76,16 @@ public class ModularDrivetrainTest {
     }
 
     @Test
+    public void canOverrideDefaultOrder(){
+        DriveModule module1 = new MultiplyModule(2);
+        DriveModule module2 = new AddModule(0.1);
+        modularDrivetrain.addModule(module2, -1);
+        modularDrivetrain.addModule(module1);
+        modularDrivetrain.arcade(0, 0.1);
+        verifyArcade(0.2, 0.4);
+    }
+
+    @Test
     public void canRemoveMultipleModules(){
         DriveModule module1 = new MultiplyModule(2);
         DriveModule module2 = new AddModule(0.1);
@@ -84,6 +97,18 @@ public class ModularDrivetrainTest {
         modularDrivetrain.removeModule(module1);
         modularDrivetrain.arcade(0, 0.1);
         verifyArcade(0, 0.1);
+    }
+
+    @Test
+    public void canGetInstalledModules(){
+        DriveModule module1 = new MultiplyModule(2);
+        DriveModule module2 = new AddModule(0.1);
+        modularDrivetrain.addModule(module2);
+        modularDrivetrain.addModule(module1);
+        List<DriveModule> modules = modularDrivetrain.getInstalledModules();
+        assertEquals(2, modules.size());
+        assertTrue(modules.contains(module1));
+        assertTrue(modules.contains(module2));
     }
 
     private void verifyArcade(double speed, double turn){
