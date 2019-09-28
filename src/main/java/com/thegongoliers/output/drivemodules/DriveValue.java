@@ -31,8 +31,6 @@ public class DriveValue {
         return turnSpeed;
     }
 
-    // TODO: Add tank mode support
-
     @Override
     public boolean equals(Object obj) {
         if (!(obj instanceof DriveValue)) return false;

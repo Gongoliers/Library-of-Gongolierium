@@ -49,7 +49,7 @@ public class PowerEfficiencyModule extends BaseDriveModule {
 
     @Override
     public int getOrder() {
-        return 0;
+        return 2;
     }
 
 }

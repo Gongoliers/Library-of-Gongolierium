@@ -9,7 +9,7 @@ import com.thegongoliers.output.drivemodules.DriveValue;
 import com.thegongoliers.output.interfaces.Drivetrain;
 
 /**
- * A wrapper class for a drivetrain which adds support for drive modules.
+ * A wrapper class for a drivetrain which adds support for drive modules. Does not apply drive modules during tank driving.
  */
 public class ModularDrivetrain implements Drivetrain {
 

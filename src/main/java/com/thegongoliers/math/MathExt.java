@@ -236,6 +236,16 @@ public class MathExt {
         return newVal;
     }
 
+     /**
+     * Constrain a value to be within 0 and 1
+     *
+     * @param value The value to constrain.
+     * @return The value which is between 0 and 1
+     */
+    public static double clamp01(double value){
+        return clamp(value, 0, 1);
+    }
+
     /**
      * Round a value to the nearest int.
      *
