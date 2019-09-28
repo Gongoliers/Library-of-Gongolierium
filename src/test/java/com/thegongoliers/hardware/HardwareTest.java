@@ -211,10 +211,10 @@ public class HardwareTest {
         verify(differentialDrive).stopMotor();
 
         drivetrain.arcade(1.0, 0.5);
-        verify(differentialDrive).arcadeDrive(1.0, 0.5);
+        verify(differentialDrive).arcadeDrive(1.0, 0.5, false);
 
         drivetrain.tank(-1.0, 1.0);
-        verify(differentialDrive).tankDrive(-1.0, 1.0);
+        verify(differentialDrive).tankDrive(-1.0, 1.0, false);
 
     }
 
