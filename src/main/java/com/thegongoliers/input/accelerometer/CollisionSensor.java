@@ -1,7 +1,7 @@
 package com.thegongoliers.input.accelerometer;
 
 import com.thegongoliers.input.switches.Switch;
-import com.thegongoliers.math.MathExt;
+import com.thegongoliers.math.GMath;
 
 import edu.wpi.first.wpilibj.interfaces.Accelerometer;
 
@@ -30,7 +30,7 @@ public class CollisionSensor implements Switch {
 	 */
 	@Override
 	public boolean isTriggered() {
-		return MathExt.magnitude(accel.getX(), accel.getY(), accel.getZ()) >= collisionMagnitudeThreshold;
+		return GMath.magnitude(accel.getX(), accel.getY(), accel.getZ()) >= collisionMagnitudeThreshold;
 	}
 
 }

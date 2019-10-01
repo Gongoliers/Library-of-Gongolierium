@@ -7,29 +7,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class MathExt {
+public class GMath {
 
-    private MathExt() {
-    }
-
-    /**
-     * Determines if a number is odd.
-     *
-     * @param value The value to check.
-     * @return True if the value is odd.
-     */
-    public static boolean isOdd(int value) {
-        return !divisibleBy(value, 2);
-    }
-
-    /**
-     * Determines if a number is even.
-     *
-     * @param value The value to check.
-     * @return True if the value is even.
-     */
-    public static boolean isEven(int value) {
-        return !isOdd(value);
+    private GMath() {
     }
 
     /**
@@ -38,10 +18,10 @@ public class MathExt {
      * @param values The value to calculate the magnitude of.
      * @return The magnitude of the values.
      */
-    public static double magnitude(double... values) {
+    public static double magnitude(double... values) { // TODO: Move this into the vector class
         double squaredSum = 0;
         for (double val : values) {
-            squaredSum += square(val);
+            squaredSum += Math.pow(val, 2);
         }
         return Math.sqrt(squaredSum);
     }
@@ -50,32 +30,11 @@ public class MathExt {
      * Determines the sign of a value
      *
      * @param value The value which to get the sign from
-     * @return 1 if the value if positive, -1 if it is negative, and 0 if it is
+     * @return 1 if the value is positive or 0, -1 if it is negative
      * 0
      */
     public static int sign(double value) {
-        return (int) Math.signum(value);
-    }
-
-    /**
-     * Calculates the percentage of the value
-     *
-     * @param value   The initial value
-     * @param percent The percent of the value to keep
-     * @return The percent of the initial value
-     */
-    public static double percent(double value, double percent) {
-        return value * percent / 100.0;
-    }
-
-    /**
-     * Calculates the square of some value
-     *
-     * @param value The base value
-     * @return The square of value
-     */
-    public static double square(double value) {
-        return Math.pow(value, 2);
+        return value >= 0 ? 1 : -1;
     }
 
 
@@ -91,65 +50,101 @@ public class MathExt {
     }
 
     /**
-     * Normalizes a value to the given range.
-     *
-     * @param value The value to normalize.
-     * @param min   The min of the range.
-     * @param max   The max of the range.
-     * @return The normalized value in the range.
+     * Calculates the inverse linear interpolation of a value within the range [a, b]
+     * @param a The minimum of the range
+     * @param b The maximum of the range
+     * @param value The value between a and b
+     * @return the percentage of value between a and b
      */
-    public static double normalize(double value, double min, double max) {
-        if (value > max || value < min){
-            throw new OutOfBoundsException();
-        }
-        return (value - min) / (max - min);
+    public static double inverseLerp(double a, double b, double value){
+        if (approximately(a, b)) return 0;
+        return clamp01((value - a) / (b - a));
     }
 
     /**
-     * Normalize the values of an array.
-     *
-     * @param values The values to normalize.
-     * @return The normalized values.
+     * Calculates the linear interpolation of t into the range [a, b]
+     * @param a The minimum of the range
+     * @param b The maximum of the range
+     * @param t the percentage of value between a and b (between 0 and 1)
+     * @return the interpolated value between a and b
      */
-    public static double[] normalize(double[] values) {
-        double max = max(values);
-        double min = min(values);
-
-        if (min == max && min == 0){
-            return values;
-        } else if (min == max){
-            return toPrimitiveArray(toList(values).stream().map(x -> 1.0).collect(Collectors.toList()));
-        }
-
-        return toPrimitiveArray(toList(values).stream().map(x -> normalize(x, min, max)).collect(Collectors.toList()));
+    public static double lerp(double a, double b, double t){
+        return lerpUnclamped(a, b, GMath.clamp01(t));
     }
 
     /**
-     * Converts an array to a list.
-     *
-     * @param values The array to convert.
-     * @return The list containing all of the array values.
+     * Calculates the linear interpolation of t into the range [a, b]
+     * @param a The minimum of the range
+     * @param b The maximum of the range
+     * @param t the percentage of value between a and b
+     * @return the interpolated value between a and b
      */
-    public static List<Double> toList(double[] values) {
-        ArrayList<Double> arrVals = new ArrayList<>();
-        for (double value : values) {
-            arrVals.add(value);
-        }
-        return arrVals;
+    public static double lerpUnclamped(double a, double b, double t){
+        double range = b - a;
+        return range * t + a;
     }
 
     /**
-     * Converts a list to an array.
-     *
-     * @param values The list to convert.
-     * @return The array containing all of the list values.
+     * Calculates the linear interpolation of t into the range [a, b], wraps correctly around 360 degrees
+     * @param a The minimum of the range (degrees)
+     * @param b The maximum of the range (degrees)
+     * @param t the percentage of value between a and b (between 0 and 1)
+     * @return the interpolated value between a and b
      */
-    public static double[] toPrimitiveArray(List<Double> values) {
-        double[] primValues = new double[values.size()];
-        for (int i = 0; i < primValues.length; i++) {
-            primValues[i] = values.get(i);
+    public static double lerpAngle(double a, double b, double t){ // TODO: Test
+        double n = repeat(b - a, 360);
+        if (n > 180){
+            n -= 360;
         }
-        return primValues;
+        return a + n * clamp01(t);
+    }
+
+    /**
+     * Interpolates between from and to with smoothing at the limits.
+     * @param from the starting value
+     * @param to the ending value
+     * @param t the percentage of value between from and to (between 0 and 1)
+     * @return the interpolated value between from and to
+     */
+    public static double smoothStep(double from, double to, double t){
+        // TODO
+        return 0;
+    }
+
+    /**
+     * Moves a value toward a target without exceeding maxDelta
+     * @param current the current value
+     * @param target the target value
+     * @param maxDelta the maximum delta
+     * @return the updated value
+     */
+    public static double moveTowards(double current, double target, double maxDelta){
+        double delta = target - current;
+        if (Math.abs(delta) <= maxDelta){
+            return target;
+        }
+        return current + maxDelta * sign(delta);
+    }
+
+    /**
+     * PingPongs the value t, so that it is never larger than length and never smaller than 0.
+     * @param t the value to ping pong
+     * @param length the length of the ping pong
+     * @return the value which will move back and forth between 0 and length
+     */
+    public static double pingPong(double t, double length){ // TODO: Add tests
+        t = repeat(t, length * 2);
+        return length - Math.abs(t - length);
+    }
+
+    /**
+     * Loops the value t, so that it is never larger than length and never smaller than 0. Does not work on negative numbers.
+     * @param t the value to loop
+     * @param length the length of the loop
+     * @return the 'modulus' of t and length 
+     */
+    public static double repeat(double t, double length){
+        return t - Math.floor(t / length) * length;
     }
 
     /**
@@ -158,7 +153,7 @@ public class MathExt {
      * @param values The array to sum.
      * @return The sum of the array.
      */
-    public static double sum(double[] values) {
+    public static double sum(double... values) {
         double total = 0;
         for (double value : values) {
             total += value;
@@ -167,19 +162,18 @@ public class MathExt {
     }
 
     /**
-     * Find the min of the array.
+     * Find the minimum value
      *
-     * @param values The array.
-     * @return The min value of the array.
+     * @param values The value
+     * @return The min value
      */
-    public static double min(double[] values) {
-        if (values.length == 0) {
-            return Double.NEGATIVE_INFINITY;
+    public static double min(double... values) {
+        if (values.length == 0){
+            return 0;
         }
         double min = values[0];
-
-        for (double value : values) {
-            if (min > value) {
+        for (double value: values){
+            if (value < min){
                 min = value;
             }
         }
@@ -187,19 +181,18 @@ public class MathExt {
     }
 
     /**
-     * Find the max of the array.
+     * Find the maximum value
      *
-     * @param values The array.
-     * @return The max value of the array.
+     * @param values The values
+     * @return The max value
      */
-        public static double max(double[] values) {
-        if (values.length == 0) {
-            return Double.POSITIVE_INFINITY;
+    public static double max(double... values){
+        if (values.length == 0){
+            return 0;
         }
         double max = values[0];
-
-        for (double value : values) {
-            if (max < value) {
+        for (double value: values){
+            if (value > max){
                 max = value;
             }
         }
@@ -207,19 +200,43 @@ public class MathExt {
     }
 
     /**
-     * Constrain a value to the range, where if the value is out of the range it
-     * is converted to the nearest range bound.
+     * Find the minimum value
      *
-     * @param value The value to constrain.
-     * @param min   The min of the range.
-     * @param max   The max of the range.
-     * @return The value which is constrained to the range.
-     * @depricated Use MathExt.clamp instead
+     * @param values The value
+     * @return The min value
      */
-    @Deprecated
-    public static double toRange(double value, double min, double max) {
-        return clamp(value, min, max);
+    public static int min(int... values) { // TODO: Test
+        if (values.length == 0){
+            return 0;
+        }
+        int min = values[0];
+        for (int value: values){
+            if (value < min){
+                min = value;
+            }
+        }
+        return min;
     }
+
+    /**
+     * Find the maximum value
+     *
+     * @param values The values
+     * @return The max value
+     */
+    public static int max(int... values){ // TODO: Test
+        if (values.length == 0){
+            return 0;
+        }
+        int max = values[0];
+        for (int value: values){
+            if (value > max){
+                max = value;
+            }
+        }
+        return max;
+    }
+
 
     /**
      * Constrain a value to the range, where if the value is out of the range it
@@ -231,9 +248,15 @@ public class MathExt {
      * @return The value which is constrained to the range.
      */
     public static double clamp(double value, double min, double max) {
-        double newVal = Math.max(min, value);
-        newVal = Math.min(newVal, max);
-        return newVal;
+        if (value < min) return min;
+        if (value > max) return max;
+        return value;
+    }
+
+    public static int clamp(int value, int min, int max){
+        if (value < min) return min;
+        if (value > max) return max;
+        return value;
     }
 
      /**
@@ -302,8 +325,36 @@ public class MathExt {
      * @return True if the value is equal to the compare value with the given
      * precision.
      */
-    public static boolean approxEqual(double value, double compare, double precision) {
+    public static boolean approximately(double value, double compare, double precision) {
         return Math.abs(value - compare) <= precision;
+    }
+
+    /**
+     * Determines if a value is approximately equal to another value.
+     *
+     * @param a     The value to compare.
+     * @param b   The value to compare.
+     * @return True if a and b are equal to within epsilon.
+     */
+    public static boolean approximately(double a, double b){
+        return Math.abs(b - a) < Math.max(1e-6 * Math.max(Math.abs(a), Math.abs(b)), Double.MIN_VALUE * 8);
+    }
+
+    /**
+     * Calculates the shortest difference between two angles in degrees.
+     * @param current The current angle in degrees
+     * @param target The target angle in degrees
+     * @return the shortest difference between the angles in degrees
+     */
+    public static double deltaAngle(double current, double target){
+        double delta = target - current;
+        delta += 180;
+        delta = delta - Math.floor(delta / 360) * 360;
+        delta -= 180;
+        if (approximately(Math.abs(delta), 180)){
+            return 180;
+        }
+        return delta;
     }
 
     /**

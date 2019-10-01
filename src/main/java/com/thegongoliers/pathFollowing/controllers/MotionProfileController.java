@@ -2,7 +2,7 @@ package com.thegongoliers.pathFollowing.controllers;
 
 import com.thegongoliers.input.time.Clock;
 import com.thegongoliers.input.time.RobotClock;
-import com.thegongoliers.math.MathExt;
+import com.thegongoliers.math.GMath;
 
 public class MotionProfileController implements MotionController {
 
@@ -172,7 +172,7 @@ public class MotionProfileController implements MotionController {
         double aTerm = kffa * targetAcceleration;
 
         iState += error;
-        iState = MathExt.toRange(iState, minI, maxI);
+        iState = GMath.clamp(iState, minI, maxI);
         double iTerm = ki * iState;
 
         double currentTime = clock.getTime();
@@ -188,7 +188,7 @@ public class MotionProfileController implements MotionController {
         lastTime = currentTime;
         prevError = error;
 
-        return MathExt.toRange(value, minOutput, maxOutput);
+        return GMath.clamp(value, minOutput, maxOutput);
     }
 
     /**

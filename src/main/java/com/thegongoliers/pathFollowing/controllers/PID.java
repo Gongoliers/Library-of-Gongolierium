@@ -1,7 +1,7 @@
 package com.thegongoliers.pathFollowing.controllers;
 
 import com.thegongoliers.annotations.UsedInCompetition;
-import com.thegongoliers.math.MathExt;
+import com.thegongoliers.math.GMath;
 
 @UsedInCompetition(team = "5112", year = "2018")
 public class PID implements MotionController {
@@ -95,7 +95,7 @@ public class PID implements MotionController {
 			first = false;
 		}
 		iState += error;
-		iState = MathExt.toRange(iState, minI, maxI);
+		iState = GMath.clamp(iState, minI, maxI);
 
 		double pTerm = kp * error;
 		double iTerm = ki * iState;
@@ -105,7 +105,7 @@ public class PID implements MotionController {
 
         double pidOutput = pTerm + iTerm + dTerm;
 
-		return MathExt.toRange(pidOutput, minOutput, maxOutput);
+		return GMath.clamp(pidOutput, minOutput, maxOutput);
 	}
 
 	/**

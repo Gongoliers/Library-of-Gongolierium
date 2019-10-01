@@ -1,7 +1,7 @@
 package com.thegongoliers.math.filter;
 
 import com.thegongoliers.annotations.UsedInCompetition;
-import com.thegongoliers.math.MathExt;
+import com.thegongoliers.math.GMath;
 
 @UsedInCompetition(team = "5112", year = "2018")
 public class RateLimiter implements Filter {
@@ -29,7 +29,7 @@ public class RateLimiter implements Filter {
     @Override
     public double filter(double value) {
 
-        double filtered = MathExt.rateLimit(maxRate, value, lastValue);
+        double filtered = GMath.rateLimit(maxRate, value, lastValue);
 
         this.lastValue = filtered;
 

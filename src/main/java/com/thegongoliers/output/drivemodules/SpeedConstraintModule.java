@@ -1,6 +1,6 @@
 package com.thegongoliers.output.drivemodules;
 
-import com.thegongoliers.math.MathExt;
+import com.thegongoliers.math.GMath;
 
 /**
  * A drivetrain module which will constrain the maximum speed of the robot. 
@@ -51,8 +51,8 @@ public class SpeedConstraintModule extends BaseDriveModule {
             speed *= maxSpeed;
             turnSpeed *= maxTurnSpeed;
         } else {
-            speed = MathExt.clamp(speed, -maxSpeed, maxSpeed);
-            turnSpeed = MathExt.clamp(turnSpeed, -maxTurnSpeed, maxTurnSpeed);
+            speed = GMath.clamp(speed, -maxSpeed, maxSpeed);
+            turnSpeed = GMath.clamp(turnSpeed, -maxTurnSpeed, maxTurnSpeed);
         }
 
         return new DriveValue(speed, turnSpeed);

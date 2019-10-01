@@ -4,7 +4,7 @@ import com.thegongoliers.input.rotation.GPotentiometer;
 import com.thegongoliers.input.switches.ResettableSwitch;
 import com.thegongoliers.input.switches.Switch;
 import com.thegongoliers.input.voltage.VoltageSensor;
-import com.thegongoliers.math.MathExt;
+import com.thegongoliers.math.GMath;
 import com.thegongoliers.output.interfaces.Drivetrain;
 
 import edu.wpi.first.wpilibj.PIDSourceType;
@@ -242,7 +242,7 @@ public class Hardware {
     		return 0;
 		}
     	double rawPWM = voltage / batteryVoltageSensor.getVoltage();
-		return MathExt.toRange(rawPWM, -1, 1);
+		return GMath.clamp(rawPWM, -1, 1);
 	}
 
 }

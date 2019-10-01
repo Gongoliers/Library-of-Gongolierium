@@ -1,6 +1,6 @@
 package com.thegongoliers.output.drivemodules;
 
-import com.thegongoliers.math.MathExt;
+import com.thegongoliers.math.GMath;
 
 /**
  * A drivetrain module which will force the drivetrain to accelerate slower. 
@@ -41,8 +41,8 @@ public class PowerEfficiencyModule extends BaseDriveModule {
         double speed = desiredSpeed.getForwardSpeed();
         double turnSpeed = desiredSpeed.getTurnSpeed();
 
-        speed = MathExt.rateLimit(forwardRate, speed, lastSpeed);
-        turnSpeed = MathExt.rateLimit(turnRate, turnSpeed, lastTurnSpeed);
+        speed = GMath.rateLimit(forwardRate, speed, lastSpeed);
+        turnSpeed = GMath.rateLimit(turnRate, turnSpeed, lastTurnSpeed);
 
         return new DriveValue(speed, turnSpeed);
     }

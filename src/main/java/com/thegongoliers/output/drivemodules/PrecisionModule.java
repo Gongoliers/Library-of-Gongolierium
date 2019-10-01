@@ -1,6 +1,6 @@
 package com.thegongoliers.output.drivemodules;
 
-import com.thegongoliers.math.MathExt;
+import com.thegongoliers.math.GMath;
 
 /**
  * A drivetrain module which will allow higher precision driving at lower speeds. 
@@ -32,14 +32,14 @@ public class PrecisionModule extends BaseDriveModule {
 
     @Override
     public DriveValue run(DriveValue currentSpeed, DriveValue desiredSpeed) {
-        double forwardStrength = 4 * MathExt.clamp01((double) getValue(VALUE_FORWARD_STRENGTH));
-        double turnStrength = 4 * MathExt.clamp01((double) getValue(VALUE_TURN_STRENGTH));
+        double forwardStrength = 4 * GMath.clamp01((double) getValue(VALUE_FORWARD_STRENGTH));
+        double turnStrength = 4 * GMath.clamp01((double) getValue(VALUE_TURN_STRENGTH));
 
         double speed = desiredSpeed.getForwardSpeed();
         double turnSpeed = desiredSpeed.getTurnSpeed();
 
-        speed = MathExt.signPreservingPower(speed, forwardStrength);
-        turnSpeed = MathExt.signPreservingPower(turnSpeed, turnStrength);
+        speed = GMath.signPreservingPower(speed, forwardStrength);
+        turnSpeed = GMath.signPreservingPower(turnSpeed, turnStrength);
 
         return new DriveValue(speed, turnSpeed);
     }

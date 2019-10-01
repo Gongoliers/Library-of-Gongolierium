@@ -1,6 +1,6 @@
 package com.thegongoliers.input.operator;
 
-import com.thegongoliers.math.MathExt;
+import com.thegongoliers.math.GMath;
 
 public class JoystickTransformer {
 
@@ -15,7 +15,7 @@ public class JoystickTransformer {
 	 * @return The adjusted controller input with the sensitivity applied.
 	 */
 	public static double sensitivity(double input, double sensitivity) {
-		return MathExt.toRange(input * sensitivity, -1, 1);
+		return GMath.clamp(input * sensitivity, -1, 1);
 	}
 
 	/**
@@ -29,7 +29,7 @@ public class JoystickTransformer {
 	 * @return The smoothed joystick value.
 	 */
 	public static double power(double input, double pow) {
-		return MathExt.sign(input) * Math.pow(Math.abs(input), pow);
+		return GMath.sign(input) * Math.pow(Math.abs(input), pow);
 	}
 
 	/**
