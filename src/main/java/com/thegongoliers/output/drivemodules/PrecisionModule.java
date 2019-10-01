@@ -31,7 +31,7 @@ public class PrecisionModule extends BaseDriveModule {
     }
 
     @Override
-    public DriveValue run(DriveValue currentSpeed, DriveValue desiredSpeed) {
+    public DriveValue run(DriveValue currentSpeed, DriveValue desiredSpeed, double deltaTime) {
         double forwardStrength = 4 * GMath.clamp01((double) getValue(VALUE_FORWARD_STRENGTH));
         double turnStrength = 4 * GMath.clamp01((double) getValue(VALUE_TURN_STRENGTH));
 

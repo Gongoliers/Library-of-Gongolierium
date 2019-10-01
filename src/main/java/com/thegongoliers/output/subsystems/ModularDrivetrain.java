@@ -6,9 +6,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.thegongoliers.hardware.Hardware;
+import com.thegongoliers.input.time.Clock;
+import com.thegongoliers.input.time.RobotClock;
 import com.thegongoliers.output.drivemodules.DriveModule;
 import com.thegongoliers.output.drivemodules.DriveValue;
 import com.thegongoliers.output.interfaces.Drivetrain;
+
+import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 
 /**
  * A wrapper class for a drivetrain which adds support for drive modules. Does not apply drive modules during tank driving.
@@ -19,16 +24,38 @@ public class ModularDrivetrain implements Drivetrain {
     private List<DriveModule> modules;
     private Map<DriveModule, Integer> order; 
     private DriveValue currentSpeed;
+    private Clock clock;
+    private double lastTime;
 
     /**
-     * Constructor
+     * Default constructor
      * @param drivetrain the drivetrain
      */
     public ModularDrivetrain(Drivetrain drivetrain){
+        this(drivetrain, new RobotClock());
+    }
+
+    /**
+     * Constructor (for testing)
+     * @param drivetrain the drivetrain
+     * @param clock the clock to use to calculate delta time
+     */
+    public ModularDrivetrain(Drivetrain drivetrain, Clock clock){
         this.drivetrain = drivetrain;
         modules = new ArrayList<>();
         order = new HashMap<>();
         currentSpeed = new DriveValue(0, 0);
+        this.clock = clock;
+        lastTime = clock.getTime();
+    }
+
+    /**
+     * Create a modular drivetrain from a differential drive
+     * @param differentialDrive the differential drive
+     * @return the drivetrain
+     */
+    public static ModularDrivetrain from(DifferentialDrive differentialDrive){
+        return new ModularDrivetrain(Hardware.createDrivetrain(differentialDrive));
     }
 
 
@@ -40,12 +67,15 @@ public class ModularDrivetrain implements Drivetrain {
     @Override
     public void arcade(double speed, double turn) {
         DriveValue desiredSpeed = new DriveValue(speed, turn);
+        double time = clock.getTime();
+        double dt = time - lastTime;
 
         for(DriveModule module : modules){
-            desiredSpeed = module.run(currentSpeed, desiredSpeed);
+            desiredSpeed = module.run(currentSpeed, desiredSpeed, dt);
         }
         
         currentSpeed = desiredSpeed;
+        lastTime = time;
         drivetrain.arcade(currentSpeed.getForwardSpeed(), currentSpeed.getTurnSpeed());
     }
 

@@ -30,9 +30,10 @@ public interface DriveModule {
      * Run the drive module
      * @param currentSpeed the current speed of the drivetrain
      * @param desiredSpeed the desired speed of the drivetrain
+     * @param deltaTime the delta time since the last call in seconds
      * @return the speed the drivetrain should set
      */
-    DriveValue run(DriveValue currentSpeed, DriveValue desiredSpeed);
+    DriveValue run(DriveValue currentSpeed, DriveValue desiredSpeed, double deltaTime);
 
     /**
      * Get the order in which this module should be run. Modules with lower orders will be run before those of higher orders.

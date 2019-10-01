@@ -147,6 +147,11 @@ public class GMath {
         return t - Math.floor(t / length) * length;
     }
 
+    public static double deadband(double value, double threshold){
+        if (Math.abs(value) < threshold) return 0;
+        return value;
+    }
+
     /**
      * Calculate the sum of an array.
      *

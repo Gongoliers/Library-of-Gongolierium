@@ -62,7 +62,7 @@ public class StabilityModule extends BaseDriveModule {
     }
 
     @Override
-    public DriveValue run(DriveValue currentSpeed, DriveValue desiredSpeed) {
+    public DriveValue run(DriveValue currentSpeed, DriveValue desiredSpeed, double deltaTime) {
         double strength = (double) getValue(VALUE_STRENGTH);
         Gyro gyro = (Gyro) getValue(VALUE_GYRO);
         double settlingTime = (double) getValue(VALUE_SETTLING_TIME);

@@ -39,7 +39,7 @@ public class SpeedConstraintModule extends BaseDriveModule {
     }
 
     @Override
-    public DriveValue run(DriveValue currentSpeed, DriveValue desiredSpeed) {
+    public DriveValue run(DriveValue currentSpeed, DriveValue desiredSpeed, double deltaTime) {
         double maxSpeed = (double) getValue(VALUE_MAX_SPEED);
         double maxTurnSpeed = (double) getValue(VALUE_MAX_TURN_SPEED);
         boolean scaleSpeed = (boolean) getValue(VALUE_SCALE_SPEEDS);

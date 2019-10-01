@@ -48,7 +48,7 @@ public class FortifyModule extends BaseDriveModule {
     }
 
     @Override
-    public DriveValue run(DriveValue currentSpeed, DriveValue desiredSpeed) {
+    public DriveValue run(DriveValue currentSpeed, DriveValue desiredSpeed, double deltaTime) {
         double strength = (double) getValue(VALUE_STRENGTH);
         Trigger trigger = (Trigger) getValue(VALUE_TRIGGER);
         boolean currentTrigger = trigger.get();

@@ -19,10 +19,11 @@ public class PowerEfficiencyModule extends BaseDriveModule {
      */
     public static final String VALUE_TURN_STRENGTH = "turn_strength";
 
+
     /**
      * Default constructor
-     * @param forwardStrength the forward ramping strength from 0 to 1 (0 provides no constraints, 1 prevents drivetrain from accelerating)
-     * @param turnStrength the turning ramping strength from 0 to 1 (0 provides no constraints, 1 prevents drivetrain from accelerating)
+     * @param forwardStrength the forward ramping strength from 0 to 1 (represents time in seconds from 0 to full speed)
+     * @param turnStrength the turning ramping strength from 0 to 1 (represents time in seconds from 0 to full turn speed)
      */
     public PowerEfficiencyModule(double forwardStrength, double turnStrength){
         super();
@@ -31,9 +32,12 @@ public class PowerEfficiencyModule extends BaseDriveModule {
     }
 
     @Override
-    public DriveValue run(DriveValue currentSpeed, DriveValue desiredSpeed) {
-        double forwardRate = 1 - (double) getValue(VALUE_FORWARD_STRENGTH);
-        double turnRate = 1 - (double) getValue(VALUE_TURN_STRENGTH);
+    public DriveValue run(DriveValue currentSpeed, DriveValue desiredSpeed, double deltaTime) {
+        double forwardStrength = (double) getValue(VALUE_FORWARD_STRENGTH);
+        double turnStrength = (double) getValue(VALUE_TURN_STRENGTH);
+
+        double forwardRate = forwardStrength == 0 ? 1 : deltaTime / forwardStrength;
+        double turnRate = turnStrength == 0 ? 1 : deltaTime / turnStrength;
 
         double lastSpeed = currentSpeed.getForwardSpeed();
         double lastTurnSpeed = currentSpeed.getTurnSpeed();

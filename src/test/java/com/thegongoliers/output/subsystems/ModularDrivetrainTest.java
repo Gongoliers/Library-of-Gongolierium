@@ -125,7 +125,7 @@ public class ModularDrivetrainTest {
         }
 
         @Override
-        public DriveValue run(DriveValue currentSpeed, DriveValue desiredSpeed) {
+        public DriveValue run(DriveValue currentSpeed, DriveValue desiredSpeed, double deltaTime) {
             return new DriveValue(desiredSpeed.getForwardSpeed() * multiplier, desiredSpeed.getTurnSpeed() * multiplier);
         }
 
@@ -146,7 +146,7 @@ public class ModularDrivetrainTest {
         }
 
         @Override
-        public DriveValue run(DriveValue currentSpeed, DriveValue desiredSpeed) {
+        public DriveValue run(DriveValue currentSpeed, DriveValue desiredSpeed, double deltaTime) {
             return new DriveValue(desiredSpeed.getForwardSpeed() + value, desiredSpeed.getTurnSpeed() + value);
         }
 
