@@ -147,6 +147,12 @@ public class GMath {
         return t - Math.floor(t / length) * length;
     }
 
+    /**
+     * Deadbands an input (makes 0 if below threshold)
+     * @param value the input value
+     * @param threshold the deadband threshold
+     * @return the thresholded input
+     */
     public static double deadband(double value, double threshold){
         if (Math.abs(value) < threshold) return 0;
         return value;
