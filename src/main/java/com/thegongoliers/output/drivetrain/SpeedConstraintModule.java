@@ -26,6 +26,11 @@ public class SpeedConstraintModule extends BaseDriveModule {
     public static final String VALUE_SCALE_SPEEDS = "scale_speeds";
 
     /**
+     * The name of the module
+     */
+    public static final String NAME = "Speed Constraint";
+
+    /**
      * Default constructor
      * @param maxSpeed The maximum forward speed
      * @param maxTurnSpeed The maximum turn speed
@@ -60,7 +65,7 @@ public class SpeedConstraintModule extends BaseDriveModule {
 
     @Override
     public String getName() {
-        return "Speed Constraint";
+        return NAME;
     }
 
 }

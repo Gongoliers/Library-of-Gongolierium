@@ -28,6 +28,11 @@ public class FortifyModule extends BaseDriveModule {
      */
     public static final String VALUE_TRIGGER = "trigger";
 
+    /**
+     * The name of the module
+     */
+    public static final String NAME = "Fortify";
+
     private double lastDistance;
     private boolean lastTrigger;
 
@@ -61,7 +66,7 @@ public class FortifyModule extends BaseDriveModule {
         }
 
         if (currentTrigger){
-            speed = -strength * (getDistance() - lastDistance);
+            speed = strength * (lastDistance - getDistance());
             turnSpeed = 0;
         }
 
@@ -72,7 +77,7 @@ public class FortifyModule extends BaseDriveModule {
 
     @Override
     public String getName() {
-        return "Fortify";
+        return NAME;
     }
 
     private double getDistance(){

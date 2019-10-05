@@ -20,6 +20,11 @@ public class PrecisionModule extends BaseDriveModule {
     public static final String VALUE_TURN_STRENGTH = "turn_strength";
 
     /**
+     * The name of the module
+     */
+    public static final String NAME = "Precision";
+
+    /**
      * Default constructor
      * @param forwardStrength The forward precision strength from 0 to 1. Higher values will result in more precision movements at low speeds (corresponds to input^(4 * strength))
      * @param turnStrength The turn precision strength from 0 to 1. Higher values will result in more precision movements at low speeds (corresponds to input^(4 * strength))
@@ -46,7 +51,7 @@ public class PrecisionModule extends BaseDriveModule {
 
     @Override
     public String getName() {
-        return "Precision";
+        return NAME;
     }
 
 }

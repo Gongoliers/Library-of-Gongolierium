@@ -40,6 +40,11 @@ public class StabilityModule extends BaseDriveModule {
      */
     public static final String VALUE_CLOCK = "clock";
 
+    /**
+     * The name of the module
+     */
+    public static final String NAME = "Stability";
+
     private double lastHeading;
     private double lastStopTime;
 
@@ -87,7 +92,7 @@ public class StabilityModule extends BaseDriveModule {
 
     @Override
     public String getName() {
-        return "Stability";
+        return NAME;
     }
 
 }

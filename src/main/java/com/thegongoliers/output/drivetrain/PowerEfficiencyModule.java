@@ -19,6 +19,10 @@ public class PowerEfficiencyModule extends BaseDriveModule {
      */
     public static final String VALUE_TURN_STRENGTH = "turn_strength";
 
+    /**
+     * The name of the module
+     */
+    public static final String NAME = "Power Efficiency";
 
     /**
      * Default constructor
@@ -53,7 +57,7 @@ public class PowerEfficiencyModule extends BaseDriveModule {
 
     @Override
     public String getName() {
-        return "Power Efficiency";
+        return NAME;
     }
 
 }
