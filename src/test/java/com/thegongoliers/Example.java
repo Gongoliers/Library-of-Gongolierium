@@ -17,7 +17,6 @@ class Example {
 
         // Install the drive modules
         drivetrain.setModules(
-            new DeadbandModule(0.01, 0.01),
             new PrecisionModule(0.5, 0.5),
             new PowerEfficiencyModule(0.1, 0.1),
             new StabilityModule(new AnalogGyro(0), 0.02, 0.5),
