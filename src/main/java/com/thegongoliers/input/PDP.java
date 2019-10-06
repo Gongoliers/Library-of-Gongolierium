@@ -11,8 +11,6 @@ public class PDP {
 
     private static PDP instance;
     private final PowerDistributionPanel pdp;
-    private static final double BATTERY_FULL_VOLTAGE = 13;
-    private static final double BATTERY_EMPTY_VOLTAGE = 11.3;
 
     private PDP(){
         pdp = new PowerDistributionPanel();
@@ -32,19 +30,16 @@ public class PDP {
         return pdp.getVoltage();
     }
 
-    public double getBatteryPercent(){
-        double voltageSlope = (BATTERY_FULL_VOLTAGE - BATTERY_EMPTY_VOLTAGE) / 100.0;
-        double rawPercent = (getBatteryVoltage() - BATTERY_EMPTY_VOLTAGE) / voltageSlope;
-
-        return GMath.clamp(rawPercent, 0, 100);
-    }
-
     public CurrentSensor getCurrentSensor(int port){
         return new PDPCurrentSensor(pdp, port);
     }
 
     public double getCurrent(int port){
         return getCurrentSensor(port).getCurrent();
+    }
+
+    public CurrentSensor getBatteryCurrentSensor(){
+        return pdp::getTotalCurrent;
     }
 
 }
