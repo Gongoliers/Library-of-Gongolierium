@@ -16,9 +16,9 @@ import com.thegongoliers.mockHardware.input.MockSwitch;
 import com.thegongoliers.output.interfaces.Drivetrain;
 
 /**
- * FortifyModuleTest
+ * AnchorModuleTest
  */
-public class FortifyModuleTest {
+public class AnchorModuleTest {
 
     private Drivetrain drivetrain;
     private ModularDrivetrain modularDrivetrain;
@@ -36,7 +36,7 @@ public class FortifyModuleTest {
         encoder2 = mock(Encoder.class);
         on = new MockSwitch();
         Trigger trigger = Hardware.switchToTrigger(on);
-        module = new FortifyModule(Arrays.asList(encoder1, encoder2), 0.1, trigger);
+        module = new AnchorModule(Arrays.asList(encoder1, encoder2), 0.1, trigger);
         modularDrivetrain.addModule(module);
     }
 

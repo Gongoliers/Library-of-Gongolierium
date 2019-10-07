@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj.buttons.Trigger;
 /**
  * A drivetrain module which will lock the drivetrain in place while a trigger condition is met
  */
-public class FortifyModule extends BaseDriveModule {
+public class AnchorModule extends BaseDriveModule {
 
     /**
      * The encoders that are used to determine the average distance traveled by the drivetrain
@@ -31,7 +31,7 @@ public class FortifyModule extends BaseDriveModule {
     /**
      * The name of the module
      */
-    public static final String NAME = "Fortify";
+    public static final String NAME = "Anchor";
 
     private double lastDistance;
     private boolean lastTrigger;
@@ -42,7 +42,7 @@ public class FortifyModule extends BaseDriveModule {
      * @param strength the fortify strength (higher values may become unstable, small values recommended. Values must be >= 0)
      * @param trigger the trigger which will lock the drivetrain in place
      */
-    public FortifyModule(List<Encoder> encoders, double strength, Trigger trigger){
+    public AnchorModule(List<Encoder> encoders, double strength, Trigger trigger){
         super();
         values.put(VALUE_ENCODERS, encoders);
         values.put(VALUE_STRENGTH, strength);

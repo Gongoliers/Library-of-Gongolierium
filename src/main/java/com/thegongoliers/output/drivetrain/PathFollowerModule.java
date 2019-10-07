@@ -15,7 +15,7 @@ import edu.wpi.first.wpilibj.interfaces.Gyro;
  * A drivetrain module which will follow a path when activated
  */
 @Untested
-public class PathFollowingModule extends BaseDriveModule {
+public class PathFollowerModule extends BaseDriveModule {
 
     /**
      * The gyro used to determine the rotation of the drivetrain
@@ -70,7 +70,7 @@ public class PathFollowingModule extends BaseDriveModule {
     /**
      * The name of the module
      */
-    public static final String NAME = "Path Following";
+    public static final String NAME = "Path Follower";
 
     private boolean lastTrigger;
     private SimplePath currentPath;
@@ -82,7 +82,7 @@ public class PathFollowingModule extends BaseDriveModule {
      * @param strength the align strength (higher values may become unstable, small values recommended. Values must be >= 0)
      * @param trigger the trigger which will align the drivetrain
      */
-    public PathFollowingModule(Gyro gyro, List<Encoder> encoders, double forwardStrength, double turnStrength){ // TODO: maybe set threshold instead of trigger
+    public PathFollowerModule(Gyro gyro, List<Encoder> encoders, double forwardStrength, double turnStrength){ // TODO: maybe set threshold instead of trigger
         super();
         values.put(VALUE_GYRO, gyro);
         values.put(VALUE_ENCODERS, encoders);

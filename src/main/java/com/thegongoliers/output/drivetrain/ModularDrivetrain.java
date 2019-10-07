@@ -54,6 +54,7 @@ public class ModularDrivetrain implements Drivetrain {
 
     @Override
     public void stop() {
+        currentSpeed = new DriveValue(0, 0);
         drivetrain.stop();
     }
 

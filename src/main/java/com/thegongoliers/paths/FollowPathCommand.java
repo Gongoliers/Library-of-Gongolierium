@@ -5,7 +5,7 @@ import java.util.List;
 import com.thegongoliers.GongolieriumException;
 import com.thegongoliers.output.drivetrain.DriveModule;
 import com.thegongoliers.output.drivetrain.ModularDrivetrain;
-import com.thegongoliers.output.drivetrain.PathFollowingModule;
+import com.thegongoliers.output.drivetrain.PathFollowerModule;
 
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Subsystem;
@@ -23,7 +23,7 @@ public class FollowPathCommand extends Command {
 
         List<DriveModule> modules = drivetrain.getInstalledModules();
         for (DriveModule module : modules) {
-            if (module.getName().equals(PathFollowingModule.NAME)){
+            if (module.getName().equals(PathFollowerModule.NAME)){
                 this.module = module;
                 break;
             }
@@ -36,8 +36,8 @@ public class FollowPathCommand extends Command {
 
     @Override
     protected void initialize() {
-        module.setValue(PathFollowingModule.VALUE_PATH, path);
-        module.setValue(PathFollowingModule.VALUE_TRIGGER, true);
+        module.setValue(PathFollowerModule.VALUE_PATH, path);
+        module.setValue(PathFollowerModule.VALUE_TRIGGER, true);
     }
 
     @Override
@@ -47,12 +47,12 @@ public class FollowPathCommand extends Command {
 
     @Override
     protected void end() {
-        module.setValue(PathFollowingModule.VALUE_TRIGGER, false);
+        module.setValue(PathFollowerModule.VALUE_TRIGGER, false);
     }
 
     @Override
     protected boolean isFinished() {
-        return !((boolean) module.getValue(PathFollowingModule.VALUE_TRIGGER));
+        return !((boolean) module.getValue(PathFollowerModule.VALUE_TRIGGER));
     }
 
 

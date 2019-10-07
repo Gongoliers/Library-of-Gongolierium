@@ -84,7 +84,7 @@ public class StabilityModule extends BaseDriveModule {
             if (clock.getTime() - lastStopTime < settlingTime){
                 lastHeading = gyro.getAngle();
             }
-            turnSpeed = -strength * (gyro.getAngle() - lastHeading);
+            turnSpeed = strength * (lastHeading - gyro.getAngle());
         }
 
         return new DriveValue(speed, turnSpeed);
