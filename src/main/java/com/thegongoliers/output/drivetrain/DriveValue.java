@@ -5,6 +5,8 @@ package com.thegongoliers.output.drivetrain;
  */
 public class DriveValue {
 
+    public static final DriveValue STOP = new DriveValue(0, 0);
+
     private double forwardSpeed, turnSpeed;
 
     /**

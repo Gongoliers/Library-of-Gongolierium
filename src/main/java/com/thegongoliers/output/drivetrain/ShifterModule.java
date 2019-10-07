@@ -28,6 +28,12 @@ public class ShifterModule extends BaseDriveModule {
     public static final String VALUE_DOWNSHIFT_TRIGGER = "shift_down_trigger";
 
     /**
+     * The amount of time in seconds to stop the motors before shifting gears
+     * Type: double
+     */
+    public static final String VALUE_SHIFT_STOP_TIME = "stop_time";
+
+    /**
      * The name of the module
      */
     public static final String NAME = "Shifter";
@@ -35,7 +41,34 @@ public class ShifterModule extends BaseDriveModule {
     private boolean previousUpshift = false;
     private boolean previousDownshift = false;
 
+
+    private enum State {
+        DOWNSHIFTING,
+        UPSHIFTING,
+        DO_NOTHING
+    }
+
+    private State state;
+    private double timeInState;
+
    
+    /**
+     * Default constructor
+     * @param shifter The shifter
+     * @param downshiftTrigger The trigger to shift to a lower gear
+     * @param upshiftTrigger The trigger to shift to a higher gear
+     * @param shiftStopTime The amount of time in seconds to stop the motors before shifting gears
+     */
+    public ShifterModule(GearShifter shifter, Trigger downshiftTrigger, Trigger upshiftTrigger, double shiftStopTime){
+        super();
+        values.put(VALUE_SHIFTER, shifter);
+        values.put(VALUE_DOWNSHIFT_TRIGGER, downshiftTrigger);
+        values.put(VALUE_UPSHIFT_TRIGGER, upshiftTrigger);
+        values.put(VALUE_SHIFT_STOP_TIME, shiftStopTime);
+        state = State.DO_NOTHING;
+        timeInState = 0;
+    }
+
     /**
      * Default constructor
      * @param shifter The shifter
@@ -43,10 +76,7 @@ public class ShifterModule extends BaseDriveModule {
      * @param upshiftTrigger The trigger to shift to a higher gear
      */
     public ShifterModule(GearShifter shifter, Trigger downshiftTrigger, Trigger upshiftTrigger){
-        super();
-        values.put(VALUE_SHIFTER, shifter);
-        values.put(VALUE_DOWNSHIFT_TRIGGER, downshiftTrigger);
-        values.put(VALUE_UPSHIFT_TRIGGER, upshiftTrigger);
+        this(shifter, downshiftTrigger, upshiftTrigger, 0);
     }
 
     @Override
@@ -54,20 +84,48 @@ public class ShifterModule extends BaseDriveModule {
         Trigger upshift = (Trigger) getValue(VALUE_UPSHIFT_TRIGGER);
         Trigger downshift = (Trigger) getValue(VALUE_DOWNSHIFT_TRIGGER);
         GearShifter shifter = (GearShifter) getValue(VALUE_SHIFTER);
+        double stopTime = (double) getValue(VALUE_SHIFT_STOP_TIME);
 
         boolean upshiftPressed = upshift.get();
         boolean downshiftPressed = downshift.get();
 
-        if (!previousUpshift && upshiftPressed){
-            shifter.upshift();
-        } else if (!previousDownshift && downshiftPressed){
-            shifter.downshift();
+        DriveValue speed = desiredSpeed;
+
+        if (state != State.UPSHIFTING && !previousUpshift && upshiftPressed){
+            timeInState = 0;
+            state = State.UPSHIFTING;
+        } else if (state != State.DOWNSHIFTING && !previousDownshift && downshiftPressed){
+            timeInState = 0;
+            state = State.DOWNSHIFTING;
         }
 
         previousUpshift = upshiftPressed;
         previousDownshift = downshiftPressed;
 
-        return desiredSpeed;
+        switch (state){
+            case DOWNSHIFTING:
+                if (timeInState >= stopTime){
+                    shifter.downshift();
+                    timeInState = 0;
+                    state = State.DO_NOTHING;
+                } else {
+                    speed = DriveValue.STOP;
+                    timeInState += deltaTime;
+                }
+                break;
+            case UPSHIFTING:
+                if (timeInState >= stopTime){
+                    shifter.upshift();
+                    timeInState = 0;
+                    state = State.DO_NOTHING;
+                } else {
+                    speed = DriveValue.STOP;
+                    timeInState += deltaTime;
+                }
+                break;
+        }
+
+        return speed;
     }
 
     @Override
