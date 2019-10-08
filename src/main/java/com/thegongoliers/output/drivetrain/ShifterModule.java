@@ -92,10 +92,8 @@ public class ShifterModule extends BaseDriveModule {
         DriveValue speed = desiredSpeed;
 
         if (state != State.UPSHIFTING && !previousUpshift && upshiftPressed){
-            timeInState = 0;
             state = State.UPSHIFTING;
         } else if (state != State.DOWNSHIFTING && !previousDownshift && downshiftPressed){
-            timeInState = 0;
             state = State.DOWNSHIFTING;
         }
 
@@ -104,24 +102,27 @@ public class ShifterModule extends BaseDriveModule {
 
         switch (state){
             case DOWNSHIFTING:
+                timeInState += deltaTime;
                 if (timeInState >= stopTime){
                     shifter.downshift();
                     timeInState = 0;
                     state = State.DO_NOTHING;
                 } else {
                     speed = DriveValue.STOP;
-                    timeInState += deltaTime;
                 }
                 break;
             case UPSHIFTING:
+                timeInState += deltaTime;
                 if (timeInState >= stopTime){
                     shifter.upshift();
                     timeInState = 0;
                     state = State.DO_NOTHING;
                 } else {
                     speed = DriveValue.STOP;
-                    timeInState += deltaTime;
                 }
+                break;
+            case DO_NOTHING:
+                timeInState = 0;
                 break;
         }
 
