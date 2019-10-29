@@ -8,16 +8,10 @@ import com.thegongoliers.math.GMath;
 public class SpeedConstraintModule extends BaseDriveModule {
 
     /**
-     * The maximum forward speed
+     * The maximum speed
      * Type: double
      */
     public static final String VALUE_MAX_SPEED = "max_speed";
-
-    /**
-     * The maximum turn speed
-     * Type: double
-     */
-    public static final String VALUE_MAX_TURN_SPEED = "max_turn_speed";
 
     /**
      * True if the speeds should be scaled to the clamped range, or false otherwise
@@ -32,35 +26,32 @@ public class SpeedConstraintModule extends BaseDriveModule {
 
     /**
      * Default constructor
-     * @param maxSpeed The maximum forward speed
-     * @param maxTurnSpeed The maximum turn speed
+     * @param maxSpeed The maximum speed
      * @param scaleSpeeds True if the speeds should be scaled to the clamped range, or false otherwise
      */
-    public SpeedConstraintModule(double maxSpeed, double maxTurnSpeed, boolean scaleSpeeds){
+    public SpeedConstraintModule(double maxSpeed, boolean scaleSpeeds){
         super();
         values.put(VALUE_MAX_SPEED, maxSpeed);
-        values.put(VALUE_MAX_TURN_SPEED, maxTurnSpeed);
         values.put(VALUE_SCALE_SPEEDS, scaleSpeeds);
     }
 
     @Override
-    public DriveValue run(DriveValue currentSpeed, DriveValue desiredSpeed, double deltaTime) {
+    public DriveSpeed run(DriveSpeed currentSpeed, DriveSpeed desiredSpeed, double deltaTime) {
         double maxSpeed = (double) getValue(VALUE_MAX_SPEED);
-        double maxTurnSpeed = (double) getValue(VALUE_MAX_TURN_SPEED);
         boolean scaleSpeed = (boolean) getValue(VALUE_SCALE_SPEEDS);
 
-        double speed = desiredSpeed.getForwardSpeed();
-        double turnSpeed = desiredSpeed.getTurnSpeed();
+        double left = desiredSpeed.getLeftSpeed();
+        double right = desiredSpeed.getRightSpeed();
 
         if (scaleSpeed){
-            speed *= maxSpeed;
-            turnSpeed *= maxTurnSpeed;
+            left *= maxSpeed;
+            right *= maxSpeed;
         } else {
-            speed = GMath.clamp(speed, -maxSpeed, maxSpeed);
-            turnSpeed = GMath.clamp(turnSpeed, -maxTurnSpeed, maxTurnSpeed);
+            left = GMath.clamp(left, -maxSpeed, maxSpeed);
+            right = GMath.clamp(right, -maxSpeed, maxSpeed);
         }
 
-        return new DriveValue(speed, turnSpeed);
+        return new DriveSpeed(left, right);
     }
 
     @Override

@@ -17,7 +17,7 @@ public class ModularDrivetrain implements Drivetrain {
 
     private Drivetrain drivetrain;
     private List<DriveModule> modules;
-    private DriveValue currentSpeed;
+    private DriveSpeed currentSpeed;
     private Clock clock;
     private double lastTime;
 
@@ -37,7 +37,7 @@ public class ModularDrivetrain implements Drivetrain {
     public ModularDrivetrain(Drivetrain drivetrain, Clock clock){
         this.drivetrain = drivetrain;
         modules = new ArrayList<>();
-        currentSpeed = new DriveValue(0, 0);
+        currentSpeed = DriveSpeed.STOP;
         this.clock = clock;
         lastTime = clock.getTime();
     }
@@ -54,13 +54,19 @@ public class ModularDrivetrain implements Drivetrain {
 
     @Override
     public void stop() {
-        currentSpeed = new DriveValue(0, 0);
+        currentSpeed = DriveSpeed.STOP;
         drivetrain.stop();
     }
 
     @Override
     public void arcade(double speed, double turn) {
-        DriveValue desiredSpeed = new DriveValue(speed, turn);
+        DriveSpeed desiredSpeed = DriveSpeed.fromArcade(speed, turn);
+        tank(desiredSpeed.getLeftSpeed(), desiredSpeed.getRightSpeed());
+    }
+
+    @Override
+    public void tank(double leftSpeed, double rightSpeed) {
+        DriveSpeed desiredSpeed = new DriveSpeed(leftSpeed, rightSpeed);
         double time = clock.getTime();
         double dt = time - lastTime;
 
@@ -70,12 +76,7 @@ public class ModularDrivetrain implements Drivetrain {
         
         currentSpeed = desiredSpeed;
         lastTime = time;
-        drivetrain.arcade(currentSpeed.getForwardSpeed(), currentSpeed.getTurnSpeed());
-    }
-
-    @Override
-    public void tank(double leftSpeed, double rightSpeed) {
-        drivetrain.tank(leftSpeed, rightSpeed);
+        drivetrain.tank(currentSpeed.getLeftSpeed(), currentSpeed.getRightSpeed());
     }
 
     /**

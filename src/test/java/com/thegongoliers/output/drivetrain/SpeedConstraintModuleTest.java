@@ -22,7 +22,7 @@ public class SpeedConstraintModuleTest {
     public void setup(){
         drivetrain = mock(Drivetrain.class);
         modularDrivetrain = new ModularDrivetrain(drivetrain);
-        module = new SpeedConstraintModule(0.8, 0.5, false);
+        module = new SpeedConstraintModule(0.8, false);
         modularDrivetrain.addModule(module);
     }
 

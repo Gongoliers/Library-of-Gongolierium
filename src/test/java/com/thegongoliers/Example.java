@@ -17,10 +17,10 @@ class Example {
 
         // Install the drive modules
         drivetrain.setModules(
-            new PrecisionModule(0.5, 0.5),
-            new PowerEfficiencyModule(0.1, 0.1),
+            new PrecisionModule(0.5),
+            new PowerEfficiencyModule(0.1),
             new StabilityModule(new AnalogGyro(0), 0.02, 0.5),
-            new SpeedConstraintModule(0.9, 0.9, false)
+            new SpeedConstraintModule(0.9, false)
         );
 
         // In a subsystem / somewhere else in the code

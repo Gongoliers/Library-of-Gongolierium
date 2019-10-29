@@ -80,7 +80,7 @@ public class ShifterModule extends BaseDriveModule {
     }
 
     @Override
-    public DriveValue run(DriveValue currentSpeed, DriveValue desiredSpeed, double deltaTime) {
+    public DriveSpeed run(DriveSpeed currentSpeed, DriveSpeed desiredSpeed, double deltaTime) {
         Trigger upshift = (Trigger) getValue(VALUE_UPSHIFT_TRIGGER);
         Trigger downshift = (Trigger) getValue(VALUE_DOWNSHIFT_TRIGGER);
         GearShifter shifter = (GearShifter) getValue(VALUE_SHIFTER);
@@ -89,7 +89,7 @@ public class ShifterModule extends BaseDriveModule {
         boolean upshiftPressed = upshift.get();
         boolean downshiftPressed = downshift.get();
 
-        DriveValue speed = desiredSpeed;
+        DriveSpeed speed = desiredSpeed;
 
         if (state != State.UPSHIFTING && !previousUpshift && upshiftPressed){
             state = State.UPSHIFTING;
@@ -108,7 +108,7 @@ public class ShifterModule extends BaseDriveModule {
                     timeInState = 0;
                     state = State.DO_NOTHING;
                 } else {
-                    speed = DriveValue.STOP;
+                    speed = DriveSpeed.STOP;
                 }
                 break;
             case UPSHIFTING:
@@ -118,7 +118,7 @@ public class ShifterModule extends BaseDriveModule {
                     timeInState = 0;
                     state = State.DO_NOTHING;
                 } else {
-                    speed = DriveValue.STOP;
+                    speed = DriveSpeed.STOP;
                 }
                 break;
             case DO_NOTHING:

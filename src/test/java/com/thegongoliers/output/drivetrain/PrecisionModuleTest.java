@@ -24,7 +24,7 @@ public class PrecisionModuleTest {
     public void setup(){
         drivetrain = mock(Drivetrain.class);
         modularDrivetrain = new ModularDrivetrain(drivetrain);
-        module = new PrecisionModule(0.5, 0.75);
+        module = new PrecisionModule(0.5);
         modularDrivetrain.addModule(module);
     }
 
@@ -41,13 +41,6 @@ public class PrecisionModuleTest {
 
         modularDrivetrain.arcade(-0.5, -0.2);
         verifyArcade(-0.25, -0.008);
-
-        module.setValue(PrecisionModule.VALUE_TURN_STRENGTH, 0.5);
-        modularDrivetrain.arcade(-0.5, 0.2);
-        verifyArcade(-0.25, 0.04);
-
-        modularDrivetrain.arcade(0.5, -0.2);
-        verifyArcade(0.25, -0.04);
     }    
 
     private void verifyArcade(double speed, double turn){

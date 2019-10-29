@@ -8,16 +8,10 @@ import com.thegongoliers.math.GMath;
 public class PrecisionModule extends BaseDriveModule {
 
     /**
-     * The forward precision strength from 0 to 1. Higher values will result in more precision movements at low speeds (corresponds to input^(4 * strength))
+     * The precision strength from 0 to 1. Higher values will result in more precision movements at low speeds (corresponds to input^(4 * strength))
      * Type: double
      */
-    public static final String VALUE_FORWARD_STRENGTH = "forward_strength";
-
-    /**
-     * The turn precision strength from 0 to 1. Higher values will result in more precision movements at low speeds (corresponds to input^(4 * strength))
-     * Type: double
-     */
-    public static final String VALUE_TURN_STRENGTH = "turn_strength";
+    public static final String VALUE_STRENGTH = "strength";
 
     /**
      * The name of the module
@@ -26,27 +20,24 @@ public class PrecisionModule extends BaseDriveModule {
 
     /**
      * Default constructor
-     * @param forwardStrength The forward precision strength from 0 to 1. Higher values will result in more precision movements at low speeds (corresponds to input^(4 * strength))
-     * @param turnStrength The turn precision strength from 0 to 1. Higher values will result in more precision movements at low speeds (corresponds to input^(4 * strength))
+     * @param strength The precision strength from 0 to 1. Higher values will result in more precision movements at low speeds (corresponds to input^(4 * strength))
      */
-    public PrecisionModule(double forwardStrength, double turnStrength){
+    public PrecisionModule(double strength){
         super();
-        values.put(VALUE_FORWARD_STRENGTH, forwardStrength);
-        values.put(VALUE_TURN_STRENGTH, turnStrength);
+        values.put(VALUE_STRENGTH, strength);
     }
 
     @Override
-    public DriveValue run(DriveValue currentSpeed, DriveValue desiredSpeed, double deltaTime) {
-        double forwardStrength = 4 * GMath.clamp01((double) getValue(VALUE_FORWARD_STRENGTH));
-        double turnStrength = 4 * GMath.clamp01((double) getValue(VALUE_TURN_STRENGTH));
+    public DriveSpeed run(DriveSpeed currentSpeed, DriveSpeed desiredSpeed, double deltaTime) {
+        double strength = 4 * GMath.clamp01((double) getValue(VALUE_STRENGTH));
 
-        double speed = desiredSpeed.getForwardSpeed();
-        double turnSpeed = desiredSpeed.getTurnSpeed();
+        double left = desiredSpeed.getLeftSpeed();
+        double right = desiredSpeed.getRightSpeed();
 
-        speed = GMath.signPreservingPower(speed, forwardStrength);
-        turnSpeed = GMath.signPreservingPower(turnSpeed, turnStrength);
+        left = GMath.signPreservingPower(left, strength);
+        right = GMath.signPreservingPower(right, strength);
 
-        return new DriveValue(speed, turnSpeed);
+        return new DriveSpeed(left, right);
     }
 
     @Override

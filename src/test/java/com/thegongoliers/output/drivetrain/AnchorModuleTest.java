@@ -36,7 +36,7 @@ public class AnchorModuleTest {
         encoder2 = mock(Encoder.class);
         on = new MockSwitch();
         Trigger trigger = Hardware.switchToTrigger(on);
-        module = new AnchorModule(Arrays.asList(encoder1, encoder2), 0.1, trigger);
+        module = new AnchorModule(encoder1, encoder2, 0.1, trigger);
         modularDrivetrain.addModule(module);
     }
 

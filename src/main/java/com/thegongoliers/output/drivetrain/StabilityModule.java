@@ -67,27 +67,31 @@ public class StabilityModule extends BaseDriveModule {
     }
 
     @Override
-    public DriveValue run(DriveValue currentSpeed, DriveValue desiredSpeed, double deltaTime) {
+    public DriveSpeed run(DriveSpeed currentSpeed, DriveSpeed desiredSpeed, double deltaTime) {
         double strength = (double) getValue(VALUE_STRENGTH);
         Gyro gyro = (Gyro) getValue(VALUE_GYRO);
         double settlingTime = (double) getValue(VALUE_SETTLING_TIME);
         double threshold = (double) getValue(VALUE_THRESHOLD);
         Clock clock = (Clock) getValue(VALUE_CLOCK);
 
-        double speed = desiredSpeed.getForwardSpeed();
-        double turnSpeed = desiredSpeed.getTurnSpeed();
+        double left = desiredSpeed.getLeftSpeed();
+        double right = desiredSpeed.getRightSpeed();
 
-        if (Math.abs(turnSpeed) > threshold){
+        if (Math.abs(left - right) > threshold){
+            // Turning
             lastHeading = gyro.getAngle();
             lastStopTime = clock.getTime();
         } else {
+            // Driving straight
             if (clock.getTime() - lastStopTime < settlingTime){
                 lastHeading = gyro.getAngle();
             }
-            turnSpeed = strength * (lastHeading - gyro.getAngle());
+            double forward = (left + right) / 2;
+            double turn = strength * (lastHeading - gyro.getAngle());
+            return DriveSpeed.fromArcade(forward, turn);
         }
 
-        return new DriveValue(speed, turnSpeed);
+        return new DriveSpeed(left, right);
     }
 
     @Override

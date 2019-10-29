@@ -16,7 +16,7 @@ public abstract class BaseDriveModule implements DriveModule {
     }
 
     @Override
-    public abstract DriveValue run(DriveValue currentSpeed, DriveValue desiredSpeed, double deltaTime);
+    public abstract DriveSpeed run(DriveSpeed currentSpeed, DriveSpeed desiredSpeed, double deltaTime);
 
     @Override
     public abstract String getName();

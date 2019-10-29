@@ -8,16 +8,10 @@ import com.thegongoliers.math.GMath;
 public class PowerEfficiencyModule extends BaseDriveModule {
 
     /**
-     * The forward ramping strength from 0 to 1 (0 provides no constraints, 1 prevents drivetrain from accelerating)
+     * The ramping strength from 0 to 1 (0 provides no constraints, 1 prevents drivetrain from accelerating)
      * Type: double
      */
-    public static final String VALUE_FORWARD_STRENGTH = "forward_strength";
-
-    /**
-     * The turning ramping strength from 0 to 1 (0 provides no constraints, 1 prevents drivetrain from accelerating).
-     * Type: double
-     */
-    public static final String VALUE_TURN_STRENGTH = "turn_strength";
+    public static final String VALUE_STRENGTH = "strength";
 
     /**
      * The name of the module
@@ -26,33 +20,29 @@ public class PowerEfficiencyModule extends BaseDriveModule {
 
     /**
      * Default constructor
-     * @param forwardStrength the forward ramping strength from 0 to 1 (represents time in seconds from 0 to full speed)
-     * @param turnStrength the turning ramping strength from 0 to 1 (represents time in seconds from 0 to full turn speed)
+     * @param strength the ramping strength from 0 to 1 (represents time in seconds from 0 to full speed)
      */
-    public PowerEfficiencyModule(double forwardStrength, double turnStrength){
+    public PowerEfficiencyModule(double strength){
         super();
-        values.put(VALUE_FORWARD_STRENGTH, forwardStrength);
-        values.put(VALUE_TURN_STRENGTH, turnStrength);
+        values.put(VALUE_STRENGTH, strength);
     }
 
     @Override
-    public DriveValue run(DriveValue currentSpeed, DriveValue desiredSpeed, double deltaTime) {
-        double forwardStrength = (double) getValue(VALUE_FORWARD_STRENGTH);
-        double turnStrength = (double) getValue(VALUE_TURN_STRENGTH);
+    public DriveSpeed run(DriveSpeed currentSpeed, DriveSpeed desiredSpeed, double deltaTime) {
+        double forwardStrength = (double) getValue(VALUE_STRENGTH);
 
         double forwardRate = forwardStrength == 0 ? 1 : deltaTime / forwardStrength;
-        double turnRate = turnStrength == 0 ? 1 : deltaTime / turnStrength;
 
-        double lastSpeed = currentSpeed.getForwardSpeed();
-        double lastTurnSpeed = currentSpeed.getTurnSpeed();
+        double lastLeft = currentSpeed.getLeftSpeed();
+        double lastRight = currentSpeed.getRightSpeed();
 
-        double speed = desiredSpeed.getForwardSpeed();
-        double turnSpeed = desiredSpeed.getTurnSpeed();
+        double leftSpeed = desiredSpeed.getLeftSpeed();
+        double rightSpeed = desiredSpeed.getRightSpeed();
 
-        speed = GMath.rateLimit(forwardRate, speed, lastSpeed);
-        turnSpeed = GMath.rateLimit(turnRate, turnSpeed, lastTurnSpeed);
+        leftSpeed = GMath.rateLimit(forwardRate, leftSpeed, lastLeft);
+        rightSpeed = GMath.rateLimit(forwardRate, rightSpeed, lastRight);
 
-        return new DriveValue(speed, turnSpeed);
+        return new DriveSpeed(leftSpeed, rightSpeed);
     }
 
     @Override

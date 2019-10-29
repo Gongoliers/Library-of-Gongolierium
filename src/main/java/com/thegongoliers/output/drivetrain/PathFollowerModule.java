@@ -99,7 +99,7 @@ public class PathFollowerModule extends BaseDriveModule {
     }
 
     @Override
-    public DriveValue run(DriveValue currentSpeed, DriveValue desiredSpeed, double deltaTime) {
+    public DriveSpeed run(DriveSpeed currentSpeed, DriveSpeed desiredSpeed, double deltaTime) {
         boolean trigger = (boolean) getValue(VALUE_TRIGGER);
 
         if (!trigger){
@@ -131,7 +131,7 @@ public class PathFollowerModule extends BaseDriveModule {
         // Get the current step
         PathStep step = currentPath.getSteps().get(currentStepIdx);
 
-        DriveValue speed;
+        DriveSpeed speed;
 
         // Determine the step type
         if (step.getType() == PathStepType.ROTATION){
@@ -140,7 +140,7 @@ public class PathFollowerModule extends BaseDriveModule {
                 // Move on to next step
                 currentStepIdx++;
                 zeroSensors();
-                return new DriveValue(0, 0);
+                return DriveSpeed.STOP;
             }
             speed = rotateTowards(step.getValue());
         } else {
@@ -149,7 +149,7 @@ public class PathFollowerModule extends BaseDriveModule {
                 // Move on to next step
                 currentStepIdx++;
                 zeroSensors();
-                return new DriveValue(0, 0);
+                return DriveSpeed.STOP;
             }
             speed = driveTowards(step.getValue());
         }
@@ -157,17 +157,17 @@ public class PathFollowerModule extends BaseDriveModule {
         return speed;
     }
 
-    private DriveValue rotateTowards(double angle){
+    private DriveSpeed rotateTowards(double angle){
         double turnStrength = (double) getValue(VALUE_TURN_STRENGTH);
         Gyro gyro = (Gyro) getValue(VALUE_GYRO);
         double turnSpeed = GMath.clamp(turnStrength * (angle - gyro.getAngle()), -1, 1);
-        return new DriveValue(0, turnSpeed);
+        return DriveSpeed.fromArcade(0, turnSpeed);
     }
 
-    private DriveValue driveTowards(double distance){
+    private DriveSpeed driveTowards(double distance){
         double forwardStrength = (double) getValue(VALUE_FORWARD_STRENGTH);
         double speed = GMath.clamp(forwardStrength * (distance - getDistance()), -1, 1);
-        return new DriveValue(speed, 0);
+        return new DriveSpeed(speed, speed);
     }
 
     private boolean isRotated(double angle){

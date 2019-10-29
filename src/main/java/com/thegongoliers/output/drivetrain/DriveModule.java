@@ -33,7 +33,7 @@ public interface DriveModule {
      * @param deltaTime the delta time since the last call in seconds
      * @return the speed the drivetrain should set
      */
-    DriveValue run(DriveValue currentSpeed, DriveValue desiredSpeed, double deltaTime);
+    DriveSpeed run(DriveSpeed currentSpeed, DriveSpeed desiredSpeed, double deltaTime);
 
     /**
      * Get the name of the module

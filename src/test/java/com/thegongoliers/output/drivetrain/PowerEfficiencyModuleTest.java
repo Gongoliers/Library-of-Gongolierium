@@ -26,7 +26,7 @@ public class PowerEfficiencyModuleTest {
         clock = new MockClock();
         clock.setTime(0);
         modularDrivetrain = new ModularDrivetrain(drivetrain, clock);
-        module = new PowerEfficiencyModule(0.2, 0.1);
+        module = new PowerEfficiencyModule(0.2);
         modularDrivetrain.addModule(module);
     }
 
