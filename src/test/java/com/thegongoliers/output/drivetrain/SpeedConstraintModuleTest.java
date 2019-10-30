@@ -28,44 +28,44 @@ public class SpeedConstraintModuleTest {
 
     @Test
     public void allowsSpeedsWithinConstraint(){
-        modularDrivetrain.arcade(0.8, 0.5);
-        verifyArcade(0.8, 0.5);
+        modularDrivetrain.tank(0.8, 0.5);
+        verifyTank(0.8, 0.5);
 
-        modularDrivetrain.arcade(0, 0);
-        verifyArcade(0, 0);
+        modularDrivetrain.tank(0, 0);
+        verifyTank(0, 0);
 
-        modularDrivetrain.arcade(-0.8, -0.5);
-        verifyArcade(-0.8, -0.5);
+        modularDrivetrain.tank(-0.8, -0.5);
+        verifyTank(-0.8, -0.5);
     }
 
     @Test
     public void clampsSpeedsOutsideRange(){
-        modularDrivetrain.arcade(1, 1);
-        verifyArcade(0.8, 0.5);
+        modularDrivetrain.tank(1, 1);
+        verifyTank(0.8, 0.8);
 
-        modularDrivetrain.arcade(-1, -1);
-        verifyArcade(-0.8, -0.5);
+        modularDrivetrain.tank(-1, -1);
+        verifyTank(-0.8, -0.8);
     }
 
     @Test
     public void canScaleValuesToRange(){
         module.setValue(SpeedConstraintModule.VALUE_SCALE_SPEEDS, true);
 
-        modularDrivetrain.arcade(1, 1);
-        verifyArcade(0.8, 0.5);
+        modularDrivetrain.tank(1, 1);
+        verifyTank(0.8, 0.8);
 
-        modularDrivetrain.arcade(0.5, 0.2);
-        verifyArcade(0.4, 0.1);
+        modularDrivetrain.tank(0.5, 0.2);
+        verifyTank(0.4, 0.16);
 
-        modularDrivetrain.arcade(-0.5, -0.2);
-        verifyArcade(-0.4, -0.1);
+        modularDrivetrain.tank(-0.5, -0.2);
+        verifyTank(-0.4, -0.16);
 
-        modularDrivetrain.arcade(-1, -1);
-        verifyArcade(-0.8, -0.5);
+        modularDrivetrain.tank(-1, -1);
+        verifyTank(-0.8, -0.8);
     }
 
-    private void verifyArcade(double speed, double turn){
-        verify(drivetrain).arcade(AdditionalMatchers.eq(speed, 0.001), AdditionalMatchers.eq(turn, 0.001));
+    private void verifyTank(double left, double right){
+        verify(drivetrain).tank(AdditionalMatchers.eq(left, 0.001), AdditionalMatchers.eq(right, 0.001));
     }
 
 }

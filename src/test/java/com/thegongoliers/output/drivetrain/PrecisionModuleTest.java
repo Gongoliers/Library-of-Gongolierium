@@ -30,21 +30,17 @@ public class PrecisionModuleTest {
 
     @Test
     public void allowsPrecisionMovements(){
-        modularDrivetrain.arcade(1, 1);
-        verifyArcade(1, 1);
+        modularDrivetrain.tank(1, 1);
+        DrivetrainTestUtils.verifyTank(drivetrain, 1, 1);
 
-        modularDrivetrain.arcade(-1, -1);
-        verifyArcade(-1, -1);
+        modularDrivetrain.tank(-1, -1);
+        DrivetrainTestUtils.verifyTank(drivetrain, -1, -1);
 
-        modularDrivetrain.arcade(0.5, 0.2);
-        verifyArcade(0.25, 0.008);
+        modularDrivetrain.tank(0.5, 0.2);
+        DrivetrainTestUtils.verifyTank(drivetrain, 0.25, 0.04);
 
-        modularDrivetrain.arcade(-0.5, -0.2);
-        verifyArcade(-0.25, -0.008);
+        modularDrivetrain.tank(-0.5, -0.2);
+        DrivetrainTestUtils.verifyTank(drivetrain, -0.25, -0.04);
     }    
-
-    private void verifyArcade(double speed, double turn){
-        verify(drivetrain).arcade(AdditionalMatchers.eq(speed, 0.001), AdditionalMatchers.eq(turn, 0.001));
-    }
 
 }

@@ -48,22 +48,22 @@ public class ShifterModuleTest {
         clock.setTime(0);
         upshift();
         assertGear(1);
-        verifyArcade(0, 0);
+        DrivetrainTestUtils.inorderVerifyTank(inOrder, drivetrain, 0, 0);
 
         clock.setTime(0.05);
         nothing();
         assertGear(1);
-        verifyArcade(0, 0);
+        DrivetrainTestUtils.inorderVerifyTank(inOrder, drivetrain, 0, 0);
 
         clock.setTime(0.08);
         upshift();
         assertGear(1);
-        verifyArcade(0, 0);
+        DrivetrainTestUtils.inorderVerifyTank(inOrder, drivetrain, 0, 0);
 
         clock.setTime(0.1);
         upshift();
         assertGear(2);
-        verifyArcade(1, 1);
+        DrivetrainTestUtils.inorderVerifyTank(inOrder, drivetrain, 1, 1);
     }
 
     @Test
@@ -72,17 +72,17 @@ public class ShifterModuleTest {
         clock.setTime(0);
         upshift();
         assertGear(1);
-        verifyArcade(0, 0);
+        DrivetrainTestUtils.inorderVerifyTank(inOrder, drivetrain, 0, 0);
 
         clock.setTime(0.05);
         upshift();
         assertGear(1);
-        verifyArcade(0, 0);
+        DrivetrainTestUtils.inorderVerifyTank(inOrder, drivetrain, 0, 0);
 
         clock.setTime(0.1);
         upshift();
         assertGear(2);
-        verifyArcade(1, 1);
+        DrivetrainTestUtils.inorderVerifyTank(inOrder, drivetrain, 1, 1);
     }
 
     @Test
@@ -92,17 +92,17 @@ public class ShifterModuleTest {
         shifter.setGear(2);
         downshift();
         assertGear(2);
-        verifyArcade(0, 0);
+        DrivetrainTestUtils.inorderVerifyTank(inOrder, drivetrain, 0, 0);
 
         clock.setTime(0.05);
         upshift();
         assertGear(2);
-        verifyArcade(0, 0);
+        DrivetrainTestUtils.inorderVerifyTank(inOrder, drivetrain, 0, 0);
 
         clock.setTime(0.1);
         upshift();
         assertGear(3);
-        verifyArcade(1, 1);
+        DrivetrainTestUtils.inorderVerifyTank(inOrder, drivetrain, 1, 1);
     }
 
     @Test
@@ -112,17 +112,17 @@ public class ShifterModuleTest {
         shifter.setGear(3);
         downshift();
         assertGear(3);
-        verifyArcade(0, 0);
+        DrivetrainTestUtils.inorderVerifyTank(inOrder, drivetrain, 0, 0);
 
         clock.setTime(0.05);
         downshift();
         assertGear(3);
-        verifyArcade(0, 0);
+        DrivetrainTestUtils.inorderVerifyTank(inOrder, drivetrain, 0, 0);
 
         clock.setTime(0.1);
         downshift();
         assertGear(2);
-        verifyArcade(1, 1);
+        DrivetrainTestUtils.inorderVerifyTank(inOrder, drivetrain, 1, 1);
     }
 
     @Test
@@ -165,7 +165,7 @@ public class ShifterModuleTest {
 
         downshift();
         assertGear(2);
-        verifyArcade(1, 1);
+        DrivetrainTestUtils.inorderVerifyTank(inOrder, drivetrain, 1, 1);
 
         nothing();
         assertGear(2);
@@ -185,7 +185,7 @@ public class ShifterModuleTest {
         shifter.setGear(1);
         upshift();
         assertGear(2);
-        verifyArcade(1, 1);
+        DrivetrainTestUtils.inorderVerifyTank(inOrder, drivetrain, 1, 1);
 
         nothing();
         assertGear(2);
@@ -203,27 +203,23 @@ public class ShifterModuleTest {
     private void nothing(){
         downshift.setTriggered(false);
         upshift.setTriggered(false);
-        modularDrivetrain.arcade(1, 1);
+        modularDrivetrain.tank(1, 1);
     }
 
     private void downshift(){
         downshift.setTriggered(true);
         upshift.setTriggered(false);
-        modularDrivetrain.arcade(1, 1);
+        modularDrivetrain.tank(1, 1);
     }
 
     private void upshift(){
         downshift.setTriggered(false);
         upshift.setTriggered(true);
-        modularDrivetrain.arcade(1, 1);
+        modularDrivetrain.tank(1, 1);
     }
 
     private void assertGear(int gear){
         assertEquals(gear, shifter.getGear());
-    }
-
-    private void verifyArcade(double speed, double turn){
-        inOrder.verify(drivetrain).arcade(AdditionalMatchers.eq(speed, 0.001), AdditionalMatchers.eq(turn, 0.001));
     }
 
 }

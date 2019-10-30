@@ -21,7 +21,7 @@ public class TractionControlModule extends BaseDriveModule {
     public static final String VALUE_RIGHT_ENCODER = "right_encoder";
 
     /**
-     * The strength of the traction control between 0 and 1
+     * The strength of the traction control
      * Type: double
      */
     public static final String VALUE_STRENGTH = "strength";
@@ -42,7 +42,7 @@ public class TractionControlModule extends BaseDriveModule {
      * Default constructor
      * @param leftEncoder the left encoder
      * @param rightEncoder the right encoder
-     * @param strength the fortify strength (higher values may become unstable, small values recommended. Values must be >= 0)
+     * @param strength the strength (higher values may become unstable, small values recommended. Values must be >= 0)
      */
     public TractionControlModule(Encoder leftEncoder, Encoder rightEncoder, double strength){
         super();
@@ -73,10 +73,10 @@ public class TractionControlModule extends BaseDriveModule {
             if (slipAmount >= slipThreshold){
                 if (leftRate > rightRate){
                     // Left is slipping
-                    left = decreaseSpeed(left, strength);
+                    left = decreaseSpeed(left, strength * slipAmount);
                 } else {
                     // Right is slipping
-                    right = decreaseSpeed(right, strength);
+                    right = decreaseSpeed(right, strength * slipAmount);
                 }
             }
         }

@@ -29,16 +29,16 @@ public class ModularDrivetrainTest {
 
     @Test
     public void worksWithoutModules(){
-        modularDrivetrain.arcade(1, 0.5);
-        verifyArcade(1, 0.5);
+        modularDrivetrain.tank(1, 0.5);
+        verifyTank(1, 0.5);
     }
 
     @Test
     public void canAddASingleModule(){
         DriveModule module = new AddModule(0.1);
         modularDrivetrain.addModule(module);
-        modularDrivetrain.arcade(0, 0.1);
-        verifyArcade(0.1, 0.2);
+        modularDrivetrain.tank(0, 0.1);
+        verifyTank(0.1, 0.2);
     }
 
     @Test
@@ -46,8 +46,8 @@ public class ModularDrivetrainTest {
         DriveModule module = new AddModule(0.1);
         modularDrivetrain.addModule(module);
         modularDrivetrain.removeModule(module);
-        modularDrivetrain.arcade(0, 0.1);
-        verifyArcade(0, 0.1);
+        modularDrivetrain.tank(0, 0.1);
+        verifyTank(0, 0.1);
     }
 
     @Test
@@ -56,8 +56,8 @@ public class ModularDrivetrainTest {
         DriveModule module2 = new AddModule(0.3);
         modularDrivetrain.addModule(module1);
         modularDrivetrain.addModule(module2);
-        modularDrivetrain.arcade(0, 0.1);
-        verifyArcade(0.4, 0.5);
+        modularDrivetrain.tank(0, 0.1);
+        verifyTank(0.4, 0.5);
     }
 
     @Test
@@ -65,8 +65,8 @@ public class ModularDrivetrainTest {
         DriveModule module1 = new MultiplyModule(2);
         DriveModule module2 = new AddModule(0.1);
         modularDrivetrain.setModules(module2, module1);
-        modularDrivetrain.arcade(0, 0.1);
-        verifyArcade(0.2, 0.4);
+        modularDrivetrain.tank(0, 0.1);
+        verifyTank(0.2, 0.4);
     }
 
     @Test
@@ -75,11 +75,11 @@ public class ModularDrivetrainTest {
         DriveModule module2 = new AddModule(0.1);
         modularDrivetrain.setModules(module1, module2);
         modularDrivetrain.removeModule(module2);
-        modularDrivetrain.arcade(0, 0.1);
-        verifyArcade(0, 0.2);
+        modularDrivetrain.tank(0, 0.1);
+        verifyTank(0, 0.2);
         modularDrivetrain.removeModule(module1);
-        modularDrivetrain.arcade(0, 0.1);
-        verifyArcade(0, 0.1);
+        modularDrivetrain.tank(0, 0.1);
+        verifyTank(0, 0.1);
     }
 
     @Test
@@ -94,8 +94,19 @@ public class ModularDrivetrainTest {
         assertTrue(modules.contains(module2));
     }
 
-    private void verifyArcade(double speed, double turn){
-        verify(drivetrain).arcade(AdditionalMatchers.eq(speed, 0.001), AdditionalMatchers.eq(turn, 0.001));
+    @Test
+    public void worksWithArcade(){
+        double speed = 1;
+        double turn = 0.5;
+
+        DriveSpeed asTank = DriveSpeed.fromArcade(speed, turn);
+        modularDrivetrain.addModule(new MultiplyModule(0.5));
+        modularDrivetrain.arcade(speed, turn);
+        verifyTank(asTank.getLeftSpeed() * 0.5, asTank.getRightSpeed() * 0.5);
+    }
+
+    private void verifyTank(double left, double right){
+        verify(drivetrain).tank(AdditionalMatchers.eq(left, 0.001), AdditionalMatchers.eq(right, 0.001));
     }
 
     private class MultiplyModule extends BaseDriveModule {

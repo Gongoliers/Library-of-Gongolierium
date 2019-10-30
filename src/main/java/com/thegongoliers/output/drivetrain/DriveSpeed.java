@@ -17,8 +17,8 @@ public class DriveSpeed {
      * @param right the right speed
      */
     public DriveSpeed(double left, double right){
-        this.left = GMath.clamp01(left);
-        this.right = GMath.clamp01(right);
+        this.left = GMath.clamp(left, -1, 1);
+        this.right = GMath.clamp(right, -1, 1);
     }
 
     /**
@@ -53,7 +53,7 @@ public class DriveSpeed {
           }
         }
     
-        return new DriveSpeed(GMath.clamp01(left), GMath.clamp01(right));
+        return new DriveSpeed(GMath.clamp(left, -1, 1), GMath.clamp(right, -1, 1));
     }
 
     /**

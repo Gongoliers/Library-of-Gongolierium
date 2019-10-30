@@ -33,35 +33,31 @@ public class PowerEfficiencyModuleTest {
     @Test
     public void limitsAccelerationOnUnfixedDT(){
         clock.setTime(0.01);
-        modularDrivetrain.arcade(0.1, 0.2);
-        verifyArcade(0.05, 0.1);
+        modularDrivetrain.tank(0.1, 0.2);
+        DrivetrainTestUtils.verifyTank(drivetrain, 0.05, 0.05);
 
         clock.setTime(0.2);
-        modularDrivetrain.arcade(0.05, 0);
-        verifyArcade(0.05, 0);
+        modularDrivetrain.tank(0.05, 0);
+        DrivetrainTestUtils.verifyTank(drivetrain, 0.05, 0);
 
         clock.setTime(0.21);
-        modularDrivetrain.arcade(-0.05, -0.2);
-        verifyArcade(0.0, -0.1);
+        modularDrivetrain.tank(-0.05, -0.2);
+        DrivetrainTestUtils.verifyTank(drivetrain, 0.0, -0.05);
     }
 
     @Test
     public void limitsAccelerationOnFixedDT(){
         clock.setTime(0.02);
-        modularDrivetrain.arcade(1, 1);
-        verifyArcade(0.1, 0.2);
+        modularDrivetrain.tank(1, 1);
+        DrivetrainTestUtils.verifyTank(drivetrain, 0.1, 0.1);
 
         clock.setTime(0.04);
-        modularDrivetrain.arcade(-1, -1);
-        verifyArcade(0, 0);
+        modularDrivetrain.tank(-1, -1);
+        DrivetrainTestUtils.verifyTank(drivetrain, 0, 0);
 
         clock.setTime(0.06);
-        modularDrivetrain.arcade(-0.2, 0.3);
-        verifyArcade(-0.1, 0.2);
-    }
-
-    private void verifyArcade(double speed, double turn){
-        verify(drivetrain).arcade(AdditionalMatchers.eq(speed, 0.001), AdditionalMatchers.eq(turn, 0.001));
+        modularDrivetrain.tank(-0.2, 0.3);
+        DrivetrainTestUtils.verifyTank(drivetrain, -0.1, 0.1);
     }
 
 }

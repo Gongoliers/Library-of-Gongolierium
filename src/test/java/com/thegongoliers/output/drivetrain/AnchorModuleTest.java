@@ -46,13 +46,13 @@ public class AnchorModuleTest {
 
         when(encoder1.getDistance()).thenReturn(0.0);
         when(encoder2.getDistance()).thenReturn(0.0);
-        modularDrivetrain.arcade(1, 1);
-        verifyArcade(1, 1);
+        modularDrivetrain.tank(1, 1);
+        verifyTank(1, 1);
 
         when(encoder1.getDistance()).thenReturn(1.0);
         when(encoder2.getDistance()).thenReturn(1.0);
-        modularDrivetrain.arcade(0, 1);
-        verifyArcade(0, 1);
+        modularDrivetrain.tank(0, 1);
+        verifyTank(0, 1);
     }
 
     @Test
@@ -61,24 +61,24 @@ public class AnchorModuleTest {
 
         when(encoder1.getDistance()).thenReturn(0.0);
         when(encoder2.getDistance()).thenReturn(0.0);
-        modularDrivetrain.arcade(1, 1);
-        verifyArcade(0, 0);
+        modularDrivetrain.tank(1, 1);
+        verifyTank(0, 0);
 
         when(encoder1.getDistance()).thenReturn(1.0);
         when(encoder2.getDistance()).thenReturn(1.0);
-        modularDrivetrain.arcade(1, 1);
-        verifyArcade(-0.1, 0);
+        modularDrivetrain.tank(1, 1);
+        verifyTank(-0.1, -0.1);
 
         when(encoder1.getDistance()).thenReturn(0.0);
         when(encoder2.getDistance()).thenReturn(1.0);
-        modularDrivetrain.arcade(1, 1);
-        verifyArcade(-0.05, 0);
+        modularDrivetrain.tank(1, 1);
+        verifyTank(0, -0.1);
     }
 
     
 
-    private void verifyArcade(double speed, double turn){
-        verify(drivetrain).arcade(AdditionalMatchers.eq(speed, 0.001), AdditionalMatchers.eq(turn, 0.001));
+    private void verifyTank(double left, double right){
+        verify(drivetrain).tank(AdditionalMatchers.eq(left, 0.001), AdditionalMatchers.eq(right, 0.001));
     }
 
 }
