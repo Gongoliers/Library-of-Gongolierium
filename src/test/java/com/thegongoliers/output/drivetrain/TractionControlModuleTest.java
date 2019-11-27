@@ -31,7 +31,7 @@ public class TractionControlModuleTest {
         modularDrivetrain = new ModularDrivetrain(drivetrain);
         encoder1 = mock(Encoder.class);
         encoder2 = mock(Encoder.class);
-        module = new TractionControlModule(encoder1, encoder2, 0.1);
+        module = new TractionControlModule(encoder1, encoder2, 0.1, 0.1);
         modularDrivetrain.addModule(module);
     }
 
