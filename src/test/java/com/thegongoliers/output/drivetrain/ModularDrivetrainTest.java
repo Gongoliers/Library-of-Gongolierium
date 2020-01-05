@@ -11,6 +11,7 @@ import static org.mockito.Mockito.*;
 
 import java.util.List;
 
+import com.thegongoliers.mockHardware.input.MockClock;
 import com.thegongoliers.output.interfaces.Drivetrain;
 
 /**
@@ -24,7 +25,7 @@ public class ModularDrivetrainTest {
     @Before
     public void setup(){
         drivetrain = mock(Drivetrain.class);
-        modularDrivetrain = new ModularDrivetrain(drivetrain);
+        modularDrivetrain = new ModularDrivetrain(drivetrain, new MockClock());
     }
 
     @Test

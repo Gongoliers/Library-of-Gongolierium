@@ -36,11 +36,6 @@ public class MockGyro implements Gyro {
     }
 
     @Override
-    public void free() {
-
-    }
-
-    @Override
     public void close() {
     }
 }

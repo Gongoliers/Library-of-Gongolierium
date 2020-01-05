@@ -150,11 +150,6 @@ public class Hardware {
 			}
 
 			@Override
-			public void free() {
-				gyro.free();
-			}
-
-			@Override
 			public void calibrate() {
 				gyro.calibrate();
 			}

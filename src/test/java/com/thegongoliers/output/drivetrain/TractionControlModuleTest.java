@@ -2,17 +2,12 @@ package com.thegongoliers.output.drivetrain;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.AdditionalMatchers;
 
 import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.buttons.Trigger;
 
 import static org.mockito.Mockito.*;
 
-import java.util.Arrays;
-
-import com.thegongoliers.hardware.Hardware;
-import com.thegongoliers.mockHardware.input.MockSwitch;
+import com.thegongoliers.mockHardware.input.MockClock;
 import com.thegongoliers.output.interfaces.Drivetrain;
 
 /**
@@ -28,7 +23,7 @@ public class TractionControlModuleTest {
     @Before
     public void setup(){
         drivetrain = mock(Drivetrain.class);
-        modularDrivetrain = new ModularDrivetrain(drivetrain);
+        modularDrivetrain = new ModularDrivetrain(drivetrain, new MockClock());
         encoder1 = mock(Encoder.class);
         encoder2 = mock(Encoder.class);
         module = new TractionControlModule(encoder1, encoder2, 0.1, 0.1);

@@ -1,7 +1,5 @@
 package com.thegongoliers.output.drivetrain;
 
-import java.util.List;
-
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.buttons.Trigger;
 
