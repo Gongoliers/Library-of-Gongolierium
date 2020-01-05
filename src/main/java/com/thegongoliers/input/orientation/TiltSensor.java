@@ -1,6 +1,6 @@
 package com.thegongoliers.input.orientation;
 
-import com.thegongoliers.math.MathExt;
+import com.thegongoliers.math.GMath;
 
 import edu.wpi.first.wpilibj.interfaces.Accelerometer;
 
@@ -52,7 +52,7 @@ public class TiltSensor {
 	 * @return The pitch in degrees.
 	 */
 	public double getPitch() {
-		return Math.toDegrees(Math.atan2(-accel.getX(), MathExt.magnitude(accel.getY(), accel.getZ()))) - calibrationPitch;
+		return Math.toDegrees(Math.atan2(-accel.getX(), GMath.magnitude(accel.getY(), accel.getZ()))) - calibrationPitch;
 	}
 
 

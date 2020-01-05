@@ -1,7 +1,9 @@
 package com.thegongoliers.input.current;
 
+import com.thegongoliers.annotations.UsedInCompetition;
 import com.thegongoliers.input.switches.ResettableSwitch;
 
+@UsedInCompetition(team = "5112", year = "2016")
 public class CurrentSpikeSensor implements ResettableSwitch {
 
 	private CurrentTripSensor sensor;

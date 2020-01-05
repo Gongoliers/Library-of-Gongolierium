@@ -1,7 +1,9 @@
 package com.thegongoliers.input.switches;
 
+import com.thegongoliers.annotations.UsedInCompetition;
 import edu.wpi.first.wpilibj.DigitalInput;
 
+@UsedInCompetition(team = "5112", year = "2019")
 public class LimitSwitch implements Switch {
 
 	private final DigitalInput input;

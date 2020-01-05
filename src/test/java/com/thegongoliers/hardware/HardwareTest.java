@@ -5,14 +5,17 @@ import com.thegongoliers.input.switches.Switch;
 import com.thegongoliers.mockHardware.input.MockGyro;
 import com.thegongoliers.mockHardware.input.MockPotentiometer;
 import com.thegongoliers.mockHardware.input.MockSwitch;
+import com.thegongoliers.output.interfaces.Drivetrain;
 import edu.wpi.first.wpilibj.buttons.Button;
 import edu.wpi.first.wpilibj.buttons.Trigger;
+import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.interfaces.Potentiometer;
 
 import org.junit.Test;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 public class HardwareTest {
 
@@ -197,6 +200,34 @@ public class HardwareTest {
         potentiometer.setAngle(rawAngle - offset);
         assertEquals(-100, p.get(), 0.001);
 
+    }
+
+    @Test
+    public void testCreatingDrivetrain(){
+        DifferentialDrive differentialDrive = mock(DifferentialDrive.class);
+        Drivetrain drivetrain = Hardware.createDrivetrain(differentialDrive);
+
+        drivetrain.stop();
+        verify(differentialDrive).stopMotor();
+
+        drivetrain.arcade(1.0, 0.5);
+        verify(differentialDrive).arcadeDrive(1.0, 0.5, false);
+
+        drivetrain.tank(-1.0, 1.0);
+        verify(differentialDrive).tankDrive(-1.0, 1.0, false);
+
+    }
+
+
+    @Test
+    public void convertsVoltageToPWM(){
+        assertEquals(0, Hardware.voltageToPWM(0, () -> 10), 0.0001);
+        assertEquals(0, Hardware.voltageToPWM(0, null), 0.0001);
+        assertEquals(0, Hardware.voltageToPWM(0, () -> 0), 0.0001);
+        assertEquals(0.4, Hardware.voltageToPWM(4, () -> 10), 0.0001);
+        assertEquals(-0.4, Hardware.voltageToPWM(-4, () -> 10), 0.0001);
+        assertEquals(1, Hardware.voltageToPWM(12, () -> 10), 0.0001);
+        assertEquals(-1, Hardware.voltageToPWM(-12, () -> 10), 0.0001);
     }
 
     

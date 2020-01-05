@@ -1,12 +1,16 @@
 package com.thegongoliers.hardware;
 
-import com.thegongoliers.input.rotation.GPotentiometer;
 import com.thegongoliers.input.switches.ResettableSwitch;
 import com.thegongoliers.input.switches.Switch;
+import com.thegongoliers.input.voltage.VoltageSensor;
+import com.thegongoliers.math.GMath;
+import com.thegongoliers.output.interfaces.Drivetrain;
 
+import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj.PIDSourceType;
 import edu.wpi.first.wpilibj.buttons.Button;
 import edu.wpi.first.wpilibj.buttons.Trigger;
+import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.interfaces.Potentiometer;
 
@@ -146,11 +150,6 @@ public class Hardware {
 			}
 
 			@Override
-			public void free() {
-				gyro.free();
-			}
-
-			@Override
 			public void calibrate() {
 				gyro.calibrate();
 			}
@@ -188,22 +187,58 @@ public class Hardware {
 	}
 
 	/**
+	 * Creates potentiometer.
+	 * @param port The analog port that the potentiometer is plugged into.
+	 * @param degreeRange The total range in degrees that the potentiometer can turn
+     * @param zeroPoint The zero point of the potentiometer. If you expect a position to be 0, but it is reading X degrees, put X here. (ex. actual 1000 to 1100 degrees, expected 0 to 100 degrees. Put 1000 here.)
+	 * @return A potentiometer.
+     */
+	public static Potentiometer createPotentiometer(int port, double degreeRange, double zeroPoint){
+        return new AnalogPotentiometer(port, degreeRange, -zeroPoint);
+    }
+
+	/**
 	 * Creates a 10 turn potentiometer as sold by Andymark.
 	 * @param port The analog port that the potentiometer is plugged into.
      * @param zeroPoint The zero point of the potentiometer. If you expect a position to be 0, but it is reading X degrees, put X here. (ex. actual 1000 to 1100 degrees, expected 0 to 100 degrees. Put 1000 here.)
 	 * @return A 10 turn potentiometer.
      */
 	public static Potentiometer create10TurnPotentiometer(int port, double zeroPoint){
-        return new GPotentiometer(port, 3600, zeroPoint);
+        return createPotentiometer(port, 3600, -zeroPoint);
+    }
+
+    public static Drivetrain createDrivetrain(DifferentialDrive robotDrive){
+        return new Drivetrain(){
+        
+            @Override
+            public void stop() {
+                robotDrive.stopMotor();
+            }
+        
+            @Override
+            public void tank(double leftSpeed, double rightSpeed) {
+                robotDrive.tankDrive(leftSpeed, rightSpeed, false);
+            }
+        
+            @Override
+            public void arcade(double speed, double turn) {
+                robotDrive.arcadeDrive(speed, turn, false);
+            }
+        };
     }
 
 	/**
-	 * Creates a 10 turn potentiometer as sold by Andymark. Assumes the zero point is 0 degrees.
-	 * @param port The analog port that the potentiometer is plugged into.
-	 * @return A 10 turn potentiometer.
-     */
-    public static Potentiometer create10TurnPotentiometer(int port){
-        return create10TurnPotentiometer(port, 0);
-    }
+	 * Convert a voltage to a PWM signal (percent power) based on the current voltage of the battery
+	 * @param voltage the desired voltage
+	 * @param batteryVoltageSensor the battery voltage sensor
+	 * @return the PWM signal [-1, 1] which delivers the desired voltage
+	 */
+    public static double voltageToPWM(double voltage, VoltageSensor batteryVoltageSensor){
+    	if (batteryVoltageSensor == null || batteryVoltageSensor.getVoltage() == 0){
+    		return 0;
+		}
+    	double rawPWM = voltage / batteryVoltageSensor.getVoltage();
+		return GMath.clamp(rawPWM, -1, 1);
+	}
 
 }
