@@ -59,7 +59,7 @@ public class StabilityModule extends BaseDriveModule {
         values.put(VALUE_GYRO, gyro);
         values.put(VALUE_STRENGTH, strength);
         values.put(VALUE_SETTLING_TIME, settlingTime);
-        values.put(VALUE_THRESHOLD, 0.0);
+        values.put(VALUE_THRESHOLD, 0.01);
         values.put(VALUE_CLOCK, new RobotClock());
 
         lastHeading = gyro.getAngle();
