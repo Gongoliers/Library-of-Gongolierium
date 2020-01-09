@@ -15,6 +15,13 @@ public interface DriveModule {
     Object getValue(String name);
 
     /**
+     * Get a double configuration value in the drive module
+     * @param name the name of the value
+     * @return the value's contents
+     */
+    double getDoubleValue(String name);
+
+    /**
      * Set a configurable value in the drive module
      * @param name the name of the value
      * @param value the value's contents
