@@ -8,23 +8,14 @@ import com.thegongoliers.math.GMath;
 public class PowerEfficiencyModule extends BaseDriveModule {
 
     /**
-     * The ramping time in seconds from 0 to full speed
-     * Type: double
-     */
-    public static final String VALUE_RAMPING_TIME = "seconds_to_full_speed";
-
-    /**
-     * The maximum difference between the two wheel speeds to run the power efficiency module on. Defaults to 2.
-     * Type: double
-     */
-    public static final String VALUE_TURN_THRESHOLD = "turn_threshold";
-
-    /**
      * The name of the module
      */
     public static final String NAME = "Power Efficiency";
 
     private static final double DEFAULT_TURN_THRESHOLD = 2.0;
+
+    private double mRampingTime;
+    private double mTurnThreshold;
 
     /**
      * Default constructor
@@ -50,7 +41,7 @@ public class PowerEfficiencyModule extends BaseDriveModule {
      */
     public void setRampingTime(double secondsToReachFullSpeed){
         if (secondsToReachFullSpeed < 0) throw new IllegalArgumentException("Seconds to reach full speed must be non-negative");
-        values.put(VALUE_RAMPING_TIME, secondsToReachFullSpeed);
+        mRampingTime = secondsToReachFullSpeed;
     }
 
     /**
@@ -58,7 +49,7 @@ public class PowerEfficiencyModule extends BaseDriveModule {
      */
     public void setTurnThreshold(double turnThreshold){
         if (turnThreshold < 0) throw new IllegalArgumentException("Turn threshold must be non-negative");
-        values.put(VALUE_TURN_THRESHOLD, turnThreshold);
+        mTurnThreshold = turnThreshold;
     }
 
     @Override
@@ -72,13 +63,11 @@ public class PowerEfficiencyModule extends BaseDriveModule {
     }
 
     private boolean shouldApplyRateLimit(DriveSpeed speed) {
-        double threshold = (double) getValue(VALUE_TURN_THRESHOLD);
-        return Math.abs(speed.getLeftSpeed() - speed.getRightSpeed()) >= threshold;
+        return Math.abs(speed.getLeftSpeed() - speed.getRightSpeed()) >= mTurnThreshold;
     }
 
     private double getMaxRate(double deltaTime) {
-        double strength = (double) getValue(VALUE_RAMPING_TIME);
-        return strength == 0 ? 1 : deltaTime / strength;
+        return mRampingTime == 0 ? 1 : deltaTime / mRampingTime;
     }
 
     private DriveSpeed applyRateLimit(DriveSpeed lastSpeed, DriveSpeed desiredSpeed, double maxRate){

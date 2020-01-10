@@ -2,8 +2,6 @@ package com.thegongoliers.output.drivetrain;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.AdditionalMatchers;
-
 
 import static org.mockito.Mockito.*;
 
@@ -17,7 +15,7 @@ public class PowerEfficiencyModuleTest {
 
     private Drivetrain drivetrain;
     private ModularDrivetrain modularDrivetrain;
-    private DriveModule module;
+    private PowerEfficiencyModule module;
     private MockClock clock;
 
     @Before
@@ -62,7 +60,7 @@ public class PowerEfficiencyModuleTest {
 
     @Test
     public void doesNotApplyRateLimitWhileTurningWithTresholdSet(){
-        module.setValue(PowerEfficiencyModule.VALUE_TURN_THRESHOLD, 0.2);
+        module.setTurnThreshold(0.2);
         
         clock.setTime(0.02);
         modularDrivetrain.tank(1, 1);
