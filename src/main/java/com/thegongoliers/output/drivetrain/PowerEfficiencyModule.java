@@ -8,10 +8,10 @@ import com.thegongoliers.math.GMath;
 public class PowerEfficiencyModule extends BaseDriveModule {
 
     /**
-     * The ramping strength from 0 to 1 (0 provides no constraints, 1 prevents drivetrain from accelerating)
+     * The ramping time in seconds from 0 to full speed
      * Type: double
      */
-    public static final String VALUE_STRENGTH = "strength";
+    public static final String VALUE_RAMPING_TIME = "seconds_to_full_speed";
 
     /**
      * The maximum difference between the two wheel speeds to run the power efficiency module on. Defaults to 2.
@@ -24,23 +24,29 @@ public class PowerEfficiencyModule extends BaseDriveModule {
      */
     public static final String NAME = "Power Efficiency";
 
+    private static final double DEFAULT_TURN_THRESHOLD = 2.0;
+
     /**
      * Default constructor
-     * @param strength the ramping strength from 0 to 1 (represents time in seconds from 0 to full speed)
+     * @param secondsToReachFullSpeed the ramping time in seconds from 0 to full speed
      * @param turnThreshold the maximum difference between the two wheel speeds to run the power efficiency module on. Defaults to 2.
      */
-    public PowerEfficiencyModule(double strength, double turnThreshold){
+    public PowerEfficiencyModule(double secondsToReachFullSpeed, double turnThreshold){
         super();
-        values.put(VALUE_STRENGTH, strength);
+
+        if (secondsToReachFullSpeed < 0) throw new IllegalArgumentException("Seconds to reach full speed must be non-negative");
+        if (turnThreshold < 0) throw new IllegalArgumentException("Turn threshold must be non-negative");
+
+        values.put(VALUE_RAMPING_TIME, secondsToReachFullSpeed);
         values.put(VALUE_TURN_THRESHOLD, turnThreshold);
     }
 
     /**
      * Default constructor
-     * @param strength the ramping strength from 0 to 1 (represents time in seconds from 0 to full speed)
+     * @param secondsToReachFullSpeed the ramping time in seconds from 0 to full speed
      */
-    public PowerEfficiencyModule(double strength){
-        this(strength, 2.0);
+    public PowerEfficiencyModule(double secondsToReachFullSpeed){
+        this(secondsToReachFullSpeed, DEFAULT_TURN_THRESHOLD);
     }
 
     @Override
@@ -59,7 +65,7 @@ public class PowerEfficiencyModule extends BaseDriveModule {
     }
 
     private double getMaxRate(double deltaTime) {
-        double strength = (double) getValue(VALUE_STRENGTH);
+        double strength = (double) getValue(VALUE_RAMPING_TIME);
         return strength == 0 ? 1 : deltaTime / strength;
     }
 

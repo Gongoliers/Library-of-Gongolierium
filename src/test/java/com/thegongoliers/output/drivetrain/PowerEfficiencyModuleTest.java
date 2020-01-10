@@ -72,4 +72,14 @@ public class PowerEfficiencyModuleTest {
         DrivetrainTestUtils.verifyTank(drivetrain, 1, 0);
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void throwsWhenRampingTimeIsNegative(){
+        new PowerEfficiencyModule(-1);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void throwsWhenTurningThresholdIsNegative(){
+        new PowerEfficiencyModule(1, -1);
+    }
+
 }
