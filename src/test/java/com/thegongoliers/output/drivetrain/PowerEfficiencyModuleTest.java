@@ -60,4 +60,16 @@ public class PowerEfficiencyModuleTest {
         DrivetrainTestUtils.verifyTank(drivetrain, -0.1, 0.1);
     }
 
+    @Test
+    public void doesNotApplyRateLimitWhileTurningWithTresholdSet(){
+        module.setValue(PowerEfficiencyModule.VALUE_TURN_THRESHOLD, 0.2);
+        
+        clock.setTime(0.02);
+        modularDrivetrain.tank(1, 1);
+        DrivetrainTestUtils.verifyTank(drivetrain, 0.1, 0.1);
+
+        modularDrivetrain.tank(1, 0);
+        DrivetrainTestUtils.verifyTank(drivetrain, 1, 0);
+    }
+
 }
