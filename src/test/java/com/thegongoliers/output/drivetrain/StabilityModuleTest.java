@@ -20,7 +20,7 @@ public class StabilityModuleTest {
     private Drivetrain drivetrain;
     private Gyro gyro;
     private ModularDrivetrain stabilizedDrivetrain;
-    private DriveModule stabilityModule;
+    private StabilityModule stabilityModule;
 
     @Before
     public void setup(){
@@ -31,7 +31,7 @@ public class StabilityModuleTest {
         stabilizedDrivetrain = new ModularDrivetrain(drivetrain, new MockClock());
 
         stabilityModule = new StabilityModule(gyro, kp, 0);
-        stabilityModule.setValue(StabilityModule.VALUE_CLOCK, new MockClock());
+        stabilityModule.setClock(new MockClock());
         stabilizedDrivetrain.addModule(stabilityModule);
     }
 
@@ -75,8 +75,8 @@ public class StabilityModuleTest {
     public void allowsSettling(){
         Clock clock = mock(Clock.class);
 
-        stabilityModule.setValue(StabilityModule.VALUE_SETTLING_TIME, 1.0);
-        stabilityModule.setValue(StabilityModule.VALUE_CLOCK, clock);
+        stabilityModule.setSettlingTime(1);
+        stabilityModule.setClock(clock);
 
         when(clock.getTime()).thenReturn(0.0);
         when(gyro.getAngle()).thenReturn(10.0);
