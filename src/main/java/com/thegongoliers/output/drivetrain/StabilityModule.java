@@ -68,30 +68,54 @@ public class StabilityModule extends BaseDriveModule {
 
     @Override
     public DriveSpeed run(DriveSpeed currentSpeed, DriveSpeed desiredSpeed, double deltaTime) {
-        double strength = (double) getValue(VALUE_STRENGTH);
-        Gyro gyro = (Gyro) getValue(VALUE_GYRO);
-        double settlingTime = (double) getValue(VALUE_SETTLING_TIME);
-        double threshold = (double) getValue(VALUE_THRESHOLD);
-        Clock clock = (Clock) getValue(VALUE_CLOCK);
-
-        double left = desiredSpeed.getLeftSpeed();
-        double right = desiredSpeed.getRightSpeed();
-
-        if (Math.abs(left - right) > threshold){
-            // Turning
-            lastHeading = gyro.getAngle();
-            lastStopTime = clock.getTime();
+        if (isTurning(desiredSpeed)){
+            updateDesiredHeading();
+            updateStopTime();
+        } else if (isSettling()){
+            updateDesiredHeading();
         } else {
-            // Driving straight
-            if (clock.getTime() - lastStopTime < settlingTime){
-                lastHeading = gyro.getAngle();
-            }
-            double forward = (left + right) / 2;
-            double turn = strength * (lastHeading - gyro.getAngle());
-            return DriveSpeed.fromArcade(forward, turn);
+            return getCorrectedDriveSpeed(desiredSpeed);
         }
 
-        return new DriveSpeed(left, right);
+        return desiredSpeed;
+    }
+
+    private boolean isTurning(DriveSpeed speed) {
+        double threshold = getDoubleValue(VALUE_THRESHOLD);
+        return Math.abs(speed.getLeftSpeed() - speed.getRightSpeed()) > threshold;
+    }
+
+    private void updateDesiredHeading() {
+        Gyro gyro = (Gyro) getValue(VALUE_GYRO);        
+        lastHeading = gyro.getAngle();
+    }
+
+    private void updateStopTime() {
+        Clock clock = (Clock) getValue(VALUE_CLOCK);
+        lastStopTime = clock.getTime();
+    }
+
+    private boolean isSettling() {
+        double settlingTime = getDoubleValue(VALUE_SETTLING_TIME);
+        Clock clock = (Clock) getValue(VALUE_CLOCK);
+
+        return clock.getTime() - lastStopTime < settlingTime;
+    }
+
+    private DriveSpeed getCorrectedDriveSpeed(DriveSpeed desiredSpeed) {
+        double forward = calculateForwardSpeed(desiredSpeed);
+        double turn = calculateTurnCorrection();
+        return DriveSpeed.fromArcade(forward, turn);
+    }
+
+    private double calculateForwardSpeed(DriveSpeed speed) {
+        return (speed.getLeftSpeed() + speed.getRightSpeed()) / 2;
+    }
+
+    private double calculateTurnCorrection() {
+        double strength = getDoubleValue(VALUE_STRENGTH);
+        Gyro gyro = (Gyro) getValue(VALUE_GYRO);
+        return strength * (lastHeading - gyro.getAngle());
     }
 
     @Override
