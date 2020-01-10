@@ -33,12 +33,8 @@ public class PowerEfficiencyModule extends BaseDriveModule {
      */
     public PowerEfficiencyModule(double secondsToReachFullSpeed, double turnThreshold){
         super();
-
-        if (secondsToReachFullSpeed < 0) throw new IllegalArgumentException("Seconds to reach full speed must be non-negative");
-        if (turnThreshold < 0) throw new IllegalArgumentException("Turn threshold must be non-negative");
-
-        values.put(VALUE_RAMPING_TIME, secondsToReachFullSpeed);
-        values.put(VALUE_TURN_THRESHOLD, turnThreshold);
+        setRampingTime(secondsToReachFullSpeed);
+        setTurnThreshold(turnThreshold);
     }
 
     /**
@@ -47,6 +43,22 @@ public class PowerEfficiencyModule extends BaseDriveModule {
      */
     public PowerEfficiencyModule(double secondsToReachFullSpeed){
         this(secondsToReachFullSpeed, DEFAULT_TURN_THRESHOLD);
+    }
+
+    /**
+     * @param secondsToReachFullSpeed the ramping time in seconds from 0 to full speed
+     */
+    public void setRampingTime(double secondsToReachFullSpeed){
+        if (secondsToReachFullSpeed < 0) throw new IllegalArgumentException("Seconds to reach full speed must be non-negative");
+        values.put(VALUE_RAMPING_TIME, secondsToReachFullSpeed);
+    }
+
+    /**
+     * @param turnThreshold the maximum difference between the two wheel speeds to run the power efficiency module on. Defaults to 2.
+     */
+    public void setTurnThreshold(double turnThreshold){
+        if (turnThreshold < 0) throw new IllegalArgumentException("Turn threshold must be non-negative");
+        values.put(VALUE_TURN_THRESHOLD, turnThreshold);
     }
 
     @Override
