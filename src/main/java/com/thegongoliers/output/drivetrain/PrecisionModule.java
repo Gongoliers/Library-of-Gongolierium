@@ -5,18 +5,14 @@ import com.thegongoliers.math.GMath;
 /**
  * A drivetrain module which will allow higher precision driving at lower speeds. 
  */
-public class PrecisionModule extends BaseDriveModule {
-
-    /**
-     * The precision strength from 0 to 1. Higher values will result in more precision movements at low speeds (corresponds to input^(4 * strength))
-     * Type: double
-     */
-    public static final String VALUE_STRENGTH = "strength";
+public class PrecisionModule implements DriveModule {
 
     /**
      * The name of the module
      */
     public static final String NAME = "Precision";
+
+    private double mStrength;
 
     /**
      * Default constructor
@@ -24,20 +20,28 @@ public class PrecisionModule extends BaseDriveModule {
      */
     public PrecisionModule(double strength){
         super();
-        values.put(VALUE_STRENGTH, strength);
+        mStrength = strength;
     }
 
     @Override
     public DriveSpeed run(DriveSpeed currentSpeed, DriveSpeed desiredSpeed, double deltaTime) {
-        double strength = 4 * GMath.clamp01((double) getValue(VALUE_STRENGTH));
+        double exponent = calculateExponent();
 
         double left = desiredSpeed.getLeftSpeed();
         double right = desiredSpeed.getRightSpeed();
 
-        left = GMath.signPreservingPower(left, strength);
-        right = GMath.signPreservingPower(right, strength);
+        left = GMath.signPreservingPower(left, exponent);
+        right = GMath.signPreservingPower(right, exponent);
 
         return new DriveSpeed(left, right);
+    }
+
+    public void setStrength(double strength){
+        mStrength = strength;
+    }
+
+    private double calculateExponent() {
+        return 4 * GMath.clamp01(mStrength);
     }
 
     @Override

@@ -5,19 +5,10 @@ import com.thegongoliers.math.GMath;
 /**
  * A drivetrain module which will constrain the maximum speed of the robot. 
  */
-public class SpeedConstraintModule extends BaseDriveModule {
+public class SpeedConstraintModule implements DriveModule {
 
-    /**
-     * The maximum speed
-     * Type: double
-     */
-    public static final String VALUE_MAX_SPEED = "max_speed";
-
-    /**
-     * True if the speeds should be scaled to the clamped range, or false otherwise
-     * Type: boolean
-     */
-    public static final String VALUE_SCALE_SPEEDS = "scale_speeds";
+    private double mMaxSpeed;
+    private boolean shouldScaleSpeeds;
 
     /**
      * The name of the module
@@ -27,31 +18,42 @@ public class SpeedConstraintModule extends BaseDriveModule {
     /**
      * Default constructor
      * @param maxSpeed The maximum speed
-     * @param scaleSpeeds True if the speeds should be scaled to the clamped range, or false otherwise
+     * @param shouldScaleSpeeds True if the speeds should be scaled to the clamped range, or false otherwise
      */
-    public SpeedConstraintModule(double maxSpeed, boolean scaleSpeeds){
+    public SpeedConstraintModule(double maxSpeed, boolean shouldScaleSpeeds){
         super();
-        values.put(VALUE_MAX_SPEED, maxSpeed);
-        values.put(VALUE_SCALE_SPEEDS, scaleSpeeds);
+        setMaxSpeed(maxSpeed);
+        setShouldScaleSpeeds(shouldScaleSpeeds);
     }
 
     @Override
     public DriveSpeed run(DriveSpeed currentSpeed, DriveSpeed desiredSpeed, double deltaTime) {
-        double maxSpeed = (double) getValue(VALUE_MAX_SPEED);
-        boolean scaleSpeed = (boolean) getValue(VALUE_SCALE_SPEEDS);
-
-        double left = desiredSpeed.getLeftSpeed();
-        double right = desiredSpeed.getRightSpeed();
-
-        if (scaleSpeed){
-            left *= maxSpeed;
-            right *= maxSpeed;
+        if (shouldScaleSpeeds){
+            return scaleSpeed(desiredSpeed);
         } else {
-            left = GMath.clamp(left, -maxSpeed, maxSpeed);
-            right = GMath.clamp(right, -maxSpeed, maxSpeed);
+            return clampSpeed(desiredSpeed);
         }
+    }
 
+    private DriveSpeed scaleSpeed(DriveSpeed speed){
+        double left = speed.getLeftSpeed() * mMaxSpeed;
+        double right = speed.getRightSpeed() * mMaxSpeed;
         return new DriveSpeed(left, right);
+    }
+
+    private DriveSpeed clampSpeed(DriveSpeed speed){
+        double left = GMath.clamp(speed.getLeftSpeed(), -mMaxSpeed, mMaxSpeed);
+        double right = GMath.clamp(speed.getRightSpeed(), -mMaxSpeed, mMaxSpeed);
+        return new DriveSpeed(left, right);
+    }
+
+    public void setMaxSpeed(double maxSpeed){
+        if (maxSpeed < 0) throw new IllegalArgumentException("Max speed must be between 0 and 1");
+        mMaxSpeed = maxSpeed;
+    }
+
+    public void setShouldScaleSpeeds(boolean shouldScaleSpeeds) {
+        this.shouldScaleSpeeds = shouldScaleSpeeds;
     }
 
     @Override

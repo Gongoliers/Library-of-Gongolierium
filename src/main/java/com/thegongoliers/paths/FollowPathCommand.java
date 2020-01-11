@@ -13,7 +13,7 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 public class FollowPathCommand extends Command {
 
     private ModularDrivetrain drivetrain;
-    private DriveModule module;
+    private PathFollowerModule module;
     private SimplePath path;
 
     public FollowPathCommand(Subsystem subsystem, ModularDrivetrain drivetrain, SimplePath path){
@@ -23,8 +23,8 @@ public class FollowPathCommand extends Command {
 
         List<DriveModule> modules = drivetrain.getInstalledModules();
         for (DriveModule module : modules) {
-            if (module.getName().equals(PathFollowerModule.NAME)){
-                this.module = module;
+            if (module instanceof PathFollowerModule){
+                this.module = (PathFollowerModule) module;
                 break;
             }
         }
@@ -36,8 +36,7 @@ public class FollowPathCommand extends Command {
 
     @Override
     protected void initialize() {
-        module.setValue(PathFollowerModule.VALUE_PATH, path);
-        module.setValue(PathFollowerModule.VALUE_TRIGGER, true);
+        module.startFollowingPath(path);
     }
 
     @Override
@@ -47,12 +46,12 @@ public class FollowPathCommand extends Command {
 
     @Override
     protected void end() {
-        module.setValue(PathFollowerModule.VALUE_TRIGGER, false);
+        module.stopFollowingPath();
     }
 
     @Override
     protected boolean isFinished() {
-        return !((boolean) module.getValue(PathFollowerModule.VALUE_TRIGGER));
+        return !module.isFollowingPath();
     }
 
 

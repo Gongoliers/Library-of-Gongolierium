@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj.interfaces.Gyro;
 /**
  * A drivetrain module which will stabilize the drivetrain (rotation-wise) while attempting to drive straight
  */
-public class StabilityModule extends BaseDriveModule {
+public class StabilityModule implements DriveModule {
 
     private static final double DEFAULT_TURN_THRESHOLD = 0.01;
 
@@ -34,11 +34,11 @@ public class StabilityModule extends BaseDriveModule {
      */
     public StabilityModule(Gyro gyro, double strength, double settlingTime){
         super();
-        mGyro = gyro;
-        mStrength = strength;
-        mSettlingTime = settlingTime;
-        mTurnThreshold = DEFAULT_TURN_THRESHOLD;
-        mClock = new RobotClock();
+        setGyro(gyro);
+        setStrength(strength);
+        setSettlingTime(settlingTime);
+        setTurnThreshold(DEFAULT_TURN_THRESHOLD);
+        setClock(new RobotClock());
 
         lastHeading = gyro.getAngle();
         lastStopTime = 0;

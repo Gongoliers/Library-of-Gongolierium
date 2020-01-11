@@ -110,7 +110,7 @@ public class ModularDrivetrainTest {
         verify(drivetrain).tank(AdditionalMatchers.eq(left, 0.001), AdditionalMatchers.eq(right, 0.001));
     }
 
-    private class MultiplyModule extends BaseDriveModule {
+    private class MultiplyModule implements DriveModule {
 
         private double multiplier;
 
@@ -131,7 +131,7 @@ public class ModularDrivetrainTest {
 
     }
 
-    private class AddModule extends BaseDriveModule {
+    private class AddModule implements DriveModule {
 
         private double value;
 

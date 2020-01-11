@@ -6,39 +6,18 @@ import edu.wpi.first.wpilibj.buttons.Trigger;
 /**
  * A drivetrain module which will lock the drivetrain in place while a trigger condition is met
  */
-public class AnchorModule extends BaseDriveModule {
-
-    /**
-     * The left encoder
-     * Type: edu.wpi.first.wpilibj.Encoder
-     */
-    public static final String VALUE_LEFT_ENCODER = "left_encoder";
-
-    /**
-     * The right encoder
-     * Type: edu.wpi.first.wpilibj.Encoder
-     */
-    public static final String VALUE_RIGHT_ENCODER = "right_encoder";
-
-    /**
-     * The fortify strength (higher values may become unstable, small values recommended. Values must be >= 0)
-     * Type: double
-     */
-    public static final String VALUE_STRENGTH = "strength";
-
-    /**
-     * The trigger which will lock the drivetrain in place
-     * Type: edu.wpi.first.wpilibj.buttons.Trigger
-     */
-    public static final String VALUE_TRIGGER = "trigger";
+public class AnchorModule implements DriveModule {
 
     /**
      * The name of the module
      */
     public static final String NAME = "Anchor";
 
+    private Encoder mLeftEncoder, mRightEncoder;
+    private double mStrength;
+    private Trigger mTrigger;
+
     private double lastLeftDistance, lastRightDistance;
-    private boolean lastTrigger;
 
     /**
      * Default constructor
@@ -49,44 +28,62 @@ public class AnchorModule extends BaseDriveModule {
      */
     public AnchorModule(Encoder leftEncoder, Encoder rightEncoder, double strength, Trigger trigger){
         super();
-        values.put(VALUE_LEFT_ENCODER, leftEncoder);
-        values.put(VALUE_RIGHT_ENCODER, rightEncoder);
-        values.put(VALUE_STRENGTH, strength);
-        values.put(VALUE_TRIGGER, trigger);
+        setLeftEncoder(leftEncoder);
+        setRightEncoder(rightEncoder);
+        setTrigger(trigger);
+        setStrength(strength);
 
-        lastLeftDistance = leftEncoder.getDistance();
-        lastRightDistance = rightEncoder.getDistance();
-        lastTrigger = false;
+        updateLastPosition();
     }
 
     @Override
     public DriveSpeed run(DriveSpeed currentSpeed, DriveSpeed desiredSpeed, double deltaTime) {
-        double strength = (double) getValue(VALUE_STRENGTH);
-        Encoder leftEncoder = (Encoder) getValue(VALUE_LEFT_ENCODER);
-        Encoder rightEncoder = (Encoder) getValue(VALUE_RIGHT_ENCODER);
-        Trigger trigger = (Trigger) getValue(VALUE_TRIGGER);
-        boolean currentTrigger = trigger.get();
+        if (isAnchoring()){
+            return anchor();
+        } 
 
-        double left = desiredSpeed.getLeftSpeed();
-        double right = desiredSpeed.getRightSpeed();
+        updateLastPosition();
+        return desiredSpeed;
+    }
 
-        if (!lastTrigger && currentTrigger){
-            lastLeftDistance = leftEncoder.getDistance();
-            lastRightDistance = rightEncoder.getDistance();
-        }
-
-        if (currentTrigger){
-            left = strength * (lastLeftDistance - leftEncoder.getDistance());
-            right = strength * (lastRightDistance - rightEncoder.getDistance());;
-        }
-
-        lastTrigger = currentTrigger;
+    private DriveSpeed anchor(){
+        double left = mStrength * (lastLeftDistance - mLeftEncoder.getDistance());
+        double right = mStrength * (lastRightDistance - mRightEncoder.getDistance());
 
         return new DriveSpeed(left, right);
+    }
+
+    private boolean isAnchoring() {
+        return mTrigger.get();
+    }
+
+    private void updateLastPosition() {
+        lastLeftDistance = mLeftEncoder.getDistance();
+        lastRightDistance = mRightEncoder.getDistance();
     }
 
     @Override
     public String getName() {
         return NAME;
+    }
+
+    public void setLeftEncoder(Encoder leftEncoder) {
+        if (leftEncoder == null) throw new IllegalArgumentException("Left encoder must be non-null");
+        mLeftEncoder = leftEncoder;
+    }
+
+    public void setRightEncoder(Encoder rightEncoder) {
+        if (rightEncoder == null) throw new IllegalArgumentException("Right encoder must be non-null");
+        mRightEncoder = rightEncoder;
+    }
+
+    public void setStrength(double strength) {
+        if (strength < 0) throw new IllegalArgumentException("Strength must be non-negative");
+        mStrength = strength;
+    }
+
+    public void setTrigger(Trigger trigger) {
+        if (trigger == null) throw new IllegalArgumentException("Trigger must be non-null");
+        mTrigger = trigger;
     }
 }

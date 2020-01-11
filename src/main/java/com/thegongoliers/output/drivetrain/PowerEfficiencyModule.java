@@ -5,7 +5,7 @@ import com.thegongoliers.math.GMath;
 /**
  * A drivetrain module which will force the drivetrain to accelerate slower. 
  */
-public class PowerEfficiencyModule extends BaseDriveModule {
+public class PowerEfficiencyModule implements DriveModule {
 
     /**
      * The name of the module
@@ -36,6 +36,16 @@ public class PowerEfficiencyModule extends BaseDriveModule {
         this(secondsToReachFullSpeed, DEFAULT_TURN_THRESHOLD);
     }
 
+    @Override
+    public DriveSpeed run(DriveSpeed currentSpeed, DriveSpeed desiredSpeed, double deltaTime) {
+        if (shouldApplyRateLimit(desiredSpeed)){
+            return desiredSpeed;
+        }
+
+        double maximumRate = getMaxRate(deltaTime);
+        return applyRateLimit(currentSpeed, desiredSpeed, maximumRate);
+    }
+
     /**
      * @param secondsToReachFullSpeed the ramping time in seconds from 0 to full speed
      */
@@ -50,16 +60,6 @@ public class PowerEfficiencyModule extends BaseDriveModule {
     public void setTurnThreshold(double turnThreshold){
         if (turnThreshold < 0) throw new IllegalArgumentException("Turn threshold must be non-negative");
         mTurnThreshold = turnThreshold;
-    }
-
-    @Override
-    public DriveSpeed run(DriveSpeed currentSpeed, DriveSpeed desiredSpeed, double deltaTime) {
-        if (shouldApplyRateLimit(desiredSpeed)){
-            return desiredSpeed;
-        }
-
-        double maximumRate = getMaxRate(deltaTime);
-        return applyRateLimit(currentSpeed, desiredSpeed, maximumRate);
     }
 
     private boolean shouldApplyRateLimit(DriveSpeed speed) {

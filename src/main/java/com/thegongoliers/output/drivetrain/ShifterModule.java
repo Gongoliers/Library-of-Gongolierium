@@ -7,36 +7,16 @@ import edu.wpi.first.wpilibj.buttons.Trigger;
 /**
  * A drivetrain module which allows switching between gears.
  */
-public class ShifterModule extends BaseDriveModule {
-
-    /**
-     * The gear shifter
-     * Type: com.thegongoliers.output.gears.GearShifter
-     */
-    public static final String VALUE_SHIFTER = "shifter";
-
-    /**
-     * The trigger to shift to a higher gear
-     * Type: edu.wpi.first.wpilibj.Trigger
-     */
-    public static final String VALUE_UPSHIFT_TRIGGER = "shift_up_trigger";
-
-    /**
-     * The trigger to shift to a lower gear
-     * Type: edu.wpi.first.wpilibj.Trigger
-     */
-    public static final String VALUE_DOWNSHIFT_TRIGGER = "shift_down_trigger";
-
-    /**
-     * The amount of time in seconds to stop the motors before shifting gears
-     * Type: double
-     */
-    public static final String VALUE_SHIFT_STOP_TIME = "stop_time";
+public class ShifterModule implements DriveModule {
 
     /**
      * The name of the module
      */
     public static final String NAME = "Shifter";
+
+    private Trigger mDownshiftTrigger, mUpshiftTrigger;
+    private double mShiftStopTime;
+    private GearShifter mShifter;
 
     private boolean previousUpshift = false;
     private boolean previousDownshift = false;
@@ -61,10 +41,10 @@ public class ShifterModule extends BaseDriveModule {
      */
     public ShifterModule(GearShifter shifter, Trigger downshiftTrigger, Trigger upshiftTrigger, double shiftStopTime){
         super();
-        values.put(VALUE_SHIFTER, shifter);
-        values.put(VALUE_DOWNSHIFT_TRIGGER, downshiftTrigger);
-        values.put(VALUE_UPSHIFT_TRIGGER, upshiftTrigger);
-        values.put(VALUE_SHIFT_STOP_TIME, shiftStopTime);
+        setShifter(shifter);
+        setDownshiftTrigger(downshiftTrigger);
+        setUpshiftTrigger(upshiftTrigger);
+        setShiftStopTime(shiftStopTime);
         state = State.DO_NOTHING;
         timeInState = 0;
     }
@@ -81,13 +61,8 @@ public class ShifterModule extends BaseDriveModule {
 
     @Override
     public DriveSpeed run(DriveSpeed currentSpeed, DriveSpeed desiredSpeed, double deltaTime) {
-        Trigger upshift = (Trigger) getValue(VALUE_UPSHIFT_TRIGGER);
-        Trigger downshift = (Trigger) getValue(VALUE_DOWNSHIFT_TRIGGER);
-        GearShifter shifter = (GearShifter) getValue(VALUE_SHIFTER);
-        double stopTime = (double) getValue(VALUE_SHIFT_STOP_TIME);
-
-        boolean upshiftPressed = upshift.get();
-        boolean downshiftPressed = downshift.get();
+        boolean upshiftPressed = mUpshiftTrigger.get();
+        boolean downshiftPressed = mDownshiftTrigger.get();
 
         DriveSpeed speed = desiredSpeed;
 
@@ -103,8 +78,8 @@ public class ShifterModule extends BaseDriveModule {
         switch (state){
             case DOWNSHIFTING:
                 timeInState += deltaTime;
-                if (timeInState >= stopTime){
-                    shifter.downshift();
+                if (timeInState >= mShiftStopTime){
+                    mShifter.downshift();
                     timeInState = 0;
                     state = State.DO_NOTHING;
                 } else {
@@ -113,8 +88,8 @@ public class ShifterModule extends BaseDriveModule {
                 break;
             case UPSHIFTING:
                 timeInState += deltaTime;
-                if (timeInState >= stopTime){
-                    shifter.upshift();
+                if (timeInState >= mShiftStopTime){
+                    mShifter.upshift();
                     timeInState = 0;
                     state = State.DO_NOTHING;
                 } else {
@@ -127,6 +102,26 @@ public class ShifterModule extends BaseDriveModule {
         }
 
         return speed;
+    }
+
+    public void setShifter(GearShifter shifter){
+        if (shifter == null) throw new IllegalArgumentException("Shifter must be non-null");
+        mShifter = shifter;
+    }
+
+    public void setUpshiftTrigger(Trigger upshiftTrigger){
+        if (upshiftTrigger == null) throw new IllegalArgumentException("Upshift trigger must be non-null");
+        mUpshiftTrigger = upshiftTrigger;
+    }
+
+    public void setDownshiftTrigger(Trigger downshiftTrigger){
+        if (downshiftTrigger == null) throw new IllegalArgumentException("Downshift trigger must be non-null");
+        mDownshiftTrigger = downshiftTrigger;
+    }
+
+    public void setShiftStopTime(double shiftStopTime){
+        if (shiftStopTime < 0) throw new IllegalArgumentException("Shift stop time must be non-negative");
+        mShiftStopTime = shiftStopTime;
     }
 
     @Override

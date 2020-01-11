@@ -22,7 +22,7 @@ public class ShifterModuleTest {
 
     private Drivetrain drivetrain;
     private ModularDrivetrain modularDrivetrain;
-    private DriveModule module;
+    private ShifterModule module;
     private MockClock clock;
     private MockGearShifter shifter;
     private MockSwitch downshift, upshift;
@@ -44,7 +44,7 @@ public class ShifterModuleTest {
 
     @Test
     public void togglingUpshiftWithStopTimeWorks(){
-        module.setValue(ShifterModule.VALUE_SHIFT_STOP_TIME, 0.1);
+        module.setShiftStopTime(0.1);
         clock.setTime(0);
         upshift();
         assertGear(1);
@@ -68,7 +68,7 @@ public class ShifterModuleTest {
 
     @Test
     public void upshiftWorksWithTime(){
-        module.setValue(ShifterModule.VALUE_SHIFT_STOP_TIME, 0.1);
+        module.setShiftStopTime(0.1);
         clock.setTime(0);
         upshift();
         assertGear(1);
@@ -87,7 +87,7 @@ public class ShifterModuleTest {
 
     @Test
     public void canChangeFromUpshiftToDownshift(){
-        module.setValue(ShifterModule.VALUE_SHIFT_STOP_TIME, 0.1);
+        module.setShiftStopTime(0.1);
         clock.setTime(0);
         shifter.setGear(2);
         downshift();
@@ -107,7 +107,7 @@ public class ShifterModuleTest {
 
     @Test
     public void downshiftWorksWithTime(){
-        module.setValue(ShifterModule.VALUE_SHIFT_STOP_TIME, 0.1);
+        module.setShiftStopTime(0.1);
         clock.setTime(0);
         shifter.setGear(3);
         downshift();

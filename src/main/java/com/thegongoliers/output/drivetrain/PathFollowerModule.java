@@ -1,203 +1,161 @@
 package com.thegongoliers.output.drivetrain;
 
 import java.util.List;
+import java.util.OptionalDouble;
 
-import com.thegongoliers.annotations.Untested;
-import com.thegongoliers.math.GMath;
 import com.thegongoliers.paths.SimplePath;
 import com.thegongoliers.paths.PathStep;
 import com.thegongoliers.paths.PathStepType;
 
 import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
 
 /**
  * A drivetrain module which will follow a path when activated
  */
-@Untested
-public class PathFollowerModule extends BaseDriveModule {
-
-    /**
-     * The gyro used to determine the rotation of the drivetrain
-     * Type: edu.wpi.first.wpilibj.interfaces.Gyro
-     */
-    public static final String VALUE_GYRO = "gyro";
-
-    /**
-     * The encoders used to determine the distance traveled by the drivetrain
-     * Type: java.util.List<edu.wpi.first.wpilibj.Encoder>
-     */
-    public static final String VALUE_ENCODERS = "encoders";
-
-    /**
-     * The forward strength (higher values may become unstable, small values recommended. Values must be >= 0)
-     * Type: double
-     */
-    public static final String VALUE_FORWARD_STRENGTH = "forward_strength";
-
-    /**
-     * The turn strength (higher values may become unstable, small values recommended. Values must be >= 0)
-     * Type: double
-     */
-    public static final String VALUE_TURN_STRENGTH = "turn_strength";
-
-    /**
-     * The forward threshold to accept as within range of the distance
-     * Type: double
-     */
-    public static final String VALUE_FORWARD_THRESHOLD = "forward_threshold";
-
-    /**
-     * The turn threshold to accept as within range of the angle (degrees)
-     * Type: double
-     */
-    public static final String VALUE_TURN_THRESHOLD = "turn_threshold";
-
-    /**
-     * The path to follow
-     * Type: com.thegongoliers.paths.Path
-     */
-    public static final String VALUE_PATH = "path";
-
-    /**
-     * Determines whether the drivetrain should follow the path
-     * Setting this to true will cause the drivetrain to follow whatever path is set at that time until completed or the trigger is set to false
-     * Type: bool
-     */
-    public static final String VALUE_TRIGGER = "trigger";
-
+public class PathFollowerModule implements DriveModule {
 
     /**
      * The name of the module
      */
     public static final String NAME = "Path Follower";
 
-    private boolean lastTrigger;
+    private Gyro mGyro;
+    private List<Encoder> mEncoders;
+    private PIDController mForwardController, mTurnController;
+    private SimplePath mPath;
+
+    private boolean isEnabled;
+
     private SimplePath currentPath;
     private int currentStepIdx;
 
-    /**
-     * Default constructor
-     * @param gyro the gyro used to determine the rotation of the drivetrain
-     * @param strength the align strength (higher values may become unstable, small values recommended. Values must be >= 0)
-     * @param trigger the trigger which will align the drivetrain
-     */
-    public PathFollowerModule(Gyro gyro, List<Encoder> encoders, double forwardStrength, double turnStrength){ // TODO: maybe set threshold instead of trigger
-        super();
-        values.put(VALUE_GYRO, gyro);
-        values.put(VALUE_ENCODERS, encoders);
-        values.put(VALUE_FORWARD_STRENGTH, forwardStrength);
-        values.put(VALUE_TURN_STRENGTH, turnStrength);
-        values.put(VALUE_TRIGGER, false);
-        values.put(VALUE_FORWARD_THRESHOLD, 0.1);
-        values.put(VALUE_TURN_THRESHOLD, 0.5);
-        values.put(VALUE_PATH, null);
 
-        currentPath = null;
-        currentStepIdx = 0;
-        lastTrigger = false;
+    public PathFollowerModule(Gyro gyro, List<Encoder> encoders, PIDController forwardController, PIDController turnController){
+        super();
+        mGyro = gyro;
+        mEncoders = encoders;
+        mForwardController = forwardController;
+        mTurnController = turnController;
+        mPath = null;
+        stopFollowingPath();
     }
 
     @Override
-    public DriveSpeed run(DriveSpeed currentSpeed, DriveSpeed desiredSpeed, double deltaTime) {
-        boolean trigger = (boolean) getValue(VALUE_TRIGGER);
+    public DriveSpeed run(DriveSpeed currentSpeed, DriveSpeed desiredSpeed, double deltaTime){
+        if (!isEnabled) return desiredSpeed;
+        if (!hasPathToFollow()) return desiredSpeed;
 
-        if (!trigger){
-            lastTrigger = false;
-            return desiredSpeed;
+        if (hasNotStartedPath()){
+            startFollowingPath();
         }
 
-        if (!lastTrigger){ // When the trigger is first activated, load the path
-            currentPath = (SimplePath) getValue(VALUE_PATH);
-            currentStepIdx = 0;
-            zeroSensors();
+        if (isDoneFollowingPath()){
+            stopFollowingPath();
+            return DriveSpeed.STOP;
         }
 
-        lastTrigger = trigger;
+        return followPath();
+    }
 
-        if (currentPath == null){ // If the path is not set, unset the trigger and do nothing
-            setValue(VALUE_TRIGGER, false);
-            return desiredSpeed;
-        }
+    /**
+     * Start following a path (note, drivetrain's tank or arcade methods must be called repeatedly with any value)
+     * @param path The path to follow
+     */
+    public void startFollowingPath(SimplePath path){
+        mPath = path;
+        isEnabled = true;
+    }
 
-        if (currentPath.getSteps().size() <= currentStepIdx){ // Finished following the path
-            setValue(VALUE_TRIGGER, false);
-            return desiredSpeed;
-        }
+    /**
+     * Determines if it is following a path
+     */
+    public boolean isFollowingPath(){
+        return isEnabled && hasPathToFollow();
+    }
 
-        // There is a path to follow, so follow it
+    /**
+     * Stops following a path - the drivetrain's arcade or tank method must be called to take effect!
+     */
+    public void stopFollowingPath() {
+        isEnabled = false;
+        currentPath = null;
+        currentStepIdx = 0;
+    }
 
+    private boolean hasPathToFollow() {
+        return mPath == null;
+    }
 
-        // Get the current step
-        PathStep step = currentPath.getSteps().get(currentStepIdx);
+    private boolean hasNotStartedPath() {
+        return currentPath == null;
+    }
 
-        DriveSpeed speed;
+    private void startFollowingPath() {
+        currentPath = mPath;
+        currentStepIdx = 0;
+        zeroSensors();
+    }
 
-        // Determine the step type
+    private boolean isDoneFollowingPath() {
+        return currentPath.getSteps().size() <= currentStepIdx;
+    }
+
+    private DriveSpeed followPath(){
+        PathStep step = getCurrentPathStep();
+
         if (step.getType() == PathStepType.ROTATION){
-            // Rotate to the target
-            if (isRotated(step.getValue())){
-                // Move on to next step
-                currentStepIdx++;
-                zeroSensors();
-                return DriveSpeed.STOP;
+            DriveSpeed speed = rotateTowards(step.getValue());
+            if (isDoneRotating()){
+                return getToNextStep();
             }
-            speed = rotateTowards(step.getValue());
+            return speed;
         } else {
-            // Drive to the target
-            if (atDistance(step.getValue())){
-                // Move on to next step
-                currentStepIdx++;
-                zeroSensors();
-                return DriveSpeed.STOP;
+            DriveSpeed speed = driveTowards(step.getValue());
+            if (isDoneDriving()){
+                return getToNextStep();
             }
-            speed = driveTowards(step.getValue());
+            return speed;
         }
-        
-        return speed;
+    }
+
+    private PathStep getCurrentPathStep() {
+        return currentPath.getSteps().get(currentStepIdx);
+    }
+
+    private DriveSpeed getToNextStep() {
+        currentStepIdx++;
+        zeroSensors();
+        return DriveSpeed.STOP;
     }
 
     private DriveSpeed rotateTowards(double angle){
-        double turnStrength = (double) getValue(VALUE_TURN_STRENGTH);
-        Gyro gyro = (Gyro) getValue(VALUE_GYRO);
-        double turnSpeed = GMath.clamp(turnStrength * (angle - gyro.getAngle()), -1, 1);
+        double turnSpeed = mTurnController.calculate(mGyro.getAngle(), angle);
         return DriveSpeed.fromArcade(0, turnSpeed);
     }
 
     private DriveSpeed driveTowards(double distance){
-        double forwardStrength = (double) getValue(VALUE_FORWARD_STRENGTH);
-        double speed = GMath.clamp(forwardStrength * (distance - getDistance()), -1, 1);
+        double speed = mForwardController.calculate(getDistance(), distance);
         return new DriveSpeed(speed, speed);
     }
 
-    private boolean isRotated(double angle){
-        double turnThreshold = (double) getValue(VALUE_TURN_THRESHOLD);
-        Gyro gyro = (Gyro) getValue(VALUE_GYRO);
-        return Math.abs(gyro.getAngle() - angle) <= turnThreshold;  
+    private boolean isDoneRotating(){
+        return mTurnController.atSetpoint();
     }
 
-    private boolean atDistance(double distance){
-        double forwardThreshold = (double) getValue(VALUE_FORWARD_THRESHOLD);
-        double currentDistance = getDistance();
-        return Math.abs(currentDistance - distance) <= forwardThreshold;  
+    private boolean isDoneDriving(){
+        return mForwardController.atSetpoint();  
     }
 
     private double getDistance(){
-        List<Encoder> encoders = (List<Encoder>) getValue(VALUE_ENCODERS);
-        double sum = 0;
-        for (Encoder encoder : encoders) {
-            sum += encoder.getDistance();
-        }
-        return sum / encoders.size();
+        OptionalDouble average = mEncoders.stream().mapToDouble(Encoder::getDistance).average();
+        return average.isPresent() ? average.getAsDouble() : 0.0;
     }
 
     private void zeroSensors(){
-        List<Encoder> encoders = (List<Encoder>) getValue(VALUE_ENCODERS);
-        for (Encoder encoder : encoders) {
-            encoder.reset();
-        }
-        Gyro gyro = (Gyro) getValue(VALUE_GYRO);
-        gyro.reset();
+        mEncoders.forEach(Encoder::reset);
+        mGyro.reset();
     }
 
     @Override

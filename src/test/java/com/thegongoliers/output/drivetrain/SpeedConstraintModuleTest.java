@@ -17,7 +17,7 @@ public class SpeedConstraintModuleTest {
 
     private Drivetrain drivetrain;
     private ModularDrivetrain modularDrivetrain;
-    private DriveModule module;
+    private SpeedConstraintModule module;
 
     @Before
     public void setup(){
@@ -50,7 +50,7 @@ public class SpeedConstraintModuleTest {
 
     @Test
     public void canScaleValuesToRange(){
-        module.setValue(SpeedConstraintModule.VALUE_SCALE_SPEEDS, true);
+        module.setShouldScaleSpeeds(true);
 
         modularDrivetrain.tank(1, 1);
         verifyTank(0.8, 0.8);

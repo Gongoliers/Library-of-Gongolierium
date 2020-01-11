@@ -6,43 +6,19 @@ import edu.wpi.first.wpilibj.Encoder;
 /**
  * A drivetrain module which work to prevent wheel slip while driving straight
  */
-public class TractionControlModule extends BaseDriveModule {
+public class TractionControlModule implements DriveModule {
 
-    /**
-     * The left encoder
-     * Type: edu.wpi.first.wpilibj.Encoder
-     */
-    public static final String VALUE_LEFT_ENCODER = "left_encoder";
-
-    /**
-     * The right encoder
-     * Type: edu.wpi.first.wpilibj.Encoder
-     */
-    public static final String VALUE_RIGHT_ENCODER = "right_encoder";
-
-    /**
-     * The strength of the traction control
-     * Type: double
-     */
-    public static final String VALUE_STRENGTH = "strength";
-
-    /**
-     * The minimum difference in encoder rates to consider slipping
-     * Type: double
-     */
-    public static final String VALUE_SLIP_THRESHOLD = "slip_threshold";
-
+    private static final double DEFAULT_TURNING_THRESHOLD = 0;
 
     /**
      * The name of the module
      */
     public static final String NAME = "Traction Control";
 
-    /**
-     * The input threshold for turning to activate the traction control module (between 0 and 1, defaults to 0)
-     * Type: double
-     */
-    public static final String VALUE_THRESHOLD = "threshold";
+    private Encoder mLeftEncoder, mRightEncoder;
+    private double mStrength;
+    private double mSlipThreshold;
+    private double mTurningThreshold;
 
     /**
      * Default constructor
@@ -53,49 +29,74 @@ public class TractionControlModule extends BaseDriveModule {
      */
     public TractionControlModule(Encoder leftEncoder, Encoder rightEncoder, double strength, double slipThreshold){
         super();
-        values.put(VALUE_LEFT_ENCODER, leftEncoder);
-        values.put(VALUE_RIGHT_ENCODER, rightEncoder);
-        values.put(VALUE_STRENGTH, strength);
-        values.put(VALUE_SLIP_THRESHOLD, slipThreshold);
-        values.put(VALUE_THRESHOLD, 0.0);
+        mLeftEncoder = leftEncoder;
+        mRightEncoder = rightEncoder;
+        mStrength = strength;
+        mSlipThreshold = slipThreshold;
+        mTurningThreshold = DEFAULT_TURNING_THRESHOLD;
     }
 
     @Override
     public DriveSpeed run(DriveSpeed currentSpeed, DriveSpeed desiredSpeed, double deltaTime) {
-        double strength = (double) getValue(VALUE_STRENGTH);
-        double slipThreshold = (double) getValue(VALUE_SLIP_THRESHOLD);
-        Encoder leftEncoder = (Encoder) getValue(VALUE_LEFT_ENCODER);
-        Encoder rightEncoder = (Encoder) getValue(VALUE_RIGHT_ENCODER);
-        double threshold = (double) getValue(VALUE_THRESHOLD);
+        if (!isMoving()) return desiredSpeed;
 
-        double left = desiredSpeed.getLeftSpeed();
-        double right = desiredSpeed.getRightSpeed();
-
-
-        if (Math.abs(left - right) <= threshold){
-            // Trying to drive straight
-            double leftRate = Math.abs(leftEncoder.getRate());
-            double rightRate = Math.abs(rightEncoder.getRate());
-
-            double robotSpeed = Math.min(leftRate, rightRate);
-            if (GMath.approximately(robotSpeed, 0)) return new DriveSpeed(left, right);
-
-            double slipRatio = Math.abs((robotSpeed - Math.max(leftRate, rightRate)) / robotSpeed);
-
-            if (slipRatio >= slipThreshold){
-                if (leftRate > rightRate){
-                    // Left is slipping
-                    left = decreaseSpeed(left, strength * slipRatio);
-                } else {
-                    // Right is slipping
-                    right = decreaseSpeed(right, strength * slipRatio);
-                }
-            }
+        if (shouldBeDrivingStraight(desiredSpeed) && isSlipping()){
+            return preventSlipping(desiredSpeed);
         }
-        return new DriveSpeed(left, right);
+        return desiredSpeed;
     }
 
-    private double decreaseSpeed(double current, double delta){
+    private DriveSpeed preventSlipping(DriveSpeed speed){
+        double leftRate = Math.abs(mLeftEncoder.getRate());
+        double rightRate = Math.abs(mRightEncoder.getRate());
+        double slipRatio = calculateSlipRatio();
+
+        double left = speed.getLeftSpeed();
+        double right = speed.getRightSpeed();
+
+        if (leftRate > rightRate){
+            // Left is slipping
+            left = decreaseSpeed(left, mStrength * slipRatio);
+        } else {
+            // Right is slipping
+            right = decreaseSpeed(right, mStrength * slipRatio);
+        }
+
+        return new DriveSpeed(left, right);
+    }
+    
+    private boolean isSlipping() {
+        return calculateSlipRatio() >= mSlipThreshold;
+    }
+
+    private double calculateSlipRatio() {
+        return Math.abs(getMaxSpeed() - getMinSpeed()) / getMinSpeed();
+    }
+
+    private double getMinSpeed() {
+        double leftRate = Math.abs(mLeftEncoder.getRate());
+        double rightRate = Math.abs(mRightEncoder.getRate());
+
+        return Math.min(leftRate, rightRate);
+    }
+
+    private double getMaxSpeed() {
+        double leftRate = Math.abs(mLeftEncoder.getRate());
+        double rightRate = Math.abs(mRightEncoder.getRate());
+
+        return Math.max(leftRate, rightRate);
+    }
+
+    private boolean isMoving(){
+        boolean encodersStopped = mLeftEncoder.getStopped() && mRightEncoder.getStopped();
+        return !encodersStopped && !GMath.approximately(getMinSpeed(), 0);
+    }
+
+    private boolean shouldBeDrivingStraight(DriveSpeed speed) {
+        return Math.abs(speed.getLeftSpeed() - speed.getRightSpeed()) <= mTurningThreshold;
+    }
+
+    private double decreaseSpeed(double current, double delta) {
         if (current < 0){
             return Math.min(current + delta, 0);
         } else {

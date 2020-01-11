@@ -2,11 +2,7 @@ package com.thegongoliers.output.drivetrain;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.AdditionalMatchers;
-
-
 import static org.mockito.Mockito.*;
-
 import com.thegongoliers.mockHardware.input.MockClock;
 import com.thegongoliers.output.interfaces.Drivetrain;
 
