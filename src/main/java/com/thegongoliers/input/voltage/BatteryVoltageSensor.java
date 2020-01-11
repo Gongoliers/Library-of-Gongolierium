@@ -1,6 +1,6 @@
 package com.thegongoliers.input.voltage;
 
-import com.thegongoliers.input.PDP;
+import edu.wpi.first.wpilibj.RobotController;
 
 /**
  * A voltage sensor which monitors the voltage of the battery.
@@ -18,7 +18,7 @@ public class BatteryVoltageSensor implements VoltageSensor {
 
 	@Override
 	public double getVoltage() {
-		return PDP.getInstance().getBatteryVoltage();
+		return RobotController.getBatteryVoltage();
 	}
 
 }
