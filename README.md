@@ -7,11 +7,12 @@ View the [Wiki](https://github.com/Gongoliers/Library-of-Gongolierium/wiki) for 
 
 View the [JavaDocs](https://gongoliers.github.io/Library-of-Gongolierium/).
 
+Up to date with the 2020 FRC build season.
+
 ### Features
-- Unit test your robot code using mock hardware components
 - Use higher level joystick, sensor, and actuator components
 - Use built in math functions
-- Easy to use motion profiling and simple path following
+- Simplify drivetrain programming with prebuilt modules
 
 ## Installation
 To use the the Library of Gongolierium with Gradle projects, you can use [JitPack](https://jitpack.io/) by adding the following lines to your `build.gradle` file:
@@ -24,7 +25,7 @@ repositories {
 
 dependencies {
     ...
-    compile 'com.github.Gongoliers:Library-of-Gongolierium:v3.1.0'
+    compile 'com.github.Gongoliers:Library-of-Gongolierium:v4.0.0'
 }
 ```
 
