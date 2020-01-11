@@ -30,6 +30,12 @@ public class DriveSpeed {
     public static DriveSpeed fromArcade(double forward, double turn){
         double left;
         double right;
+
+        forward = GMath.clamp(forward, -1, 1);
+        turn = GMath.clamp(turn, -1, 1);
+
+        if (GMath.approximately(forward, 0)) forward = 0;
+        if (GMath.approximately(turn, 0)) turn = 0;
     
         double maxInput = Math.copySign(Math.max(Math.abs(forward), Math.abs(turn)), forward);
     
@@ -53,7 +59,7 @@ public class DriveSpeed {
           }
         }
     
-        return new DriveSpeed(GMath.clamp(left, -1, 1), GMath.clamp(right, -1, 1));
+        return new DriveSpeed(left, right);
     }
 
     /**
@@ -70,6 +76,13 @@ public class DriveSpeed {
      */
     public double getRightSpeed(){
         return right;
+    }
+
+
+    public DriveSpeed plus(DriveSpeed other){
+      double l = left + other.left;
+      double r = right + other.right;
+      return new DriveSpeed(GMath.clamp(l, -1, 1), GMath.clamp(r, -1, 1));
     }
 
 }
