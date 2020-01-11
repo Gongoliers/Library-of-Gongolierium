@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj.SpeedController;
 
 import static org.mockito.Mockito.*;
 
-import com.thegongoliers.mockHardware.input.MockSwitch;
+import com.thegongoliers.input.switches.Switch;
 
 /**
  * LimitedElevatorTest
@@ -17,44 +17,44 @@ public class LimitedElevatorTest {
 
     private LimitedElevator elevator;
     private SpeedController speedController;
-    private MockSwitch topLimit, bottomLimit;
+    private Switch topLimit, bottomLimit;
 
     @Before
     public void setup(){
         speedController = mock(SpeedController.class);
-        topLimit = new MockSwitch();
-        bottomLimit = new MockSwitch();
+        topLimit = mock(Switch.class);
+        bottomLimit = mock(Switch.class);
         elevator = new LimitedElevator(speedController, topLimit::isTriggered, bottomLimit::isTriggered);
     }
 
     @Test
     public void canMoveUpUntilLimit(){
-        topLimit.setTriggered(false);
+        when(topLimit.isTriggered()).thenReturn(false);
 
         elevator.up(0.5);
         verify(speedController).set(AdditionalMatchers.eq(0.5, 0.001));
 
-        topLimit.setTriggered(true);
+        when(topLimit.isTriggered()).thenReturn(true);
         elevator.up(1);
         verify(speedController).stopMotor();
     }
 
     @Test
     public void canMoveDownUntilLimit(){
-        bottomLimit.setTriggered(false);
+        when(bottomLimit.isTriggered()).thenReturn(false);
 
         elevator.down(0.5);
         verify(speedController).set(AdditionalMatchers.eq(-0.5, 0.001));
 
-        bottomLimit.setTriggered(true);
+        when(bottomLimit.isTriggered()).thenReturn(true);
         elevator.down(1);
         verify(speedController).stopMotor();
     }
 
     @Test
     public void canMoveDownWhileAtTop(){
-        bottomLimit.setTriggered(false);
-        topLimit.setTriggered(true);
+        when(bottomLimit.isTriggered()).thenReturn(false);
+        when(topLimit.isTriggered()).thenReturn(true);
 
         elevator.down(0.5);
         verify(speedController).set(AdditionalMatchers.eq(-0.5, 0.001));
@@ -62,8 +62,8 @@ public class LimitedElevatorTest {
     
     @Test
     public void canMoveUpWhileAtBottom(){
-        bottomLimit.setTriggered(true);
-        topLimit.setTriggered(false);
+        when(bottomLimit.isTriggered()).thenReturn(true);
+        when(topLimit.isTriggered()).thenReturn(false);
 
         elevator.up(0.5);
         verify(speedController).set(AdditionalMatchers.eq(0.5, 0.001));
@@ -71,8 +71,8 @@ public class LimitedElevatorTest {
 
     @Test
     public void limitsUpInputTo01(){
-        bottomLimit.setTriggered(false);
-        topLimit.setTriggered(false);
+        when(bottomLimit.isTriggered()).thenReturn(false);
+        when(topLimit.isTriggered()).thenReturn(false);
 
         elevator.up(1.2);
         verify(speedController).set(AdditionalMatchers.eq(1, 0.001));
@@ -84,8 +84,8 @@ public class LimitedElevatorTest {
 
     @Test
     public void limitsDownInputTo01(){
-        bottomLimit.setTriggered(false);
-        topLimit.setTriggered(false);
+        when(bottomLimit.isTriggered()).thenReturn(false);
+        when(topLimit.isTriggered()).thenReturn(false);
 
         elevator.down(1.2);
         verify(speedController).set(AdditionalMatchers.eq(-1, 0.001));

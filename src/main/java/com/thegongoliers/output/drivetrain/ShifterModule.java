@@ -9,11 +9,6 @@ import edu.wpi.first.wpilibj.buttons.Trigger;
  */
 public class ShifterModule implements DriveModule {
 
-    /**
-     * The name of the module
-     */
-    public static final String NAME = "Shifter";
-
     private Trigger mDownshiftTrigger, mUpshiftTrigger;
     private double mShiftStopTime;
     private GearShifter mShifter;
@@ -122,11 +117,6 @@ public class ShifterModule implements DriveModule {
     public void setShiftStopTime(double shiftStopTime){
         if (shiftStopTime < 0) throw new IllegalArgumentException("Shift stop time must be non-negative");
         mShiftStopTime = shiftStopTime;
-    }
-
-    @Override
-    public String getName() {
-        return NAME;
     }
 
 }

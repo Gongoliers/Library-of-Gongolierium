@@ -1,4 +1,4 @@
-package com.thegongoliers.mockHardware.output;
+package com.thegongoliers.output.gears;
 
 import com.thegongoliers.output.gears.GearShifter;
 

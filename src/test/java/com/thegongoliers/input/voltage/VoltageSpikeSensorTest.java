@@ -1,52 +1,53 @@
 package com.thegongoliers.input.voltage;
 
-import com.thegongoliers.mockHardware.input.MockVoltageSensor;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class VoltageSpikeSensorTest {
 
     @Test
     public void testIsTriggered() {
-        MockVoltageSensor voltageSensor = new MockVoltageSensor();
+        VoltageSensor voltageSensor = mock(VoltageSensor.class);
         HighVoltageSensor highVoltageSensor = new HighVoltageSensor(voltageSensor, 0);
         VoltageSpikeSensor voltageSpikeSensor = new VoltageSpikeSensor(highVoltageSensor);
 
-        voltageSensor.setVoltage(-1);
+        when(voltageSensor.getVoltage()).thenReturn(-1.0);
         assertFalse(voltageSpikeSensor.isTriggered());
 
-        voltageSensor.setVoltage(1);
+        when(voltageSensor.getVoltage()).thenReturn(1.0);
         assertFalse(voltageSpikeSensor.isTriggered());
 
-        voltageSensor.setVoltage(-1);
+        when(voltageSensor.getVoltage()).thenReturn(-1.0);
         assertTrue(voltageSpikeSensor.isTriggered());
 
-        voltageSensor.setVoltage(-1);
+        when(voltageSensor.getVoltage()).thenReturn(-1.0);
         assertTrue(voltageSpikeSensor.isTriggered());
 
-        voltageSensor.setVoltage(1);
+        when(voltageSensor.getVoltage()).thenReturn(1.0);
         assertFalse(voltageSpikeSensor.isTriggered());
     }
 
     @Test
     public void testReset() {
-        MockVoltageSensor voltageSensor = new MockVoltageSensor();
+        VoltageSensor voltageSensor = mock(VoltageSensor.class);
         HighVoltageSensor highVoltageSensor = new HighVoltageSensor(voltageSensor, 0);
         VoltageSpikeSensor voltageSpikeSensor = new VoltageSpikeSensor(highVoltageSensor);
 
-        voltageSensor.setVoltage(-1);
+        when(voltageSensor.getVoltage()).thenReturn(-1.0);
         assertFalse(voltageSpikeSensor.isTriggered());
 
-        voltageSensor.setVoltage(1);
+        when(voltageSensor.getVoltage()).thenReturn(1.0);
         assertFalse(voltageSpikeSensor.isTriggered());
 
-        voltageSensor.setVoltage(-1);
+        when(voltageSensor.getVoltage()).thenReturn(-1.0);
         assertTrue(voltageSpikeSensor.isTriggered());
 
         voltageSpikeSensor.reset();
 
-        voltageSensor.setVoltage(-1);
+        when(voltageSensor.getVoltage()).thenReturn(-1.0);
         assertFalse(voltageSpikeSensor.isTriggered());
     }
 }

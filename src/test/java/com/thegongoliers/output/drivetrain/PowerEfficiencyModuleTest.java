@@ -5,7 +5,7 @@ import org.junit.Test;
 
 import static org.mockito.Mockito.*;
 
-import com.thegongoliers.mockHardware.input.MockClock;
+import com.thegongoliers.input.time.Clock;
 import com.thegongoliers.output.interfaces.Drivetrain;
 
 /**
@@ -16,13 +16,13 @@ public class PowerEfficiencyModuleTest {
     private Drivetrain drivetrain;
     private ModularDrivetrain modularDrivetrain;
     private PowerEfficiencyModule module;
-    private MockClock clock;
+    private Clock clock;
 
     @Before
     public void setup(){
         drivetrain = mock(Drivetrain.class);
-        clock = new MockClock();
-        clock.setTime(0);
+        clock = mock(Clock.class);
+        when(clock.getTime()).thenReturn(0.0);
         modularDrivetrain = new ModularDrivetrain(drivetrain, clock);
         module = new PowerEfficiencyModule(0.2);
         modularDrivetrain.addModule(module);
@@ -30,30 +30,30 @@ public class PowerEfficiencyModuleTest {
 
     @Test
     public void limitsAccelerationOnUnfixedDT(){
-        clock.setTime(0.01);
+        when(clock.getTime()).thenReturn(0.01);
         modularDrivetrain.tank(0.1, 0.2);
         DrivetrainTestUtils.verifyTank(drivetrain, 0.05, 0.05);
 
-        clock.setTime(0.2);
+        when(clock.getTime()).thenReturn(0.2);
         modularDrivetrain.tank(0.05, 0);
         DrivetrainTestUtils.verifyTank(drivetrain, 0.05, 0);
 
-        clock.setTime(0.21);
+        when(clock.getTime()).thenReturn(0.21);
         modularDrivetrain.tank(-0.05, -0.2);
         DrivetrainTestUtils.verifyTank(drivetrain, 0.0, -0.05);
     }
 
     @Test
     public void limitsAccelerationOnFixedDT(){
-        clock.setTime(0.02);
+        when(clock.getTime()).thenReturn(0.02);
         modularDrivetrain.tank(1, 1);
         DrivetrainTestUtils.verifyTank(drivetrain, 0.1, 0.1);
 
-        clock.setTime(0.04);
+        when(clock.getTime()).thenReturn(0.04);
         modularDrivetrain.tank(-1, -1);
         DrivetrainTestUtils.verifyTank(drivetrain, 0, 0);
 
-        clock.setTime(0.06);
+        when(clock.getTime()).thenReturn(0.06);
         modularDrivetrain.tank(-0.2, 0.3);
         DrivetrainTestUtils.verifyTank(drivetrain, -0.1, 0.1);
     }
@@ -62,7 +62,7 @@ public class PowerEfficiencyModuleTest {
     public void doesNotApplyRateLimitWhileTurningWithTresholdSet(){
         module.setTurnThreshold(0.2);
         
-        clock.setTime(0.02);
+        when(clock.getTime()).thenReturn(0.02);
         modularDrivetrain.tank(1, 1);
         DrivetrainTestUtils.verifyTank(drivetrain, 0.1, 0.1);
 

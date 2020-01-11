@@ -14,10 +14,4 @@ public interface DriveModule {
      */
     DriveSpeed run(DriveSpeed currentSpeed, DriveSpeed desiredSpeed, double deltaTime);
 
-    /**
-     * Get the name of the module
-     * @return the module's name
-     */
-    String getName();
-
 }

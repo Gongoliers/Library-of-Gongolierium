@@ -11,11 +11,6 @@ public class SpeedConstraintModule implements DriveModule {
     private boolean shouldScaleSpeeds;
 
     /**
-     * The name of the module
-     */
-    public static final String NAME = "Speed Constraint";
-
-    /**
      * Default constructor
      * @param maxSpeed The maximum speed
      * @param shouldScaleSpeeds True if the speeds should be scaled to the clamped range, or false otherwise
@@ -55,10 +50,4 @@ public class SpeedConstraintModule implements DriveModule {
     public void setShouldScaleSpeeds(boolean shouldScaleSpeeds) {
         this.shouldScaleSpeeds = shouldScaleSpeeds;
     }
-
-    @Override
-    public String getName() {
-        return NAME;
-    }
-
 }

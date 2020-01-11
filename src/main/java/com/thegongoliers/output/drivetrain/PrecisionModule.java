@@ -7,11 +7,6 @@ import com.thegongoliers.math.GMath;
  */
 public class PrecisionModule implements DriveModule {
 
-    /**
-     * The name of the module
-     */
-    public static final String NAME = "Precision";
-
     private double mStrength;
 
     /**
@@ -42,11 +37,6 @@ public class PrecisionModule implements DriveModule {
 
     private double calculateExponent() {
         return 4 * GMath.clamp01(mStrength);
-    }
-
-    @Override
-    public String getName() {
-        return NAME;
     }
 
 }

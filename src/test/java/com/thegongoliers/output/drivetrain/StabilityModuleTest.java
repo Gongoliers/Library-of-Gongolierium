@@ -1,7 +1,6 @@
 package com.thegongoliers.output.drivetrain;
 
 import com.thegongoliers.input.time.Clock;
-import com.thegongoliers.mockHardware.input.MockClock;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -28,10 +27,10 @@ public class StabilityModuleTest {
         gyro = mock(Gyro.class);
         double kp = 0.01;
 
-        stabilizedDrivetrain = new ModularDrivetrain(drivetrain, new MockClock());
+        stabilizedDrivetrain = new ModularDrivetrain(drivetrain, mock(Clock.class));
 
         stabilityModule = new StabilityModule(gyro, kp, 0);
-        stabilityModule.setClock(new MockClock());
+        stabilityModule.setClock(mock(Clock.class));
         stabilizedDrivetrain.addModule(stabilityModule);
     }
 

@@ -7,11 +7,6 @@ import com.thegongoliers.math.GMath;
  */
 public class PowerEfficiencyModule implements DriveModule {
 
-    /**
-     * The name of the module
-     */
-    public static final String NAME = "Power Efficiency";
-
     private static final double DEFAULT_TURN_THRESHOLD = 2.0;
 
     private double mRampingTime;
@@ -75,10 +70,4 @@ public class PowerEfficiencyModule implements DriveModule {
         double rightSpeed = GMath.rateLimit(maxRate, desiredSpeed.getRightSpeed(), lastSpeed.getRightSpeed());
         return new DriveSpeed(leftSpeed, rightSpeed);
     }
-
-    @Override
-    public String getName() {
-        return NAME;
-    }
-
 }

@@ -7,7 +7,7 @@ import edu.wpi.first.wpilibj.Encoder;
 
 import static org.mockito.Mockito.*;
 
-import com.thegongoliers.mockHardware.input.MockClock;
+import com.thegongoliers.input.time.Clock;
 import com.thegongoliers.output.interfaces.Drivetrain;
 
 /**
@@ -23,7 +23,7 @@ public class TractionControlModuleTest {
     @Before
     public void setup(){
         drivetrain = mock(Drivetrain.class);
-        modularDrivetrain = new ModularDrivetrain(drivetrain, new MockClock());
+        modularDrivetrain = new ModularDrivetrain(drivetrain, mock(Clock.class));
         encoder1 = mock(Encoder.class);
         encoder2 = mock(Encoder.class);
         module = new TractionControlModule(encoder1, encoder2, 0.1, 0.1);

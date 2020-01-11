@@ -4,7 +4,6 @@ import com.thegongoliers.input.current.CurrentSensor;
 import com.thegongoliers.input.current.PDPCurrentSensor;
 import com.thegongoliers.input.voltage.BatteryVoltageSensor;
 import com.thegongoliers.input.voltage.VoltageSensor;
-import com.thegongoliers.math.GMath;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 
 public class PDP {

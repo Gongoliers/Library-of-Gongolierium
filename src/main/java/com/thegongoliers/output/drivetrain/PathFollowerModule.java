@@ -2,13 +2,13 @@ package com.thegongoliers.output.drivetrain;
 
 import java.util.List;
 import java.util.OptionalDouble;
+import java.util.stream.Collectors;
 
 import com.thegongoliers.paths.SimplePath;
 import com.thegongoliers.paths.PathStep;
 import com.thegongoliers.paths.PathStepType;
 
 import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
 
 /**
@@ -16,14 +16,13 @@ import edu.wpi.first.wpilibj.interfaces.Gyro;
  */
 public class PathFollowerModule implements DriveModule {
 
-    /**
-     * The name of the module
-     */
-    public static final String NAME = "Path Follower";
+    private static final double DEFAULT_FORWARD_TOLERANCE = 0.1;
+    private static final double DEFAULT_TURN_TOLERANCE = 0.1;
 
     private Gyro mGyro;
     private List<Encoder> mEncoders;
-    private PIDController mForwardController, mTurnController;
+    private double mForwardStrength, mTurnStrength;
+    private double mForwardTolerance, mTurnTolerance;
     private SimplePath mPath;
 
     private boolean isEnabled;
@@ -32,20 +31,21 @@ public class PathFollowerModule implements DriveModule {
     private int currentStepIdx;
 
 
-    public PathFollowerModule(Gyro gyro, List<Encoder> encoders, PIDController forwardController, PIDController turnController){
+    public PathFollowerModule(Gyro gyro, List<Encoder> encoders, double forwardStrength, double turnStrength){
         super();
-        mGyro = gyro;
-        mEncoders = encoders;
-        mForwardController = forwardController;
-        mTurnController = turnController;
+        setGyro(gyro);
+        setEncoders(encoders);
+        setForwardStrength(forwardStrength);
+        setTurnStrength(turnStrength);
+        setForwardTolerance(DEFAULT_FORWARD_TOLERANCE);
+        setTurnTolerance(DEFAULT_TURN_TOLERANCE);
         mPath = null;
         stopFollowingPath();
     }
 
     @Override
     public DriveSpeed run(DriveSpeed currentSpeed, DriveSpeed desiredSpeed, double deltaTime){
-        if (!isEnabled) return desiredSpeed;
-        if (!hasPathToFollow()) return desiredSpeed;
+        if (!isEnabled || !hasPathToFollow()) return desiredSpeed;
 
         if (hasNotStartedPath()){
             startFollowingPath();
@@ -84,8 +84,39 @@ public class PathFollowerModule implements DriveModule {
         currentStepIdx = 0;
     }
 
+    public void setEncoders(List<Encoder> encoders){
+        if (encoders == null || encoders.isEmpty()) throw new IllegalArgumentException("At least one encoder must be supplied");
+        if (encoders.parallelStream().anyMatch(e -> e == null)) throw new IllegalArgumentException("All encoders must be non-null");
+        mEncoders = encoders.stream().collect(Collectors.toList());
+    }
+
+    public void setGyro(Gyro gyro){
+        if (gyro == null) throw new IllegalArgumentException("Gyro must be non-null");
+        mGyro = gyro;
+    }
+
+    public void setForwardTolerance(double tolerance){
+        if (tolerance < 0) throw new IllegalArgumentException("Tolerance must be non-negative");
+        mForwardTolerance = tolerance;
+    }
+
+    public void setTurnTolerance(double tolerance){
+        if (tolerance < 0) throw new IllegalArgumentException("Tolerance must be non-negative");
+        mTurnTolerance = tolerance;
+    }
+
+    public void setForwardStrength(double strength){
+        if (strength < 0) throw new IllegalArgumentException("Strength must be non-negative");
+        mForwardStrength = strength;
+    }
+
+    public void setTurnStrength(double strength){
+        if (strength < 0) throw new IllegalArgumentException("Strength must be non-negative");
+        mTurnStrength = strength;
+    }
+
     private boolean hasPathToFollow() {
-        return mPath == null;
+        return mPath != null;
     }
 
     private boolean hasNotStartedPath() {
@@ -107,13 +138,13 @@ public class PathFollowerModule implements DriveModule {
 
         if (step.getType() == PathStepType.ROTATION){
             DriveSpeed speed = rotateTowards(step.getValue());
-            if (isDoneRotating()){
+            if (isDoneRotating(step.getValue())){
                 return getToNextStep();
             }
             return speed;
         } else {
             DriveSpeed speed = driveTowards(step.getValue());
-            if (isDoneDriving()){
+            if (isDoneDriving(step.getValue())){
                 return getToNextStep();
             }
             return speed;
@@ -131,21 +162,23 @@ public class PathFollowerModule implements DriveModule {
     }
 
     private DriveSpeed rotateTowards(double angle){
-        double turnSpeed = mTurnController.calculate(mGyro.getAngle(), angle);
+        var error = angle - mGyro.getAngle();
+        var turnSpeed = error * mTurnStrength;
         return DriveSpeed.fromArcade(0, turnSpeed);
     }
 
     private DriveSpeed driveTowards(double distance){
-        double speed = mForwardController.calculate(getDistance(), distance);
+        var error = distance - getDistance();
+        var speed = error * mForwardStrength;
         return new DriveSpeed(speed, speed);
     }
 
-    private boolean isDoneRotating(){
-        return mTurnController.atSetpoint();
+    private boolean isDoneRotating(double angle){
+        return Math.abs(angle - mGyro.getAngle()) <= mTurnTolerance;
     }
 
-    private boolean isDoneDriving(){
-        return mForwardController.atSetpoint();  
+    private boolean isDoneDriving(double distance){
+        return Math.abs(distance - getDistance()) <= mForwardTolerance;
     }
 
     private double getDistance(){
@@ -156,10 +189,5 @@ public class PathFollowerModule implements DriveModule {
     private void zeroSensors(){
         mEncoders.forEach(Encoder::reset);
         mGyro.reset();
-    }
-
-    @Override
-    public String getName() {
-        return NAME;
     }
 }

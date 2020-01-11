@@ -12,11 +12,6 @@ public class StabilityModule implements DriveModule {
 
     private static final double DEFAULT_TURN_THRESHOLD = 0.01;
 
-    /**
-     * The name of the module
-     */
-    public static final String NAME = "Stability";
-
     private Gyro mGyro;
     private double mStrength;
     private double mSettlingTime;
@@ -112,10 +107,4 @@ public class StabilityModule implements DriveModule {
     private double calculateTurnCorrection() {
         return mStrength * (lastHeading - mGyro.getAngle());
     }
-
-    @Override
-    public String getName() {
-        return NAME;
-    }
-
 }

@@ -1,9 +1,6 @@
 package com.thegongoliers.paths;
 
-import java.util.List;
-
 import com.thegongoliers.GongolieriumException;
-import com.thegongoliers.output.drivetrain.DriveModule;
 import com.thegongoliers.output.drivetrain.ModularDrivetrain;
 import com.thegongoliers.output.drivetrain.PathFollowerModule;
 
@@ -21,16 +18,9 @@ public class FollowPathCommand extends Command {
         this.drivetrain = drivetrain;
         this.path = path;
 
-        List<DriveModule> modules = drivetrain.getInstalledModules();
-        for (DriveModule module : modules) {
-            if (module instanceof PathFollowerModule){
-                this.module = (PathFollowerModule) module;
-                break;
-            }
-        }
-
+        PathFollowerModule module = drivetrain.getInstalledModule(PathFollowerModule.class);
         if (module == null){
-            throw new GongolieriumException("The drivetrain does not have a path following module installed!");
+            throw new GongolieriumException("The drivetrain does not have a path following module installed.");
         }
     }
 

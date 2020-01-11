@@ -2,7 +2,6 @@ package com.thegongoliers.output.drivetrain;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.AdditionalMatchers;
 import org.mockito.InOrder;
 import org.mockito.Mockito;
 
@@ -10,9 +9,9 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 
 import com.thegongoliers.hardware.Hardware;
-import com.thegongoliers.mockHardware.input.MockClock;
-import com.thegongoliers.mockHardware.input.MockSwitch;
-import com.thegongoliers.mockHardware.output.MockGearShifter;
+import com.thegongoliers.input.switches.Switch;
+import com.thegongoliers.input.time.Clock;
+import com.thegongoliers.output.gears.MockGearShifter;
 import com.thegongoliers.output.interfaces.Drivetrain;
 
 /**
@@ -23,19 +22,19 @@ public class ShifterModuleTest {
     private Drivetrain drivetrain;
     private ModularDrivetrain modularDrivetrain;
     private ShifterModule module;
-    private MockClock clock;
+    private Clock clock;
     private MockGearShifter shifter;
-    private MockSwitch downshift, upshift;
+    private Switch downshift, upshift;
     private InOrder inOrder;
 
     @Before
     public void setup(){
         drivetrain = mock(Drivetrain.class);
-        clock = new MockClock();
-        clock.setTime(0);
+        clock = mock(Clock.class);
+        when(clock.getTime()).thenReturn(0.0);
         shifter = new MockGearShifter(3);
-        upshift = new MockSwitch();
-        downshift = new MockSwitch();
+        upshift = mock(Switch.class);
+        downshift = mock(Switch.class);
         modularDrivetrain = new ModularDrivetrain(drivetrain, clock);
         module = new ShifterModule(shifter, Hardware.switchToTrigger(downshift), Hardware.switchToTrigger(upshift), 0.0);
         modularDrivetrain.addModule(module);
@@ -45,22 +44,22 @@ public class ShifterModuleTest {
     @Test
     public void togglingUpshiftWithStopTimeWorks(){
         module.setShiftStopTime(0.1);
-        clock.setTime(0);
+        when(clock.getTime()).thenReturn(0.0);
         upshift();
         assertGear(1);
         DrivetrainTestUtils.inorderVerifyTank(inOrder, drivetrain, 0, 0);
 
-        clock.setTime(0.05);
+        when(clock.getTime()).thenReturn(0.05);
         nothing();
         assertGear(1);
         DrivetrainTestUtils.inorderVerifyTank(inOrder, drivetrain, 0, 0);
 
-        clock.setTime(0.08);
+        when(clock.getTime()).thenReturn(0.08);
         upshift();
         assertGear(1);
         DrivetrainTestUtils.inorderVerifyTank(inOrder, drivetrain, 0, 0);
 
-        clock.setTime(0.1);
+        when(clock.getTime()).thenReturn(0.1);
         upshift();
         assertGear(2);
         DrivetrainTestUtils.inorderVerifyTank(inOrder, drivetrain, 1, 1);
@@ -69,17 +68,17 @@ public class ShifterModuleTest {
     @Test
     public void upshiftWorksWithTime(){
         module.setShiftStopTime(0.1);
-        clock.setTime(0);
+        when(clock.getTime()).thenReturn(0.0);
         upshift();
         assertGear(1);
         DrivetrainTestUtils.inorderVerifyTank(inOrder, drivetrain, 0, 0);
 
-        clock.setTime(0.05);
+        when(clock.getTime()).thenReturn(0.05);
         upshift();
         assertGear(1);
         DrivetrainTestUtils.inorderVerifyTank(inOrder, drivetrain, 0, 0);
 
-        clock.setTime(0.1);
+        when(clock.getTime()).thenReturn(0.1);
         upshift();
         assertGear(2);
         DrivetrainTestUtils.inorderVerifyTank(inOrder, drivetrain, 1, 1);
@@ -88,18 +87,18 @@ public class ShifterModuleTest {
     @Test
     public void canChangeFromUpshiftToDownshift(){
         module.setShiftStopTime(0.1);
-        clock.setTime(0);
+        when(clock.getTime()).thenReturn(0.0);
         shifter.setGear(2);
         downshift();
         assertGear(2);
         DrivetrainTestUtils.inorderVerifyTank(inOrder, drivetrain, 0, 0);
 
-        clock.setTime(0.05);
+        when(clock.getTime()).thenReturn(0.05);
         upshift();
         assertGear(2);
         DrivetrainTestUtils.inorderVerifyTank(inOrder, drivetrain, 0, 0);
 
-        clock.setTime(0.1);
+        when(clock.getTime()).thenReturn(0.1);
         upshift();
         assertGear(3);
         DrivetrainTestUtils.inorderVerifyTank(inOrder, drivetrain, 1, 1);
@@ -108,18 +107,18 @@ public class ShifterModuleTest {
     @Test
     public void downshiftWorksWithTime(){
         module.setShiftStopTime(0.1);
-        clock.setTime(0);
+        when(clock.getTime()).thenReturn(0.0);
         shifter.setGear(3);
         downshift();
         assertGear(3);
         DrivetrainTestUtils.inorderVerifyTank(inOrder, drivetrain, 0, 0);
 
-        clock.setTime(0.05);
+        when(clock.getTime()).thenReturn(0.05);
         downshift();
         assertGear(3);
         DrivetrainTestUtils.inorderVerifyTank(inOrder, drivetrain, 0, 0);
 
-        clock.setTime(0.1);
+        when(clock.getTime()).thenReturn(0.1);
         downshift();
         assertGear(2);
         DrivetrainTestUtils.inorderVerifyTank(inOrder, drivetrain, 1, 1);
@@ -201,20 +200,20 @@ public class ShifterModuleTest {
     }
 
     private void nothing(){
-        downshift.setTriggered(false);
-        upshift.setTriggered(false);
+        when(downshift.isTriggered()).thenReturn(false);
+        when(upshift.isTriggered()).thenReturn(false);
         modularDrivetrain.tank(1, 1);
     }
 
     private void downshift(){
-        downshift.setTriggered(true);
-        upshift.setTriggered(false);
+        when(downshift.isTriggered()).thenReturn(true);
+        when(upshift.isTriggered()).thenReturn(false);
         modularDrivetrain.tank(1, 1);
     }
 
     private void upshift(){
-        downshift.setTriggered(false);
-        upshift.setTriggered(true);
+        when(downshift.isTriggered()).thenReturn(false);
+        when(upshift.isTriggered()).thenReturn(true);
         modularDrivetrain.tank(1, 1);
     }
 

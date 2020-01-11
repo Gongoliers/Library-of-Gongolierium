@@ -7,7 +7,7 @@ import org.mockito.AdditionalMatchers;
 
 import static org.mockito.Mockito.*;
 
-import com.thegongoliers.mockHardware.input.MockClock;
+import com.thegongoliers.input.time.Clock;
 import com.thegongoliers.output.interfaces.Drivetrain;
 
 /**
@@ -22,7 +22,7 @@ public class SpeedConstraintModuleTest {
     @Before
     public void setup(){
         drivetrain = mock(Drivetrain.class);
-        modularDrivetrain = new ModularDrivetrain(drivetrain, new MockClock());
+        modularDrivetrain = new ModularDrivetrain(drivetrain, mock(Clock.class));
         module = new SpeedConstraintModule(0.8, false);
         modularDrivetrain.addModule(module);
     }

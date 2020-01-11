@@ -10,11 +10,6 @@ public class TractionControlModule implements DriveModule {
 
     private static final double DEFAULT_TURNING_THRESHOLD = 0;
 
-    /**
-     * The name of the module
-     */
-    public static final String NAME = "Traction Control";
-
     private Encoder mLeftEncoder, mRightEncoder;
     private double mStrength;
     private double mSlipThreshold;
@@ -102,10 +97,5 @@ public class TractionControlModule implements DriveModule {
         } else {
             return Math.max(current - delta, 0);
         }
-    }
-
-    @Override
-    public String getName() {
-        return NAME;
     }
 }

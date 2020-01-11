@@ -8,11 +8,6 @@ import edu.wpi.first.wpilibj.buttons.Trigger;
  */
 public class AnchorModule implements DriveModule {
 
-    /**
-     * The name of the module
-     */
-    public static final String NAME = "Anchor";
-
     private Encoder mLeftEncoder, mRightEncoder;
     private double mStrength;
     private Trigger mTrigger;
@@ -60,11 +55,6 @@ public class AnchorModule implements DriveModule {
     private void updateLastPosition() {
         lastLeftDistance = mLeftEncoder.getDistance();
         lastRightDistance = mRightEncoder.getDistance();
-    }
-
-    @Override
-    public String getName() {
-        return NAME;
     }
 
     public void setLeftEncoder(Encoder leftEncoder) {
