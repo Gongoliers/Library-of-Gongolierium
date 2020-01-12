@@ -3,20 +3,11 @@ package com.thegongoliers.output.drivetrain;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.AdditionalMatchers;
-
 import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.buttons.Trigger;
-
 import static org.mockito.Mockito.*;
-
-import com.thegongoliers.hardware.Hardware;
-import com.thegongoliers.input.switches.Switch;
 import com.thegongoliers.input.time.Clock;
 import com.thegongoliers.output.interfaces.Drivetrain;
 
-/**
- * AnchorModuleTest
- */
 public class AnchorModuleTest {
 
     private Drivetrain drivetrain;
