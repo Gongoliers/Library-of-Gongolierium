@@ -21,10 +21,8 @@ public class AnchorModuleTest {
 
     private Drivetrain drivetrain;
     private ModularDrivetrain modularDrivetrain;
-    private DriveModule module;
+    private AnchorModule module;
     private Encoder encoder1, encoder2;
-
-    private Switch on;
 
     @Before
     public void setup(){
@@ -32,16 +30,12 @@ public class AnchorModuleTest {
         modularDrivetrain = new ModularDrivetrain(drivetrain, mock(Clock.class));
         encoder1 = mock(Encoder.class);
         encoder2 = mock(Encoder.class);
-        on = mock(Switch.class);
-        Trigger trigger = Hardware.switchToTrigger(on);
-        module = new AnchorModule(encoder1, encoder2, 0.1, trigger);
+        module = new AnchorModule(encoder1, encoder2, 0.1);
         modularDrivetrain.addModule(module);
     }
 
     @Test
     public void doesNotFortifyWhileTriggerIsOff(){
-        when(on.isTriggered()).thenReturn(false);
-
         when(encoder1.getDistance()).thenReturn(0.0);
         when(encoder2.getDistance()).thenReturn(0.0);
         modularDrivetrain.tank(1, 1);
@@ -55,7 +49,7 @@ public class AnchorModuleTest {
 
     @Test
     public void fortifyWhileTriggerIsOn(){
-        when(on.isTriggered()).thenReturn(true);
+        module.holdPosition();
 
         when(encoder1.getDistance()).thenReturn(0.0);
         when(encoder2.getDistance()).thenReturn(0.0);

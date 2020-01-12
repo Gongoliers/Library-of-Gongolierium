@@ -1,7 +1,6 @@
 package com.thegongoliers.output.drivetrain;
 
 import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.buttons.Trigger;
 
 /**
  * A drivetrain module which will lock the drivetrain in place while a trigger condition is met
@@ -10,7 +9,7 @@ public class AnchorModule implements DriveModule {
 
     private Encoder mLeftEncoder, mRightEncoder;
     private double mStrength;
-    private Trigger mTrigger;
+    private boolean mIsEnabled;
 
     private double lastLeftDistance, lastRightDistance;
 
@@ -19,14 +18,13 @@ public class AnchorModule implements DriveModule {
      * @param leftEncoder the left encoder
      * @param rightEncoder the right encoder
      * @param strength the fortify strength (higher values may become unstable, small values recommended. Values must be >= 0)
-     * @param trigger the trigger which will lock the drivetrain in place
      */
-    public AnchorModule(Encoder leftEncoder, Encoder rightEncoder, double strength, Trigger trigger){
+    public AnchorModule(Encoder leftEncoder, Encoder rightEncoder, double strength){
         super();
         setLeftEncoder(leftEncoder);
         setRightEncoder(rightEncoder);
-        setTrigger(trigger);
         setStrength(strength);
+        mIsEnabled = false;
 
         updateLastPosition();
     }
@@ -41,6 +39,14 @@ public class AnchorModule implements DriveModule {
         return desiredSpeed;
     }
 
+    public void holdPosition(){
+        mIsEnabled = true;
+    }
+
+    public void stopHoldingPosition(){
+        mIsEnabled = false;
+    }
+
     private DriveSpeed anchor(){
         double left = mStrength * (lastLeftDistance - mLeftEncoder.getDistance());
         double right = mStrength * (lastRightDistance - mRightEncoder.getDistance());
@@ -49,7 +55,7 @@ public class AnchorModule implements DriveModule {
     }
 
     private boolean isAnchoring() {
-        return mTrigger.get();
+        return mIsEnabled;
     }
 
     private void updateLastPosition() {
@@ -70,10 +76,5 @@ public class AnchorModule implements DriveModule {
     public void setStrength(double strength) {
         if (strength < 0) throw new IllegalArgumentException("Strength must be non-negative");
         mStrength = strength;
-    }
-
-    public void setTrigger(Trigger trigger) {
-        if (trigger == null) throw new IllegalArgumentException("Trigger must be non-null");
-        mTrigger = trigger;
     }
 }
