@@ -6,7 +6,7 @@ import edu.wpi.first.wpilibj.RobotController;
  * A voltage sensor which monitors the voltage of the battery.
  *
  */
-public class BatteryVoltageSensor implements VoltageSensor {
+public class BatteryVoltageSensor implements IVoltageSensor {
 
 
 	/**

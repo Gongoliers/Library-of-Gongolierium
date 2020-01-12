@@ -2,10 +2,10 @@ package com.thegongoliers.input.voltage;
 
 import edu.wpi.first.wpilibj.SpeedController;
 
-public class MotorVoltageSensor implements VoltageSensor {
+public class MotorVoltageSensor implements IVoltageSensor {
 
     private final SpeedController motor;
-    private final VoltageSensor batteryVoltage;
+    private final IVoltageSensor batteryVoltage;
 
     public MotorVoltageSensor(SpeedController motor) {
         this.motor = motor;

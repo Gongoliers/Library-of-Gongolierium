@@ -2,7 +2,7 @@ package com.thegongoliers.hardware;
 
 import com.thegongoliers.input.switches.ResettableSwitch;
 import com.thegongoliers.input.switches.Switch;
-import com.thegongoliers.input.voltage.VoltageSensor;
+import com.thegongoliers.input.voltage.IVoltageSensor;
 import com.thegongoliers.math.GMath;
 import com.thegongoliers.output.interfaces.Drivetrain;
 
@@ -233,7 +233,7 @@ public class Hardware {
 	 * @param batteryVoltageSensor the battery voltage sensor
 	 * @return the PWM signal [-1, 1] which delivers the desired voltage
 	 */
-    public static double voltageToPWM(double voltage, VoltageSensor batteryVoltageSensor){
+    public static double voltageToPWM(double voltage, IVoltageSensor batteryVoltageSensor){
     	if (batteryVoltageSensor == null || batteryVoltageSensor.getVoltage() == 0){
     		return 0;
 		}

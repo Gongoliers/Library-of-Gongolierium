@@ -10,7 +10,7 @@ public class HighVoltageSensorTest {
 
     @Test
     public void testIsTriggered() {
-        VoltageSensor voltageSensor = mock(VoltageSensor.class);
+        IVoltageSensor voltageSensor = mock(IVoltageSensor.class);
         HighVoltageSensor highVoltageSensor = new HighVoltageSensor(voltageSensor, 0);
 
         when(voltageSensor.getVoltage()).thenReturn(0.0);

@@ -10,7 +10,7 @@ public class LowVoltageSensorTest {
 
     @Test
     public void testIsTriggered(){
-        VoltageSensor voltageSensor = mock(VoltageSensor.class);
+        IVoltageSensor voltageSensor = mock(IVoltageSensor.class);
         LowVoltageSensor lowVoltageSensor = new LowVoltageSensor(voltageSensor, 0);
 
         when(voltageSensor.getVoltage()).thenReturn(0.0);
