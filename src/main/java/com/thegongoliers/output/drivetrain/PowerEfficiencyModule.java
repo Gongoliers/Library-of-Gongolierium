@@ -5,49 +5,69 @@ import com.thegongoliers.math.GMath;
 /**
  * A drivetrain module which will force the drivetrain to accelerate slower. 
  */
-public class PowerEfficiencyModule extends BaseDriveModule {
+public class PowerEfficiencyModule implements DriveModule {
 
-    /**
-     * The ramping strength from 0 to 1 (0 provides no constraints, 1 prevents drivetrain from accelerating)
-     * Type: double
-     */
-    public static final String VALUE_STRENGTH = "strength";
+    private static final double DEFAULT_TURN_THRESHOLD = 2.0;
 
-    /**
-     * The name of the module
-     */
-    public static final String NAME = "Power Efficiency";
+    private double mRampingTime;
+    private double mTurnThreshold;
 
     /**
      * Default constructor
-     * @param strength the ramping strength from 0 to 1 (represents time in seconds from 0 to full speed)
+     * @param secondsToReachFullSpeed the ramping time in seconds from 0 to full speed
+     * @param turnThreshold the maximum difference between the two wheel speeds to run the power efficiency module on. Defaults to 2.
      */
-    public PowerEfficiencyModule(double strength){
+    public PowerEfficiencyModule(double secondsToReachFullSpeed, double turnThreshold){
         super();
-        values.put(VALUE_STRENGTH, strength);
+        setRampingTime(secondsToReachFullSpeed);
+        setTurnThreshold(turnThreshold);
+    }
+
+    /**
+     * Default constructor
+     * @param secondsToReachFullSpeed the ramping time in seconds from 0 to full speed
+     */
+    public PowerEfficiencyModule(double secondsToReachFullSpeed){
+        this(secondsToReachFullSpeed, DEFAULT_TURN_THRESHOLD);
     }
 
     @Override
     public DriveSpeed run(DriveSpeed currentSpeed, DriveSpeed desiredSpeed, double deltaTime) {
-        double forwardStrength = (double) getValue(VALUE_STRENGTH);
+        if (shouldApplyRateLimit(desiredSpeed)){
+            return desiredSpeed;
+        }
 
-        double forwardRate = forwardStrength == 0 ? 1 : deltaTime / forwardStrength;
+        double maximumRate = getMaxRate(deltaTime);
+        return applyRateLimit(currentSpeed, desiredSpeed, maximumRate);
+    }
 
-        double lastLeft = currentSpeed.getLeftSpeed();
-        double lastRight = currentSpeed.getRightSpeed();
+    /**
+     * @param secondsToReachFullSpeed the ramping time in seconds from 0 to full speed
+     */
+    public void setRampingTime(double secondsToReachFullSpeed){
+        if (secondsToReachFullSpeed < 0) throw new IllegalArgumentException("Seconds to reach full speed must be non-negative");
+        mRampingTime = secondsToReachFullSpeed;
+    }
 
-        double leftSpeed = desiredSpeed.getLeftSpeed();
-        double rightSpeed = desiredSpeed.getRightSpeed();
+    /**
+     * @param turnThreshold the maximum difference between the two wheel speeds to run the power efficiency module on. Defaults to 2.
+     */
+    public void setTurnThreshold(double turnThreshold){
+        if (turnThreshold < 0) throw new IllegalArgumentException("Turn threshold must be non-negative");
+        mTurnThreshold = turnThreshold;
+    }
 
-        leftSpeed = GMath.rateLimit(forwardRate, leftSpeed, lastLeft);
-        rightSpeed = GMath.rateLimit(forwardRate, rightSpeed, lastRight);
+    private boolean shouldApplyRateLimit(DriveSpeed speed) {
+        return Math.abs(speed.getLeftSpeed() - speed.getRightSpeed()) >= mTurnThreshold;
+    }
 
+    private double getMaxRate(double deltaTime) {
+        return mRampingTime == 0 ? 1 : deltaTime / mRampingTime;
+    }
+
+    private DriveSpeed applyRateLimit(DriveSpeed lastSpeed, DriveSpeed desiredSpeed, double maxRate){
+        double leftSpeed = GMath.rateLimit(maxRate, desiredSpeed.getLeftSpeed(), lastSpeed.getLeftSpeed());
+        double rightSpeed = GMath.rateLimit(maxRate, desiredSpeed.getRightSpeed(), lastSpeed.getRightSpeed());
         return new DriveSpeed(leftSpeed, rightSpeed);
     }
-
-    @Override
-    public String getName() {
-        return NAME;
-    }
-
 }

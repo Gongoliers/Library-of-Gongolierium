@@ -19,6 +19,13 @@ class DrivetrainTestUtils {
         verify(drivetrain).tank(AdditionalMatchers.eq(left, 0.001), AdditionalMatchers.eq(right, 0.001));
     }
 
+    public static void inorderVerifyArcade(InOrder inorder, Drivetrain drivetrain, double speed, double turn){
+        DriveSpeed tank = DriveSpeed.fromArcade(speed, turn);
+        double left = tank.getLeftSpeed();
+        double right = tank.getRightSpeed();
+        inorder.verify(drivetrain).tank(AdditionalMatchers.eq(left, 0.001), AdditionalMatchers.eq(right, 0.001));
+    }
+
     public static void inorderVerifyTank(InOrder inorder, Drivetrain drivetrain, double left, double right){
         inorder.verify(drivetrain).tank(AdditionalMatchers.eq(left, 0.001), AdditionalMatchers.eq(right, 0.001));
     }

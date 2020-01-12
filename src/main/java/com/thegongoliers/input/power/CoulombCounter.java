@@ -16,7 +16,7 @@ public class CoulombCounter {
     private double lastReading;
     private double accumulatedReading;
 
-    private static final int SECONDS_TO_HOURS = 3600;
+    private static final double SECONDS_TO_HOURS = 1 / 3600.0;
 
     /**
      * Default constructor

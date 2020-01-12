@@ -1,35 +1,36 @@
 package com.thegongoliers.input.switches;
 
-import com.thegongoliers.mockHardware.input.MockSwitch;
 import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class SwitchTest {
 
-    private MockSwitch switch1, switch2;
+    private Switch switch1, switch2;
 
     @Before
     public void setup(){
-        switch1 = new MockSwitch();
-        switch2 = new MockSwitch();
+        switch1 = mock(Switch.class);
+        switch2 = mock(Switch.class);
 
-        switch1.setTriggered(false);
-        switch2.setTriggered(false);
+        when(switch1.isTriggered()).thenReturn(false);
+        when(switch2.isTriggered()).thenReturn(false);
     }
 
     @Test
     public void testInvert(){
-        Switch inverted = switch1.invert();
+        Switch inverted = Switch.invert(switch1);
 
         assertTrue(inverted.isTriggered());
 
-        switch1.setTriggered(true);
+        when(switch1.isTriggered()).thenReturn(true);
 
         assertFalse(inverted.isTriggered());
 
-        switch1.setTriggered(false);
+        when(switch1.isTriggered()).thenReturn(false);
 
         assertTrue(inverted.isTriggered());
     }
@@ -42,17 +43,17 @@ public class SwitchTest {
         assertFalse(and.isTriggered());
 
         // T & F
-        switch1.setTriggered(true);
+        when(switch1.isTriggered()).thenReturn(true);
         assertFalse(and.isTriggered());
 
         // F & T
-        switch1.setTriggered(false);
-        switch2.setTriggered(true);
+        when(switch1.isTriggered()).thenReturn(false);
+        when(switch2.isTriggered()).thenReturn(true);
         assertFalse(and.isTriggered());
 
         // T & T
-        switch1.setTriggered(true);
-        switch2.setTriggered(true);
+        when(switch1.isTriggered()).thenReturn(true);
+        when(switch2.isTriggered()).thenReturn(true);
         assertTrue(and.isTriggered());
     }
 
@@ -64,17 +65,17 @@ public class SwitchTest {
         assertFalse(or.isTriggered());
 
         // T & F
-        switch1.setTriggered(true);
+        when(switch1.isTriggered()).thenReturn(true);
         assertTrue(or.isTriggered());
 
         // F & T
-        switch1.setTriggered(false);
-        switch2.setTriggered(true);
+        when(switch1.isTriggered()).thenReturn(false);
+        when(switch2.isTriggered()).thenReturn(true);
         assertTrue(or.isTriggered());
 
         // T & T
-        switch1.setTriggered(true);
-        switch2.setTriggered(true);
+        when(switch1.isTriggered()).thenReturn(true);
+        when(switch2.isTriggered()).thenReturn(true);
         assertTrue(or.isTriggered());
     }
 
@@ -86,17 +87,17 @@ public class SwitchTest {
         assertFalse(xor.isTriggered());
 
         // T & F
-        switch1.setTriggered(true);
+        when(switch1.isTriggered()).thenReturn(true);
         assertTrue(xor.isTriggered());
 
         // F & T
-        switch1.setTriggered(false);
-        switch2.setTriggered(true);
+        when(switch1.isTriggered()).thenReturn(false);
+        when(switch2.isTriggered()).thenReturn(true);
         assertTrue(xor.isTriggered());
 
         // T & T
-        switch1.setTriggered(true);
-        switch2.setTriggered(true);
+        when(switch1.isTriggered()).thenReturn(true);
+        when(switch2.isTriggered()).thenReturn(true);
         assertFalse(xor.isTriggered());
     }
 

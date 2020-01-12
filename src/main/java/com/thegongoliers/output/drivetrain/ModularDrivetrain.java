@@ -113,5 +113,20 @@ public class ModularDrivetrain implements Drivetrain {
         return modules;
     }
 
+    /**
+     * Gets the first installed module of the given type
+     * @param cls the class of the module to find
+     * @return the first module of the given type, or null if it was not found
+     */
+    @SuppressWarnings("unchecked")
+    public <T> T getInstalledModule(Class<T> cls){
+        for (DriveModule module : modules){
+            if (module.getClass() == cls){
+                return (T) module;
+            }
+        }
+        return null;
+    }
+
     
 }

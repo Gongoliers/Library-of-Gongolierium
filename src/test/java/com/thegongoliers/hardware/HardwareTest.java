@@ -2,9 +2,6 @@ package com.thegongoliers.hardware;
 
 import com.thegongoliers.input.switches.ResettableSwitch;
 import com.thegongoliers.input.switches.Switch;
-import com.thegongoliers.mockHardware.input.MockGyro;
-import com.thegongoliers.mockHardware.input.MockPotentiometer;
-import com.thegongoliers.mockHardware.input.MockSwitch;
 import com.thegongoliers.output.interfaces.Drivetrain;
 import edu.wpi.first.wpilibj.buttons.Button;
 import edu.wpi.first.wpilibj.buttons.Trigger;
@@ -21,51 +18,51 @@ public class HardwareTest {
 
     @Test
     public void testMakeTrigger(){
-        MockSwitch s = new MockSwitch();
+        Switch s = mock(Switch.class);
         Trigger t = Hardware.makeTrigger(s::isTriggered);
 
         assertNotNull(t);
 
-        s.setTriggered(false);
+        when(s.isTriggered()).thenReturn(false);
         assertFalse(t.get());
 
-        s.setTriggered(true);
+        when(s.isTriggered()).thenReturn(true);
         assertTrue(t.get());
     }
 
     @Test
     public void testSwitchToTrigger(){
-        MockSwitch s = new MockSwitch();
+        Switch s = mock(Switch.class);
         Trigger t = Hardware.switchToTrigger(s);
 
         assertNotNull(t);
 
-        s.setTriggered(false);
+        when(s.isTriggered()).thenReturn(false);
         assertFalse(t.get());
 
-        s.setTriggered(true);
+        when(s.isTriggered()).thenReturn(true);
         assertTrue(t.get());
     }
 
     @Test
     public void testMakeButton(){
-        MockSwitch s = new MockSwitch();
+        Switch s = mock(Switch.class);
         Button t = Hardware.makeButton(s::isTriggered);
 
         assertNotNull(t);
 
-        s.setTriggered(false);
+        when(s.isTriggered()).thenReturn(false);
         assertFalse(t.get());
 
-        s.setTriggered(true);
+        when(s.isTriggered()).thenReturn(true);
         assertTrue(t.get());
     }
 
     @Test
     public void testCombineButtons(){
-        MockSwitch s1 = new MockSwitch();
-        MockSwitch s2 = new MockSwitch();
-        MockSwitch s3 = new MockSwitch();
+        Switch s1 = mock(Switch.class);
+        Switch s2 = mock(Switch.class);
+        Switch s3 = mock(Switch.class);
 
         Button button1 = Hardware.makeButton(s1::isTriggered);
         Button button2 = Hardware.makeButton(s2::isTriggered);
@@ -74,30 +71,30 @@ public class HardwareTest {
         Button combined = Hardware.combineButtons(button1, button2, button3);
 
         // When all buttons are released, it should be false
-        s1.setTriggered(false);
-        s2.setTriggered(false);
-        s3.setTriggered(false);
+        when(s1.isTriggered()).thenReturn(false);
+        when(s2.isTriggered()).thenReturn(false);
+        when(s3.isTriggered()).thenReturn(false);
 
         assertFalse(combined.get());
 
         // When only one button is pressed, it should be false
-        s1.setTriggered(true);
-        s2.setTriggered(false);
-        s3.setTriggered(false);
+        when(s1.isTriggered()).thenReturn(true);
+        when(s2.isTriggered()).thenReturn(false);
+        when(s3.isTriggered()).thenReturn(false);
 
         assertFalse(combined.get());
 
         // When only two buttons are pressed, it should be false
-        s1.setTriggered(false);
-        s2.setTriggered(true);
-        s3.setTriggered(true);
+        when(s1.isTriggered()).thenReturn(false);
+        when(s2.isTriggered()).thenReturn(true);
+        when(s3.isTriggered()).thenReturn(true);
 
         assertFalse(combined.get());
 
         // When all buttons are pressed, it should be true
-        s1.setTriggered(true);
-        s2.setTriggered(true);
-        s3.setTriggered(true);
+        when(s1.isTriggered()).thenReturn(true);
+        when(s2.isTriggered()).thenReturn(true);
+        when(s3.isTriggered()).thenReturn(true);
 
         assertTrue(combined.get());
 
@@ -105,48 +102,48 @@ public class HardwareTest {
 
     @Test
     public void testTriggerToButton(){
-        MockSwitch s = new MockSwitch();
+        Switch s = mock(Switch.class);
         Trigger t = Hardware.switchToTrigger(s);
         Button b = Hardware.triggerToButton(t);
 
         assertNotNull(t);
 
-        s.setTriggered(false);
+        when(s.isTriggered()).thenReturn(false);
         assertFalse(b.get());
 
-        s.setTriggered(true);
+        when(s.isTriggered()).thenReturn(true);
         assertTrue(b.get());
     }
 
     @Test
     public void testMakeSwitch(){
-        MockSwitch mockSwitch = new MockSwitch();
+        Switch mockSwitch = mock(Switch.class);
 
         Switch s = Hardware.makeSwitch(mockSwitch::isTriggered);
 
         assertNotNull(s);
 
-        mockSwitch.setTriggered(false);
+        when(mockSwitch.isTriggered()).thenReturn(false);
         assertFalse(s.isTriggered());
 
-        mockSwitch.setTriggered(true);
+        when(mockSwitch.isTriggered()).thenReturn(true);
         assertTrue(s.isTriggered());
     }
 
     @Test
     public void testMakeResettableSwitchFromSwitch(){
-        MockSwitch mockSwitch = new MockSwitch();
+        Switch mockSwitch = mock(Switch.class);
 
         ResettableSwitch s = Hardware.makeResettableSwitch(mockSwitch);
         assertNotNull(s);
 
-        mockSwitch.setTriggered(false);
+        when(mockSwitch.isTriggered()).thenReturn(false);
         assertFalse(s.isTriggered());
 
-        mockSwitch.setTriggered(true);
+        when(mockSwitch.isTriggered()).thenReturn(true);
         assertTrue(s.isTriggered());
 
-        mockSwitch.setTriggered(false);
+        when(mockSwitch.isTriggered()).thenReturn(false);
         assertTrue(s.isTriggered());
 
         s.reset();
@@ -155,31 +152,28 @@ public class HardwareTest {
 
     @Test
     public void testInvertGyro(){
-        MockGyro gyro = new MockGyro();
+        Gyro gyro = mock(Gyro.class);
         Gyro g = Hardware.invertGyro(gyro);
 
         assertNotNull(g);
 
-        gyro.setAngle(10);
+        when(gyro.getAngle()).thenReturn(10.0);
         assertEquals(-10, g.getAngle(), 0.0001);
 
-        gyro.setAngle(-20);
+        when(gyro.getAngle()).thenReturn(-20.0);
         assertEquals(20, g.getAngle(), 0.0001);
 
-        gyro.setRate(0.5);
+        when(gyro.getRate()).thenReturn(0.5);
         assertEquals(-0.5, g.getRate(), 0.0001);
 
-        gyro.setRate(-0.5);
+        when(gyro.getRate()).thenReturn(-0.5);
         assertEquals(0.5, g.getRate(), 0.0001);
-
-        gyro.reset();
-        assertEquals(0, g.getAngle(), 0.0001);
     }
 
 
     @Test
     public void testInvertPotentiometer(){
-        MockPotentiometer potentiometer = new MockPotentiometer();
+        Potentiometer potentiometer = mock(Potentiometer.class);
         Potentiometer p = Hardware.invertPotentiometer(potentiometer);
 
         // Goes from 1000 -> 900, but it should be 0 -> 100
@@ -189,15 +183,15 @@ public class HardwareTest {
 
         assertNotNull(p);
 
-        potentiometer.setAngle(rawAngle - offset);
+        when(potentiometer.get()).thenReturn(rawAngle - offset);
         assertEquals(0, p.get(), 0.001);
 
         rawAngle = 900;
-        potentiometer.setAngle(rawAngle - offset);
+        when(potentiometer.get()).thenReturn(rawAngle - offset);
         assertEquals(100, p.get(), 0.001);
 
         rawAngle = 1100;
-        potentiometer.setAngle(rawAngle - offset);
+        when(potentiometer.get()).thenReturn(rawAngle - offset);
         assertEquals(-100, p.get(), 0.001);
 
     }

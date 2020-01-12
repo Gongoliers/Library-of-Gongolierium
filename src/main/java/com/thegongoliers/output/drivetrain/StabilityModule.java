@@ -8,42 +8,15 @@ import edu.wpi.first.wpilibj.interfaces.Gyro;
 /**
  * A drivetrain module which will stabilize the drivetrain (rotation-wise) while attempting to drive straight
  */
-public class StabilityModule extends BaseDriveModule {
+public class StabilityModule implements DriveModule {
 
-    /**
-     * The gyroscope which determines the robot's heading
-     * Type: edu.wpi.first.wpilibj.interfaces.Gyro
-     */
-    public static final String VALUE_GYRO = "gyro";
+    private static final double DEFAULT_TURN_THRESHOLD = 0.01;
 
-    /**
-     * The stabilizing strength (higher values may become unstable, recommended ~0.02. Values must be >= 0).
-     * Type: double
-     */
-    public static final String VALUE_STRENGTH = "strength";
-
-    /**
-     * The amount of time to allow the drivetrain to settle after turn inputs stop before applying turn corrections.
-     * Type: double
-     */
-    public static final String VALUE_SETTLING_TIME = "settling_time";
-
-    /**
-     * The input threshold for turning to activate the stability module (between 0 and 1, defaults to 0)
-     * Type: double
-     */
-    public static final String VALUE_THRESHOLD = "threshold";
-
-    /**
-     * The clock to use to calculate the settling time (defaults to the robot's clock).
-     * Type: com.thegongoliers.input.time.Clock
-     */
-    public static final String VALUE_CLOCK = "clock";
-
-    /**
-     * The name of the module
-     */
-    public static final String NAME = "Stability";
+    private Gyro mGyro;
+    private double mStrength;
+    private double mSettlingTime;
+    private double mTurnThreshold;
+    private Clock mClock;
 
     private double lastHeading;
     private double lastStopTime;
@@ -56,11 +29,11 @@ public class StabilityModule extends BaseDriveModule {
      */
     public StabilityModule(Gyro gyro, double strength, double settlingTime){
         super();
-        values.put(VALUE_GYRO, gyro);
-        values.put(VALUE_STRENGTH, strength);
-        values.put(VALUE_SETTLING_TIME, settlingTime);
-        values.put(VALUE_THRESHOLD, 0.0);
-        values.put(VALUE_CLOCK, new RobotClock());
+        setGyro(gyro);
+        setStrength(strength);
+        setSettlingTime(settlingTime);
+        setTurnThreshold(DEFAULT_TURN_THRESHOLD);
+        setClock(new RobotClock());
 
         lastHeading = gyro.getAngle();
         lastStopTime = 0;
@@ -68,35 +41,70 @@ public class StabilityModule extends BaseDriveModule {
 
     @Override
     public DriveSpeed run(DriveSpeed currentSpeed, DriveSpeed desiredSpeed, double deltaTime) {
-        double strength = (double) getValue(VALUE_STRENGTH);
-        Gyro gyro = (Gyro) getValue(VALUE_GYRO);
-        double settlingTime = (double) getValue(VALUE_SETTLING_TIME);
-        double threshold = (double) getValue(VALUE_THRESHOLD);
-        Clock clock = (Clock) getValue(VALUE_CLOCK);
-
-        double left = desiredSpeed.getLeftSpeed();
-        double right = desiredSpeed.getRightSpeed();
-
-        if (Math.abs(left - right) > threshold){
-            // Turning
-            lastHeading = gyro.getAngle();
-            lastStopTime = clock.getTime();
+        if (isTurning(desiredSpeed)){
+            updateDesiredHeading();
+            updateStopTime();
+        } else if (isSettling()){
+            updateDesiredHeading();
         } else {
-            // Driving straight
-            if (clock.getTime() - lastStopTime < settlingTime){
-                lastHeading = gyro.getAngle();
-            }
-            double forward = (left + right) / 2;
-            double turn = strength * (lastHeading - gyro.getAngle());
-            return DriveSpeed.fromArcade(forward, turn);
+            return getCorrectedDriveSpeed(desiredSpeed);
         }
 
-        return new DriveSpeed(left, right);
+        return desiredSpeed;
     }
 
-    @Override
-    public String getName() {
-        return NAME;
+    public void setClock(Clock clock){
+        if (clock == null) throw new IllegalArgumentException("Clock must be non-null");
+        mClock = clock;
     }
 
+    public void setGyro(Gyro gyro){
+        if (gyro == null) throw new IllegalArgumentException("Gyro must be non-null");
+        mGyro = gyro;
+    }
+
+    public void setSettlingTime(double settlingTime){
+        if (settlingTime < 0) throw new IllegalArgumentException("Settling time must be non-negative");
+        mSettlingTime = settlingTime;
+    }
+
+    public void setTurnThreshold(double turnThreshold){
+        if (turnThreshold < 0) throw new IllegalArgumentException("Turn threshold must be non-negative");
+        mTurnThreshold = turnThreshold;
+    }
+
+    public void setStrength(double strength){
+        if (strength < 0) throw new IllegalArgumentException("Strength must be non-negative");
+        mStrength = strength;
+    }
+
+    private boolean isTurning(DriveSpeed speed) {
+        return Math.abs(speed.getLeftSpeed() - speed.getRightSpeed()) > mTurnThreshold;
+    }
+
+    private void updateDesiredHeading() {
+        lastHeading = mGyro.getAngle();
+    }
+
+    private void updateStopTime() {
+        lastStopTime = mClock.getTime();
+    }
+
+    private boolean isSettling() {
+        return mClock.getTime() - lastStopTime < mSettlingTime;
+    }
+
+    private DriveSpeed getCorrectedDriveSpeed(DriveSpeed desiredSpeed) {
+        double forward = calculateForwardSpeed(desiredSpeed);
+        double turn = calculateTurnCorrection();
+        return DriveSpeed.fromArcade(forward, turn);
+    }
+
+    private double calculateForwardSpeed(DriveSpeed speed) {
+        return (speed.getLeftSpeed() + speed.getRightSpeed()) / 2;
+    }
+
+    private double calculateTurnCorrection() {
+        return mStrength * (lastHeading - mGyro.getAngle());
+    }
 }

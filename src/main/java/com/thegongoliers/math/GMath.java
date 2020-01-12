@@ -1,11 +1,6 @@
 package com.thegongoliers.math;
 
 import com.thegongoliers.annotations.UsedInCompetition;
-import com.thegongoliers.math.exceptions.OutOfBoundsException;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 
 public class GMath {
 
@@ -479,7 +474,10 @@ public class GMath {
     }
 
     public static class UnequalLengthException extends RuntimeException {
-        public UnequalLengthException(){
+
+        private static final long serialVersionUID = -7924653865358440946L;
+
+        public UnequalLengthException() {
             super("Lengths are not equal");
         }
     }

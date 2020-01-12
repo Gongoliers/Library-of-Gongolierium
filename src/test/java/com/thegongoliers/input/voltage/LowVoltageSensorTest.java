@@ -1,24 +1,25 @@
 package com.thegongoliers.input.voltage;
 
-import com.thegongoliers.mockHardware.input.MockVoltageSensor;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class LowVoltageSensorTest {
 
     @Test
     public void testIsTriggered(){
-        MockVoltageSensor voltageSensor = new MockVoltageSensor();
+        VoltageSensor voltageSensor = mock(VoltageSensor.class);
         LowVoltageSensor lowVoltageSensor = new LowVoltageSensor(voltageSensor, 0);
 
-        voltageSensor.setVoltage(0);
+        when(voltageSensor.getVoltage()).thenReturn(0.0);
         assertTrue(lowVoltageSensor.isTriggered());
 
-        voltageSensor.setVoltage(1);
+        when(voltageSensor.getVoltage()).thenReturn(1.0);
         assertFalse(lowVoltageSensor.isTriggered());
 
-        voltageSensor.setVoltage(-1);
+        when(voltageSensor.getVoltage()).thenReturn(-1.0);
         assertTrue(lowVoltageSensor.isTriggered());
     }
 }

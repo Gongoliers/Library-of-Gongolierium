@@ -1,12 +1,6 @@
 package com.thegongoliers.math;
 
-import com.thegongoliers.math.exceptions.OutOfBoundsException;
 import org.junit.Test;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-
 import static org.junit.Assert.*;
 
 public class GMathTest {

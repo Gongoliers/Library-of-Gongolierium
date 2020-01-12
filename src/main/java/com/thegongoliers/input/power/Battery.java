@@ -21,7 +21,6 @@ public class Battery {
 
     private static final long UPDATE_FREQ = 20;
     
-
     /**
      * Constructor
      * @param minVoltage the minimum voltage of the battery in Volts
@@ -30,16 +29,9 @@ public class Battery {
      */
     public Battery(double minVoltage, double maxVoltage, double capacity){
         this.capacity = capacity;
-        coulombCounter = new CoulombCounter(PDP.getInstance().getBatteryCurrentSensor(), new RobotClock());
-        double soc = GMath.clamp01(GMath.inverseLerp(minVoltage, maxVoltage, new BatteryVoltageSensor().getVoltage()));
-        currentCapacity = GMath.lerp(0, capacity, soc);
-        timer = new Timer();
-        timer.scheduleAtFixedRate(new TimerTask(){
-            @Override
-            public void run() {
-                update();
-            }
-        }, UPDATE_FREQ, UPDATE_FREQ);
+        double soc = calculateStateOfCharge(minVoltage, maxVoltage);
+        currentCapacity = calculateAmpHours(soc);
+        initialize();
     }
 
     /**
@@ -49,15 +41,8 @@ public class Battery {
      */
     public Battery(double initialCharge, double capacity){
         this.capacity = capacity;
-        coulombCounter = new CoulombCounter(PDP.getInstance().getBatteryCurrentSensor(), new RobotClock());
-        currentCapacity = GMath.lerp(0, capacity, initialCharge);
-        timer = new Timer();
-        timer.scheduleAtFixedRate(new TimerTask(){
-            @Override
-            public void run() {
-                update();
-            }
-        }, UPDATE_FREQ, UPDATE_FREQ);
+        currentCapacity = calculateAmpHours(initialCharge);
+        initialize();
     }
 
     /**
@@ -75,6 +60,29 @@ public class Battery {
      */
     public double getBatteryPercentage(){
         return currentCapacity / capacity * 100;
+    }
+
+    private double calculateStateOfCharge(double minVoltage, double maxVoltage) {
+        return GMath.clamp01(GMath.inverseLerp(minVoltage, maxVoltage, new BatteryVoltageSensor().getVoltage()));
+    }
+
+    private double calculateAmpHours(double soc) {
+        return GMath.lerp(0, capacity, soc);
+    }
+
+    private void initialize() {
+        coulombCounter = new CoulombCounter(PDP.getInstance().getBatteryCurrentSensor(), new RobotClock());
+        scheduleUpdates();
+    }
+
+    private void scheduleUpdates() {
+        timer = new Timer();
+        timer.scheduleAtFixedRate(new TimerTask(){
+            @Override
+            public void run() {
+                update();
+            }
+        }, UPDATE_FREQ, UPDATE_FREQ);
     }
 
 }

@@ -13,8 +13,8 @@ public interface Switch {
 	 * 
 	 * @return The inverted switch
 	 */
-	default Switch invert() {
-		return () -> !isTriggered();
+	static Switch invert(Switch s1) {
+		return () -> !s1.isTriggered();
 	}
 
 	/**

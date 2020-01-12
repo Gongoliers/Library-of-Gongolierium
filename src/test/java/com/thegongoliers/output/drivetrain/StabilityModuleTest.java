@@ -1,7 +1,6 @@
 package com.thegongoliers.output.drivetrain;
 
 import com.thegongoliers.input.time.Clock;
-import com.thegongoliers.mockHardware.input.MockClock;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -20,7 +19,7 @@ public class StabilityModuleTest {
     private Drivetrain drivetrain;
     private Gyro gyro;
     private ModularDrivetrain stabilizedDrivetrain;
-    private DriveModule stabilityModule;
+    private StabilityModule stabilityModule;
 
     @Before
     public void setup(){
@@ -28,10 +27,10 @@ public class StabilityModuleTest {
         gyro = mock(Gyro.class);
         double kp = 0.01;
 
-        stabilizedDrivetrain = new ModularDrivetrain(drivetrain, new MockClock());
+        stabilizedDrivetrain = new ModularDrivetrain(drivetrain, mock(Clock.class));
 
         stabilityModule = new StabilityModule(gyro, kp, 0);
-        stabilityModule.setValue(StabilityModule.VALUE_CLOCK, new MockClock());
+        stabilityModule.setClock(mock(Clock.class));
         stabilizedDrivetrain.addModule(stabilityModule);
     }
 
@@ -75,8 +74,8 @@ public class StabilityModuleTest {
     public void allowsSettling(){
         Clock clock = mock(Clock.class);
 
-        stabilityModule.setValue(StabilityModule.VALUE_SETTLING_TIME, 1.0);
-        stabilityModule.setValue(StabilityModule.VALUE_CLOCK, clock);
+        stabilityModule.setSettlingTime(1);
+        stabilityModule.setClock(clock);
 
         when(clock.getTime()).thenReturn(0.0);
         when(gyro.getAngle()).thenReturn(10.0);

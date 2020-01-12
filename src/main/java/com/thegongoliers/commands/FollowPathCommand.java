@@ -1,11 +1,9 @@
-package com.thegongoliers.paths;
-
-import java.util.List;
+package com.thegongoliers.commands;
 
 import com.thegongoliers.GongolieriumException;
-import com.thegongoliers.output.drivetrain.DriveModule;
 import com.thegongoliers.output.drivetrain.ModularDrivetrain;
 import com.thegongoliers.output.drivetrain.PathFollowerModule;
+import com.thegongoliers.paths.SimplePath;
 
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Subsystem;
@@ -13,7 +11,7 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 public class FollowPathCommand extends Command {
 
     private ModularDrivetrain drivetrain;
-    private DriveModule module;
+    private PathFollowerModule module;
     private SimplePath path;
 
     public FollowPathCommand(Subsystem subsystem, ModularDrivetrain drivetrain, SimplePath path){
@@ -21,23 +19,15 @@ public class FollowPathCommand extends Command {
         this.drivetrain = drivetrain;
         this.path = path;
 
-        List<DriveModule> modules = drivetrain.getInstalledModules();
-        for (DriveModule module : modules) {
-            if (module.getName().equals(PathFollowerModule.NAME)){
-                this.module = module;
-                break;
-            }
-        }
-
+        module = drivetrain.getInstalledModule(PathFollowerModule.class);
         if (module == null){
-            throw new GongolieriumException("The drivetrain does not have a path following module installed!");
+            throw new GongolieriumException("The drivetrain does not have a path following module installed.");
         }
     }
 
     @Override
     protected void initialize() {
-        module.setValue(PathFollowerModule.VALUE_PATH, path);
-        module.setValue(PathFollowerModule.VALUE_TRIGGER, true);
+        module.startFollowingPath(path);
     }
 
     @Override
@@ -47,12 +37,12 @@ public class FollowPathCommand extends Command {
 
     @Override
     protected void end() {
-        module.setValue(PathFollowerModule.VALUE_TRIGGER, false);
+        module.stopFollowingPath();
     }
 
     @Override
     protected boolean isFinished() {
-        return !((boolean) module.getValue(PathFollowerModule.VALUE_TRIGGER));
+        return !module.isFollowingPath();
     }
 
 

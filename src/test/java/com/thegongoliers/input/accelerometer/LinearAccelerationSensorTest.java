@@ -1,16 +1,17 @@
 package com.thegongoliers.input.accelerometer;
 
-import com.thegongoliers.mockHardware.input.MockAccelerometer;
 import org.junit.Test;
-
+import edu.wpi.first.wpilibj.interfaces.Accelerometer;
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class LinearAccelerationSensorTest {
 
     @Test
     public void testLinear(){
-        MockAccelerometer mockAccelerometer = new MockAccelerometer();
-        mockAccelerometer.setZ(9.81);
+        Accelerometer mockAccelerometer = mock(Accelerometer.class);
+        when(mockAccelerometer.getZ()).thenReturn(9.81);
 
         LinearAccelerationSensor linearAccelerationSensor = new LinearAccelerationSensor(mockAccelerometer);
 
@@ -20,8 +21,8 @@ public class LinearAccelerationSensorTest {
         assertEquals(0, linearAccelerationSensor.getY(), 0.0001);
 
         // Rotate accelerometer to X
-        mockAccelerometer.setX(9.81);
-        mockAccelerometer.setZ(0);
+        when(mockAccelerometer.getX()).thenReturn(9.81);
+        when(mockAccelerometer.getZ()).thenReturn(0.0);
 
         assertEquals(-9.81 * 0.8, linearAccelerationSensor.getZ(), 0.0001);
         assertEquals(9.81 - 9.81 * 0.2, linearAccelerationSensor.getX(), 0.0001);

@@ -11,7 +11,7 @@ import static org.mockito.Mockito.*;
 
 import java.util.List;
 
-import com.thegongoliers.mockHardware.input.MockClock;
+import com.thegongoliers.input.time.Clock;
 import com.thegongoliers.output.interfaces.Drivetrain;
 
 /**
@@ -25,7 +25,7 @@ public class ModularDrivetrainTest {
     @Before
     public void setup(){
         drivetrain = mock(Drivetrain.class);
-        modularDrivetrain = new ModularDrivetrain(drivetrain, new MockClock());
+        modularDrivetrain = new ModularDrivetrain(drivetrain, mock(Clock.class));
     }
 
     @Test
@@ -106,11 +106,18 @@ public class ModularDrivetrainTest {
         verifyTank(asTank.getLeftSpeed() * 0.5, asTank.getRightSpeed() * 0.5);
     }
 
+    @Test
+    public void canGetModuleOfType(){
+        MultiplyModule m = new MultiplyModule(0.5);
+        modularDrivetrain.addModule(m);
+        assertEquals(m, modularDrivetrain.getInstalledModule(MultiplyModule.class));
+    }
+
     private void verifyTank(double left, double right){
         verify(drivetrain).tank(AdditionalMatchers.eq(left, 0.001), AdditionalMatchers.eq(right, 0.001));
     }
 
-    private class MultiplyModule extends BaseDriveModule {
+    private class MultiplyModule implements DriveModule {
 
         private double multiplier;
 
@@ -123,15 +130,9 @@ public class ModularDrivetrainTest {
         public DriveSpeed run(DriveSpeed currentSpeed, DriveSpeed desiredSpeed, double deltaTime) {
             return new DriveSpeed(desiredSpeed.getLeftSpeed() * multiplier, desiredSpeed.getRightSpeed() * multiplier);
         }
-
-        @Override
-        public String getName() {
-            return "Multiply";
-        }
-
     }
 
-    private class AddModule extends BaseDriveModule {
+    private class AddModule implements DriveModule {
 
         private double value;
 
@@ -144,12 +145,6 @@ public class ModularDrivetrainTest {
         public DriveSpeed run(DriveSpeed currentSpeed, DriveSpeed desiredSpeed, double deltaTime) {
             return new DriveSpeed(desiredSpeed.getLeftSpeed() + value, desiredSpeed.getRightSpeed() + value);
         }
-
-        @Override
-        public String getName() {
-            return "Add";
-        }
-
     }
 
 }

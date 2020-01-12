@@ -7,7 +7,7 @@ import org.mockito.AdditionalMatchers;
 
 import static org.mockito.Mockito.*;
 
-import com.thegongoliers.mockHardware.input.MockClock;
+import com.thegongoliers.input.time.Clock;
 import com.thegongoliers.output.interfaces.Drivetrain;
 
 /**
@@ -17,12 +17,12 @@ public class SpeedConstraintModuleTest {
 
     private Drivetrain drivetrain;
     private ModularDrivetrain modularDrivetrain;
-    private DriveModule module;
+    private SpeedConstraintModule module;
 
     @Before
     public void setup(){
         drivetrain = mock(Drivetrain.class);
-        modularDrivetrain = new ModularDrivetrain(drivetrain, new MockClock());
+        modularDrivetrain = new ModularDrivetrain(drivetrain, mock(Clock.class));
         module = new SpeedConstraintModule(0.8, false);
         modularDrivetrain.addModule(module);
     }
@@ -50,7 +50,7 @@ public class SpeedConstraintModuleTest {
 
     @Test
     public void canScaleValuesToRange(){
-        module.setValue(SpeedConstraintModule.VALUE_SCALE_SPEEDS, true);
+        module.setShouldScaleSpeeds(true);
 
         modularDrivetrain.tank(1, 1);
         verifyTank(0.8, 0.8);

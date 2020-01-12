@@ -3,46 +3,30 @@ package com.thegongoliers.output.drivetrain;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.AdditionalMatchers;
-
 import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.buttons.Trigger;
-
 import static org.mockito.Mockito.*;
-
-import com.thegongoliers.hardware.Hardware;
-import com.thegongoliers.mockHardware.input.MockClock;
-import com.thegongoliers.mockHardware.input.MockSwitch;
+import com.thegongoliers.input.time.Clock;
 import com.thegongoliers.output.interfaces.Drivetrain;
 
-/**
- * AnchorModuleTest
- */
 public class AnchorModuleTest {
 
     private Drivetrain drivetrain;
     private ModularDrivetrain modularDrivetrain;
-    private DriveModule module;
+    private AnchorModule module;
     private Encoder encoder1, encoder2;
-
-    private MockSwitch on;
-
 
     @Before
     public void setup(){
         drivetrain = mock(Drivetrain.class);
-        modularDrivetrain = new ModularDrivetrain(drivetrain, new MockClock());
+        modularDrivetrain = new ModularDrivetrain(drivetrain, mock(Clock.class));
         encoder1 = mock(Encoder.class);
         encoder2 = mock(Encoder.class);
-        on = new MockSwitch();
-        Trigger trigger = Hardware.switchToTrigger(on);
-        module = new AnchorModule(encoder1, encoder2, 0.1, trigger);
+        module = new AnchorModule(encoder1, encoder2, 0.1);
         modularDrivetrain.addModule(module);
     }
 
     @Test
     public void doesNotFortifyWhileTriggerIsOff(){
-        on.setTriggered(false);
-
         when(encoder1.getDistance()).thenReturn(0.0);
         when(encoder2.getDistance()).thenReturn(0.0);
         modularDrivetrain.tank(1, 1);
@@ -56,7 +40,7 @@ public class AnchorModuleTest {
 
     @Test
     public void fortifyWhileTriggerIsOn(){
-        on.setTriggered(true);
+        module.holdPosition();
 
         when(encoder1.getDistance()).thenReturn(0.0);
         when(encoder2.getDistance()).thenReturn(0.0);
