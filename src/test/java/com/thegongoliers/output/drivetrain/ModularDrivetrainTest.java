@@ -71,6 +71,24 @@ public class ModularDrivetrainTest {
     }
 
     @Test
+    public void canUseAnOverrideModule(){
+        DriveModule module1 = new AddModule(0.3);
+        DriveModule module2 = new OverrideModule(0.5);
+        DriveModule module3 = new AddModule(0.1);
+        modularDrivetrain.setModules(module1, module2, module3);
+        modularDrivetrain.tank(0, 0);
+        verifyTank(0.6, 0.6);
+
+        modularDrivetrain.setModules(module1, module3, module2);
+        modularDrivetrain.tank(0.1, 0.1);
+        verifyTank(0.5, 0.5);
+
+        modularDrivetrain.setModules(module2, module1, module3);
+        modularDrivetrain.tank(0.2, 0.2);
+        verifyTank(0.9, 0.9);
+    }
+
+    @Test
     public void canRemoveMultipleModules(){
         DriveModule module1 = new MultiplyModule(2);
         DriveModule module2 = new AddModule(0.1);
@@ -144,6 +162,21 @@ public class ModularDrivetrainTest {
         @Override
         public DriveSpeed run(DriveSpeed currentSpeed, DriveSpeed desiredSpeed, double deltaTime) {
             return new DriveSpeed(desiredSpeed.getLeftSpeed() + value, desiredSpeed.getRightSpeed() + value);
+        }
+    }
+
+    private class OverrideModule implements DriveModule {
+
+        private double value;
+
+        public OverrideModule(double value){
+            super();
+            this.value = value;
+        }
+
+        @Override
+        public DriveSpeed run(DriveSpeed currentSpeed, DriveSpeed desiredSpeed, double deltaTime) {
+            return new DriveSpeed(value, value);
         }
     }
 

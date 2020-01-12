@@ -59,6 +59,11 @@ public class PathFollowerModule implements DriveModule {
         return followPath();
     }
 
+    @Override
+    public boolean overridesUser() {
+        return isFollowingPath();
+    }
+
     /**
      * Start following a path (note, drivetrain's tank or arcade methods must be called repeatedly with any value)
      * @param path The path to follow

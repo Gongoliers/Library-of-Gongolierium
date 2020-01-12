@@ -2,6 +2,7 @@ package com.thegongoliers.output.drivetrain;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.thegongoliers.hardware.Hardware;
 import com.thegongoliers.input.time.Clock;
@@ -70,8 +71,27 @@ public class ModularDrivetrain implements Drivetrain {
         double time = clock.getTime();
         double dt = time - lastTime;
 
+        var overrides = modules.stream().filter(DriveModule::overridesUser).collect(Collectors.toList());
+        DriveModule override = null;
+        if (!overrides.isEmpty()){
+            override = overrides.get(overrides.size() - 1);
+        }
+
+        if (override != null){
+            desiredSpeed = override.run(currentSpeed, desiredSpeed, dt);
+        }
+
         for(DriveModule module : modules){
-            desiredSpeed = module.run(currentSpeed, desiredSpeed, dt);
+            if (override == module) {
+                override = null;
+                continue;
+            }
+
+            if (override == null){
+                desiredSpeed = module.run(currentSpeed, desiredSpeed, dt);
+            } else {
+                module.run(currentSpeed, desiredSpeed, dt);
+            }
         }
         
         currentSpeed = desiredSpeed;

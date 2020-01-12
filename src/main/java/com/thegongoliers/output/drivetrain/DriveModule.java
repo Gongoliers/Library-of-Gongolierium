@@ -14,4 +14,12 @@ public interface DriveModule {
      */
     DriveSpeed run(DriveSpeed currentSpeed, DriveSpeed desiredSpeed, double deltaTime);
 
+    /**
+     * Determines if the module should override the user's input
+     * @return true if it overrides the user's input
+     */
+    default boolean overridesUser(){
+        return false;
+    }
+
 }

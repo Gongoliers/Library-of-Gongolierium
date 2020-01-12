@@ -56,6 +56,11 @@ public class TargetAlignmentModule implements DriveModule {
         return align();
     }
 
+    @Override
+    public boolean overridesUser() {
+        return isAligning();
+    }
+
     public void align(double desiredHorizontalOffset, double desiredTargetArea){
         mDesiredTargetArea = desiredTargetArea;
         mDesiredHorizontalOffset = desiredHorizontalOffset;
