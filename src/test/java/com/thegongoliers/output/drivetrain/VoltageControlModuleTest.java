@@ -8,7 +8,7 @@ import org.mockito.Mockito;
 import static org.mockito.Mockito.*;
 
 import com.thegongoliers.input.time.Clock;
-import com.thegongoliers.input.voltage.IVoltageSensor;
+import com.thegongoliers.input.voltage.VoltageSensor;
 import com.thegongoliers.output.interfaces.Drivetrain;
 
 public class VoltageControlModuleTest {
@@ -16,14 +16,14 @@ public class VoltageControlModuleTest {
     private Drivetrain drivetrain;
     private ModularDrivetrain modularDrivetrain;
     private VoltageControlModule module;
-    private IVoltageSensor voltageSensor;
+    private VoltageSensor voltageSensor;
     private InOrder inorder;
 
     @Before
     public void setup(){
         drivetrain = mock(Drivetrain.class);
         modularDrivetrain = new ModularDrivetrain(drivetrain, mock(Clock.class));
-        voltageSensor = mock(IVoltageSensor.class);
+        voltageSensor = mock(VoltageSensor.class);
         module = new VoltageControlModule(8, voltageSensor);
         modularDrivetrain.addModule(module);
         inorder = Mockito.inOrder(drivetrain);

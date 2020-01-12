@@ -1,7 +1,7 @@
 package com.thegongoliers.output.drivetrain;
 
 import com.thegongoliers.input.voltage.BatteryVoltageSensor;
-import com.thegongoliers.input.voltage.IVoltageSensor;
+import com.thegongoliers.input.voltage.VoltageSensor;
 
 /**
  * Ensures that the drivetrain runs at a consistent voltage, compensating for battery voltage fluctuations
@@ -9,13 +9,13 @@ import com.thegongoliers.input.voltage.IVoltageSensor;
 public class VoltageControlModule implements DriveModule {
 
     private double mMaxVoltage;
-    private IVoltageSensor mBatteryVoltage;
+    private VoltageSensor mBatteryVoltage;
 
     /**
      * @param maxVoltage The maximum voltage of the drivetrain motors when the input speed is 1 (in volts)
      * @param batteryVoltage The battery voltage sensor
      */
-    public VoltageControlModule(double maxVoltage, IVoltageSensor batteryVoltage){
+    public VoltageControlModule(double maxVoltage, VoltageSensor batteryVoltage){
         mMaxVoltage = maxVoltage;
         mBatteryVoltage = batteryVoltage;
     }

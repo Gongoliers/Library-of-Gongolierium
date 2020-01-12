@@ -1,6 +1,6 @@
 package com.thegongoliers.input.voltage;
 
-public interface IVoltageSensor {
+public interface VoltageSensor {
 
 	/**
 	 * Get the voltage in Volts.

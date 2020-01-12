@@ -1,6 +1,6 @@
 package com.thegongoliers.input.vision;
 
-public interface ITargetingCamera {
+public interface TargetingCamera {
 
     /**
      * Determines if the camera can see a target

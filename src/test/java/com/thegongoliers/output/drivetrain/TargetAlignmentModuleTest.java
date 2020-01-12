@@ -10,7 +10,7 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.*;
 
 import com.thegongoliers.input.time.Clock;
-import com.thegongoliers.input.vision.ITargetingCamera;
+import com.thegongoliers.input.vision.TargetingCamera;
 import com.thegongoliers.output.interfaces.Drivetrain;
 
 public class TargetAlignmentModuleTest {
@@ -18,14 +18,14 @@ public class TargetAlignmentModuleTest {
     private Drivetrain drivetrain;
     private ModularDrivetrain modularDrivetrain;
     private TargetAlignmentModule module;
-    private ITargetingCamera camera;
+    private TargetingCamera camera;
     private InOrder inorder;
 
     @Before
     public void setup(){
         drivetrain = mock(Drivetrain.class);
         modularDrivetrain = new ModularDrivetrain(drivetrain, mock(Clock.class));
-        camera = mock(ITargetingCamera.class);
+        camera = mock(TargetingCamera.class);
         module = new TargetAlignmentModule(camera, 0.1, 0.2, false);
         modularDrivetrain.addModule(module);
         inorder = Mockito.inOrder(drivetrain);

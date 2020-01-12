@@ -3,7 +3,7 @@ package com.thegongoliers.input.vision;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 
-public class LimelightCamera implements ITargetingCamera {
+public class LimelightCamera implements TargetingCamera {
 
     private static final String TABLE_NAME = "limelight";
     private static final String HAS_TARGET_KEY = "tv";

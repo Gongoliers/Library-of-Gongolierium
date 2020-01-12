@@ -1,6 +1,6 @@
 package com.thegongoliers.output.drivetrain;
 
-import com.thegongoliers.input.vision.ITargetingCamera;
+import com.thegongoliers.input.vision.TargetingCamera;
 import com.thegongoliers.math.GMath;
 
 /**
@@ -12,7 +12,7 @@ public class TargetAlignmentModule implements DriveModule {
     private static final double DEFAULT_AIM_THRESHOLD = 0.1;
     private static final double DEFAULT_SEEK_SPEED = 0.3;
 
-    private ITargetingCamera mCamera;
+    private TargetingCamera mCamera;
     private boolean mShouldSeek;
     private double mAimStrength;
     private double mRangeStrength;
@@ -25,7 +25,7 @@ public class TargetAlignmentModule implements DriveModule {
 
     private boolean mIsEnabled;
 
-    public TargetAlignmentModule(ITargetingCamera camera, double aimStrength, double rangeStrength, boolean shouldSeek){
+    public TargetAlignmentModule(TargetingCamera camera, double aimStrength, double rangeStrength, boolean shouldSeek){
         mCamera = camera;
         setShouldSeek(shouldSeek);
         setAimStrength(aimStrength);

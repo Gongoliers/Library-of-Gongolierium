@@ -10,7 +10,7 @@ public class LowVoltageSensor extends VoltageTripSensor {
 	 * @param threshold
 	 *            A threshold to trigger in Volts.
 	 */
-	public LowVoltageSensor(IVoltageSensor voltageSensor, double threshold) {
+	public LowVoltageSensor(VoltageSensor voltageSensor, double threshold) {
 		super(voltageSensor, threshold);
 	}
 

@@ -10,7 +10,7 @@ public class VoltageSpikeSensorTest {
 
     @Test
     public void testIsTriggered() {
-        IVoltageSensor voltageSensor = mock(IVoltageSensor.class);
+        VoltageSensor voltageSensor = mock(VoltageSensor.class);
         HighVoltageSensor highVoltageSensor = new HighVoltageSensor(voltageSensor, 0);
         VoltageSpikeSensor voltageSpikeSensor = new VoltageSpikeSensor(highVoltageSensor);
 
@@ -32,7 +32,7 @@ public class VoltageSpikeSensorTest {
 
     @Test
     public void testReset() {
-        IVoltageSensor voltageSensor = mock(IVoltageSensor.class);
+        VoltageSensor voltageSensor = mock(VoltageSensor.class);
         HighVoltageSensor highVoltageSensor = new HighVoltageSensor(voltageSensor, 0);
         VoltageSpikeSensor voltageSpikeSensor = new VoltageSpikeSensor(highVoltageSensor);
 
