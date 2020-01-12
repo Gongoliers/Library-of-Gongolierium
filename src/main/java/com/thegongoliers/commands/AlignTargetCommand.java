@@ -2,9 +2,7 @@ package com.thegongoliers.commands;
 
 import com.thegongoliers.GongolieriumException;
 import com.thegongoliers.output.drivetrain.ModularDrivetrain;
-import com.thegongoliers.output.drivetrain.PathFollowerModule;
 import com.thegongoliers.output.drivetrain.TargetAlignmentModule;
-import com.thegongoliers.paths.SimplePath;
 
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Subsystem;
