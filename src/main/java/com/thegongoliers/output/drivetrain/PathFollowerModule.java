@@ -66,6 +66,9 @@ public class PathFollowerModule implements DriveModule {
     public void startFollowingPath(SimplePath path){
         mPath = path;
         isEnabled = true;
+        currentStepIdx = 0;
+        currentPath = null;
+        zeroSensors();
     }
 
     /**

@@ -130,9 +130,9 @@ public class PathFollowerModuleTest {
         assertTrue(module.isFollowingPath());
 
         // Straight away
-        verify(gyro, Mockito.times(2)).reset();
-        verify(encoder1, Mockito.times(2)).reset();
-        verify(encoder2, Mockito.times(2)).reset();
+        verify(gyro, Mockito.times(3)).reset();
+        verify(encoder1, Mockito.times(3)).reset();
+        verify(encoder2, Mockito.times(3)).reset();
         modularDrivetrain.tank(1, 1);
         DrivetrainTestUtils.inorderVerifyTank(inorder, drivetrain, 0.5, 0.5);
         when(encoder1.getDistance()).thenReturn(4.0);
