@@ -8,8 +8,6 @@ import org.mockito.Mockito;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 
-import com.thegongoliers.hardware.Hardware;
-import com.thegongoliers.input.switches.Switch;
 import com.thegongoliers.input.time.Clock;
 import com.thegongoliers.output.gears.MockGearShifter;
 import com.thegongoliers.output.interfaces.Drivetrain;
@@ -24,7 +22,6 @@ public class ShifterModuleTest {
     private ShifterModule module;
     private Clock clock;
     private MockGearShifter shifter;
-    private Switch downshift, upshift;
     private InOrder inOrder;
 
     @Before
@@ -33,10 +30,8 @@ public class ShifterModuleTest {
         clock = mock(Clock.class);
         when(clock.getTime()).thenReturn(0.0);
         shifter = new MockGearShifter(3);
-        upshift = mock(Switch.class);
-        downshift = mock(Switch.class);
         modularDrivetrain = new ModularDrivetrain(drivetrain, clock);
-        module = new ShifterModule(shifter, Hardware.switchToTrigger(downshift), Hardware.switchToTrigger(upshift), 0.0);
+        module = new ShifterModule(shifter, 0.0);
         modularDrivetrain.addModule(module);
         inOrder = Mockito.inOrder(drivetrain);
     }
@@ -125,31 +120,6 @@ public class ShifterModuleTest {
     }
 
     @Test
-    public void onlyShiftsOnPress(){
-        upshift();
-        assertGear(2);
-
-        upshift();
-        assertGear(2);
-
-        nothing();
-
-        upshift();
-        assertGear(3);
-
-        downshift();
-        assertGear(2);
-
-        downshift();
-        assertGear(2);
-
-        nothing();
-
-        downshift();
-        assertGear(1);
-    }
-
-    @Test
     public void canUpshiftAndDownshift(){
         upshift();
         assertGear(2);
@@ -200,20 +170,16 @@ public class ShifterModuleTest {
     }
 
     private void nothing(){
-        when(downshift.isTriggered()).thenReturn(false);
-        when(upshift.isTriggered()).thenReturn(false);
         modularDrivetrain.tank(1, 1);
     }
 
     private void downshift(){
-        when(downshift.isTriggered()).thenReturn(true);
-        when(upshift.isTriggered()).thenReturn(false);
+        module.downshift();
         modularDrivetrain.tank(1, 1);
     }
 
     private void upshift(){
-        when(downshift.isTriggered()).thenReturn(false);
-        when(upshift.isTriggered()).thenReturn(true);
+        module.upshift();
         modularDrivetrain.tank(1, 1);
     }
 
