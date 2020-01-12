@@ -39,6 +39,11 @@ public class AnchorModule implements DriveModule {
         return desiredSpeed;
     }
 
+    @Override
+    public boolean overridesUser() {
+        return mIsEnabled;
+    }
+
     public void holdPosition(){
         mIsEnabled = true;
     }

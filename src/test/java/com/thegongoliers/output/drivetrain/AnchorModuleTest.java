@@ -4,6 +4,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.AdditionalMatchers;
 import edu.wpi.first.wpilibj.Encoder;
+
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.*;
 import com.thegongoliers.input.time.Clock;
 import com.thegongoliers.output.interfaces.Drivetrain;
@@ -40,7 +43,9 @@ public class AnchorModuleTest {
 
     @Test
     public void fortifyWhileTriggerIsOn(){
+        assertFalse(module.overridesUser());
         module.holdPosition();
+        assertTrue(module.overridesUser());
 
         when(encoder1.getDistance()).thenReturn(0.0);
         when(encoder2.getDistance()).thenReturn(0.0);

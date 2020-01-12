@@ -47,8 +47,10 @@ public class PathFollowerModuleTest {
         var path = new SimplePath();
         path.addStraightAway(10.0);
 
+        assertFalse(module.overridesUser());
         module.startFollowingPath(path);
         assertTrue(module.isFollowingPath());
+        assertTrue(module.overridesUser());
 
         modularDrivetrain.tank(1, 1);
         DrivetrainTestUtils.inorderVerifyTank(inorder, drivetrain, 1, 1);

@@ -36,8 +36,10 @@ public class TargetAlignmentModuleTest {
         module.setShouldSeek(true);
         module.setSeekSpeed(0.2);
         when(camera.hasTarget()).thenReturn(false);
+        assertFalse(module.overridesUser());
         module.align(0, 50);
         assertTrue(module.isAligning());
+        assertTrue(module.overridesUser());
         modularDrivetrain.tank(1, 1);
         DrivetrainTestUtils.inorderVerifyArcade(inorder, drivetrain, 0, 0.2);
         modularDrivetrain.tank(0.75, 1);
