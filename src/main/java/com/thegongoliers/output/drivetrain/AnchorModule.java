@@ -17,7 +17,7 @@ public class AnchorModule implements DriveModule {
      * Default constructor
      * @param leftEncoder the left encoder
      * @param rightEncoder the right encoder
-     * @param strength the fortify strength (higher values may become unstable, small values recommended. Values must be >= 0)
+     * @param strength the fortify strength (higher values may become unstable, small values recommended. Values must be greater than or equal to 0)
      */
     public AnchorModule(Encoder leftEncoder, Encoder rightEncoder, double strength){
         super();

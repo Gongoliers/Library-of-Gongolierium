@@ -24,7 +24,7 @@ public class StabilityModule implements DriveModule {
     /**
      * Default constructor
      * @param gyro the gyroscope which determines the robot's heading
-     * @param strength the stabilizing strength (higher values may become unstable, recommended ~0.02. Values must be >= 0)
+     * @param strength the stabilizing strength (higher values may become unstable, recommended ~0.02. Values must be greater than or equal to 0)
      * @param settlingTime the amount of time to allow the drivetrain to settle after turn inputs stop before applying turn corrections
      */
     public StabilityModule(Gyro gyro, double strength, double settlingTime){

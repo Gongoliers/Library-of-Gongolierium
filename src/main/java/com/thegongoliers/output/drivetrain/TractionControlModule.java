@@ -19,7 +19,7 @@ public class TractionControlModule implements DriveModule {
      * Default constructor
      * @param leftEncoder the left encoder
      * @param rightEncoder the right encoder
-     * @param strength the strength (higher values may become unstable, small values recommended. Values must be >= 0)
+     * @param strength the strength (higher values may become unstable, small values recommended. Values must be greater than or equal to 0)
      * @param slipThreshold the maximum slip ratio to consider as slipping
      */
     public TractionControlModule(Encoder leftEncoder, Encoder rightEncoder, double strength, double slipThreshold){

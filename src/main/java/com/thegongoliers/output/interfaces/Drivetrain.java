@@ -12,7 +12,7 @@ public interface Drivetrain extends Stoppable {
     /**
      * Drive in tank mode.
      * @param leftSpeed A percent speed for the left side between -1 and 1, inclusive. 1 is forward and -1 is reverse.
-     * @param rightSpee A percent speed for the right side between -1 and 1, inclusive. 1 is forward and -1 is reverse.
+     * @param rightSpeed A percent speed for the right side between -1 and 1, inclusive. 1 is forward and -1 is reverse.
      */
     void tank(double leftSpeed, double rightSpeed);
 }
