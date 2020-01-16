@@ -17,7 +17,7 @@ com.thegongoliers.math
 com.thegongoliers.math.exceptions
 com.thegongoliers.math.lookup
 com.thegongoliers.math.regression
-com.thegongoliers.output
+com.thegongoliers.output.actuators
 com.thegongoliers.output.drivetrain
 com.thegongoliers.output.elevator
 com.thegongoliers.output.gears
