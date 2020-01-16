@@ -1,4 +1,4 @@
-package com.thegongoliers.output;
+package com.thegongoliers.output.actuators;
 
 import org.junit.Before;
 import org.junit.Test;

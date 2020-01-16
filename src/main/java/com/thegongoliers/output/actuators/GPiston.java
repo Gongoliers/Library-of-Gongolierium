@@ -1,4 +1,4 @@
-package com.thegongoliers.output;
+package com.thegongoliers.output.actuators;
 
 import com.thegongoliers.annotations.UsedInCompetition;
 import com.thegongoliers.output.interfaces.Piston;
