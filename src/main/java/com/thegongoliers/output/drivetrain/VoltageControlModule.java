@@ -16,7 +16,7 @@ public class VoltageControlModule implements DriveModule {
      * @param batteryVoltage The battery voltage sensor
      */
     public VoltageControlModule(double maxVoltage, VoltageSensor batteryVoltage){
-        mMaxVoltage = maxVoltage;
+        setMaxVoltage(maxVoltage);
         mBatteryVoltage = batteryVoltage;
     }
 
@@ -33,6 +33,11 @@ public class VoltageControlModule implements DriveModule {
         var rightVoltage = calculateDesiredVoltage(desiredSpeed.getRightSpeed());
 
         return voltagesToSpeed(leftVoltage, rightVoltage);
+    }
+
+    public void setMaxVoltage(double maxVoltage){
+        if (maxVoltage <= 0) throw new IllegalArgumentException("Max voltage must be greater than 0.");
+        mMaxVoltage = maxVoltage;
     }
 
     private double calculateDesiredVoltage(double desiredSpeed){
