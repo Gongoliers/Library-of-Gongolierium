@@ -1,12 +1,17 @@
 package com.thegongoliers.output.actuators;
 
+import com.thegongoliers.input.odometry.DistanceSensor;
+import com.thegongoliers.input.odometry.VelocitySensor;
+
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.SpeedController;
+import edu.wpi.first.wpilibj.interfaces.Potentiometer;
 
 public class GSpeedController implements SpeedController {
 
     private SpeedController mSpeedController;
-    private Encoder mEncoder;
+    private DistanceSensor mDistanceSensor;
+    private VelocitySensor mVelocitySensor;
     private double mDistanceCorrectionStrength, mVelocityCorrectionStrength;
 
     /**
@@ -17,8 +22,33 @@ public class GSpeedController implements SpeedController {
      * @param velocityCorrectionStrength the correction strength for setting a velocity (ex. 1 / max velocity)
      */
     public GSpeedController(SpeedController speedController, Encoder encoder, double distanceCorrectionStrength, double velocityCorrectionStrength){
+        this(speedController, encoder::getDistance, encoder::getRate, distanceCorrectionStrength, velocityCorrectionStrength);
+    }
+
+    /**
+     * A speed controller with added functionality
+     * Potentiometers can not use velocity control!
+     * @param speedController the underlying speed controller
+     * @param potentiometer the potentiometer which senses the movement of the motor controlled by the speed controller
+     * @param distanceCorrectionStrength the correction strength for setting a distance (ex. 0.1 when distance is in feet)
+     * @param velocityCorrectionStrength the correction strength for setting a velocity (ex. 1 / max velocity)
+     */
+    public GSpeedController(SpeedController speedController, Potentiometer potentiometer, double distanceCorrectionStrength, double velocityCorrectionStrength){
+        this(speedController, potentiometer::get, () -> 0.0, distanceCorrectionStrength, velocityCorrectionStrength);
+    }
+
+    /**
+     * A speed controller with added functionality
+     * @param speedController the underlying speed controller
+     * @param distanceSensor
+     * @param velocitySensor
+     * @param distanceCorrectionStrength the correction strength for setting a distance (ex. 0.1 when distance is in feet)
+     * @param velocityCorrectionStrength the correction strength for setting a velocity (ex. 1 / max velocity)
+     */
+    public GSpeedController(SpeedController speedController, DistanceSensor distanceSensor, VelocitySensor velocitySensor, double distanceCorrectionStrength, double velocityCorrectionStrength){
         mSpeedController = speedController;
-        mEncoder = encoder;
+        mDistanceSensor = distanceSensor;
+        mVelocitySensor = velocitySensor;
         mDistanceCorrectionStrength = distanceCorrectionStrength;
         mVelocityCorrectionStrength = velocityCorrectionStrength;
     }
@@ -46,7 +76,7 @@ public class GSpeedController implements SpeedController {
      * @return the velocity of the motor in encoder units / second
      */
     public double getVelocity(){
-        return mEncoder.getRate();
+        return mVelocitySensor.getVelocity();
     }
 
     /**
@@ -61,14 +91,7 @@ public class GSpeedController implements SpeedController {
      * @return the distance of the motor in encoder units
      */
     public double getDistance(){
-        return mEncoder.getDistance();
-    }
-
-    /**
-     * Resets the distance on the encoder
-     */
-    public void resetDistance(){
-        mEncoder.reset();
+        return mDistanceSensor.getDistance();
     }
 
     @Override
