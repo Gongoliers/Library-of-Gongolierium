@@ -68,7 +68,6 @@ public class GSpeedController implements SpeedController {
      */
     public void setVelocity(double velocity){
         double error = velocity - getVelocity();
-        System.out.println(mSpeedController.get() + error * mVelocityCorrectionStrength);
         set(mSpeedController.get() + error * mVelocityCorrectionStrength);
     }
 
