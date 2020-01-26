@@ -9,6 +9,8 @@ import edu.wpi.first.wpilibj.SpeedController;
 
 import static org.mockito.Mockito.*;
 
+import com.kylecorry.pid.PID;
+
 public class GSpeedControllerTest {
 
     private GSpeedController speedController;
@@ -19,7 +21,7 @@ public class GSpeedControllerTest {
     public void setup(){
         mockSpeedController = mock(SpeedController.class);
         mockEncoder = mock(Encoder.class);
-        speedController = new GSpeedController(mockSpeedController, mockEncoder, 0.1, 0.2);
+        speedController = new GSpeedController(mockSpeedController, mockEncoder, new PID(0.1, 0, 0), new PID(0.2, 0, 0));
     }
 
     @Test

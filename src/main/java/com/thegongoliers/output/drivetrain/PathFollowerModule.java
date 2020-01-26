@@ -5,6 +5,7 @@ import java.util.OptionalDouble;
 import java.util.stream.Collectors;
 
 import com.thegongoliers.paths.SimplePath;
+import com.kylecorry.pid.PID;
 import com.thegongoliers.paths.PathStep;
 import com.thegongoliers.paths.PathStepType;
 
@@ -21,8 +22,8 @@ public class PathFollowerModule implements DriveModule {
 
     private Gyro mGyro;
     private List<Encoder> mEncoders;
-    private double mForwardStrength, mTurnStrength;
-    private double mForwardTolerance, mTurnTolerance;
+    private PID mForwardPID;
+    private PID mTurnPID;
     private SimplePath mPath;
 
     private boolean isEnabled;
@@ -32,11 +33,17 @@ public class PathFollowerModule implements DriveModule {
 
 
     public PathFollowerModule(Gyro gyro, List<Encoder> encoders, double forwardStrength, double turnStrength){
+        this(gyro, encoders, new PID(forwardStrength, 0, 0), new PID(turnStrength, 0, 0));
+        setTurnTolerance(DEFAULT_TURN_TOLERANCE);
+        setForwardTolerance(DEFAULT_FORWARD_TOLERANCE);
+    }
+
+    public PathFollowerModule(Gyro gyro, List<Encoder> encoders, PID forwardPID, PID turnPID){
         super();
         setGyro(gyro);
         setEncoders(encoders);
-        setForwardStrength(forwardStrength);
-        setTurnStrength(turnStrength);
+        setForwardPID(forwardPID);
+        setTurnPID(turnPID);
         setForwardTolerance(DEFAULT_FORWARD_TOLERANCE);
         setTurnTolerance(DEFAULT_TURN_TOLERANCE);
         mPath = null;
@@ -105,22 +112,22 @@ public class PathFollowerModule implements DriveModule {
 
     public void setForwardTolerance(double tolerance){
         if (tolerance < 0) throw new IllegalArgumentException("Tolerance must be non-negative");
-        mForwardTolerance = tolerance;
+        mForwardPID.setPositionTolerance(tolerance);
     }
 
     public void setTurnTolerance(double tolerance){
         if (tolerance < 0) throw new IllegalArgumentException("Tolerance must be non-negative");
-        mTurnTolerance = tolerance;
+        mTurnPID.setPositionTolerance(tolerance);
     }
 
-    public void setForwardStrength(double strength){
-        if (strength < 0) throw new IllegalArgumentException("Strength must be non-negative");
-        mForwardStrength = strength;
+    public void setForwardPID(PID forwardPID){
+        if (forwardPID == null) throw new IllegalArgumentException("PID must be non-null");
+        mForwardPID = forwardPID;
     }
 
-    public void setTurnStrength(double strength){
-        if (strength < 0) throw new IllegalArgumentException("Strength must be non-negative");
-        mTurnStrength = strength;
+    public void setTurnPID(PID turnPID){
+        if (turnPID == null) throw new IllegalArgumentException("PID must be non-null");
+        mTurnPID = turnPID;
     }
 
     private boolean hasPathToFollow() {
@@ -146,13 +153,15 @@ public class PathFollowerModule implements DriveModule {
 
         if (step.getType() == PathStepType.ROTATION){
             DriveSpeed speed = rotateTowards(step.getValue());
-            if (isDoneRotating(step.getValue())){
+            if (isDoneRotating()){
+                mTurnPID.reset();
                 return getToNextStep();
             }
             return speed;
         } else {
             DriveSpeed speed = driveTowards(step.getValue());
-            if (isDoneDriving(step.getValue())){
+            if (isDoneDriving()){
+                mForwardPID.reset();
                 return getToNextStep();
             }
             return speed;
@@ -170,23 +179,20 @@ public class PathFollowerModule implements DriveModule {
     }
 
     private DriveSpeed rotateTowards(double angle){
-        var error = angle - mGyro.getAngle();
-        var turnSpeed = error * mTurnStrength;
-        return DriveSpeed.fromArcade(0, turnSpeed);
+        return DriveSpeed.fromArcade(0, mTurnPID.calculate(mGyro.getAngle(), angle));
     }
 
     private DriveSpeed driveTowards(double distance){
-        var error = distance - getDistance();
-        var speed = error * mForwardStrength;
+        var speed = mForwardPID.calculate(getDistance(), distance);
         return new DriveSpeed(speed, speed);
     }
 
-    private boolean isDoneRotating(double angle){
-        return Math.abs(angle - mGyro.getAngle()) <= mTurnTolerance;
+    private boolean isDoneRotating(){
+        return mTurnPID.atSetpoint();
     }
 
-    private boolean isDoneDriving(double distance){
-        return Math.abs(distance - getDistance()) <= mForwardTolerance;
+    private boolean isDoneDriving(){
+        return mForwardPID.atSetpoint();
     }
 
     private double getDistance(){

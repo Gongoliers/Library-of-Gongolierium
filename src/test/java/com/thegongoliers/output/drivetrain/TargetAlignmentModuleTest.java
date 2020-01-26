@@ -9,6 +9,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.*;
 
+import com.kylecorry.pid.PID;
 import com.thegongoliers.input.time.Clock;
 import com.thegongoliers.input.vision.TargetingCamera;
 import com.thegongoliers.output.interfaces.Drivetrain;
@@ -79,8 +80,8 @@ public class TargetAlignmentModuleTest {
         when(camera.hasTarget()).thenReturn(true);
         when(camera.getHorizontalOffset()).thenReturn(10.0);
         when(camera.getTargetArea()).thenReturn(25.0);
-        module.setRangeStrength(0);
-        module.setAimStrength(0.1);
+        module.setRangePID(new PID(0, 0, 0));
+        module.setAimPID(new PID(0.1, 0, 0));
         module.setAimThreshold(0.1);
         module.align(0, 0);
         assertTrue(module.isAligning());
@@ -100,8 +101,8 @@ public class TargetAlignmentModuleTest {
         when(camera.hasTarget()).thenReturn(true);
         when(camera.getHorizontalOffset()).thenReturn(10.0);
         when(camera.getTargetArea()).thenReturn(25.0);
-        module.setAimStrength(0);
-        module.setRangeStrength(0.1);
+        module.setAimPID(new PID(0, 0, 0));
+        module.setRangePID(new PID(0.1, 0, 0));
         module.setRangeThreshold(0.1);
         module.align(0, 50);
         assertTrue(module.isAligning());
@@ -121,8 +122,8 @@ public class TargetAlignmentModuleTest {
         when(camera.hasTarget()).thenReturn(true);
         when(camera.getHorizontalOffset()).thenReturn(10.0);
         when(camera.getTargetArea()).thenReturn(25.0);
-        module.setAimStrength(0.2);
-        module.setRangeStrength(0.1);
+        module.setAimPID(new PID(0.2, 0, 0));
+        module.setRangePID(new PID(0.1, 0, 0));
         module.setRangeThreshold(0.1);
         module.setAimThreshold(0.2);
         module.align(0, 50);

@@ -1,5 +1,7 @@
 package com.thegongoliers.output.drivetrain;
 
+import com.kylecorry.pid.PID;
+
 import edu.wpi.first.wpilibj.Encoder;
 
 /**
@@ -8,7 +10,7 @@ import edu.wpi.first.wpilibj.Encoder;
 public class AnchorModule implements DriveModule {
 
     private Encoder mLeftEncoder, mRightEncoder;
-    private double mStrength;
+    private PID mLeftPID, mRightPID;
     private boolean mIsEnabled;
 
     private double lastLeftDistance, lastRightDistance;
@@ -20,10 +22,14 @@ public class AnchorModule implements DriveModule {
      * @param strength the fortify strength (higher values may become unstable, small values recommended. Values must be greater than or equal to 0)
      */
     public AnchorModule(Encoder leftEncoder, Encoder rightEncoder, double strength){
+        this(leftEncoder, rightEncoder, new PID(strength, 0, 0));
+    }
+
+    public AnchorModule(Encoder leftEncoder, Encoder rightEncoder, PID pid){
         super();
         setLeftEncoder(leftEncoder);
         setRightEncoder(rightEncoder);
-        setStrength(strength);
+        setPID(pid);
         mIsEnabled = false;
 
         updateLastPosition();
@@ -53,8 +59,8 @@ public class AnchorModule implements DriveModule {
     }
 
     private DriveSpeed anchor(){
-        double left = mStrength * (lastLeftDistance - mLeftEncoder.getDistance());
-        double right = mStrength * (lastRightDistance - mRightEncoder.getDistance());
+        double left = mLeftPID.calculate(mLeftEncoder.getDistance(), lastLeftDistance);
+        double right = mRightPID.calculate(mRightEncoder.getDistance(), lastRightDistance);
 
         return new DriveSpeed(left, right);
     }
@@ -78,8 +84,9 @@ public class AnchorModule implements DriveModule {
         mRightEncoder = rightEncoder;
     }
 
-    public void setStrength(double strength) {
-        if (strength < 0) throw new IllegalArgumentException("Strength must be non-negative");
-        mStrength = strength;
+    public void setPID(PID pid) {
+        if (pid == null) throw new IllegalArgumentException("PID must be non-null");
+        mLeftPID = new PID(pid.getP(), pid.getI(), pid.getD());
+        mRightPID = new PID(pid.getP(), pid.getI(), pid.getD());
     }
 }

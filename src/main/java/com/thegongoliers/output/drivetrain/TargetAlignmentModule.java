@@ -1,5 +1,6 @@
 package com.thegongoliers.output.drivetrain;
 
+import com.kylecorry.pid.PID;
 import com.thegongoliers.input.vision.TargetingCamera;
 import com.thegongoliers.math.GMath;
 
@@ -14,11 +15,9 @@ public class TargetAlignmentModule implements DriveModule {
 
     private TargetingCamera mCamera;
     private boolean mShouldSeek;
-    private double mAimStrength;
-    private double mRangeStrength;
+    private PID mAimPID;
+    private PID mRangePID;
     private double mSeekSpeed;
-    private double mAimThreshold;
-    private double mRangeThreshold;
 
     private double mDesiredHorizontalOffset;
     private double mDesiredTargetArea;
@@ -26,10 +25,16 @@ public class TargetAlignmentModule implements DriveModule {
     private boolean mIsEnabled;
 
     public TargetAlignmentModule(TargetingCamera camera, double aimStrength, double rangeStrength, boolean shouldSeek){
+        this(camera, new PID(aimStrength, 0, 0), new PID(rangeStrength, 0, 0), shouldSeek);
+        setRangeThreshold(DEFAULT_RANGE_THRESHOLD);
+        setAimThreshold(DEFAULT_AIM_THRESHOLD);
+    }
+
+    public TargetAlignmentModule(TargetingCamera camera, PID aimPID, PID rangePID, boolean shouldSeek){
         mCamera = camera;
         setShouldSeek(shouldSeek);
-        setAimStrength(aimStrength);
-        setRangeStrength(rangeStrength);
+        setAimPID(aimPID);
+        setRangePID(rangePID);
         setAimThreshold(DEFAULT_AIM_THRESHOLD);
         setRangeThreshold(DEFAULT_RANGE_THRESHOLD);
         setSeekSpeed(DEFAULT_SEEK_SPEED);
@@ -48,12 +53,14 @@ public class TargetAlignmentModule implements DriveModule {
             return seek();
         }
 
+        var alignmentSpeed = align();
+
         if (isAligned()){
             stopAligning();
             return desiredSpeed;
         }
         
-        return align();
+        return alignmentSpeed;
     }
 
     @Override
@@ -65,10 +72,14 @@ public class TargetAlignmentModule implements DriveModule {
         mDesiredTargetArea = desiredTargetArea;
         mDesiredHorizontalOffset = desiredHorizontalOffset;
         mIsEnabled = true;
+        mAimPID.reset();
+        mRangePID.reset();
     }
 
     public void stopAligning(){
         mIsEnabled = false;
+        mAimPID.reset();
+        mRangePID.reset();
     }
 
     public boolean isAligning(){
@@ -86,26 +97,26 @@ public class TargetAlignmentModule implements DriveModule {
 
     public void setRangeThreshold(double threshold){
         if (threshold < 0) throw new IllegalArgumentException("Threshold must be non-negative");
-        mRangeThreshold = threshold;
+        mRangePID.setPositionTolerance(threshold);
     }
 
     public void setAimThreshold(double threshold){
         if (threshold < 0) throw new IllegalArgumentException("Threshold must be non-negative");
-        mAimThreshold = threshold;
+        mAimPID.setPositionTolerance(threshold);
     }
 
-    public void setRangeStrength(double strength){
-        if (strength < 0) throw new IllegalArgumentException("Strength must be non-negative");
-        mRangeStrength = strength;
+    public void setRangePID(PID rangePID){
+        if (rangePID == null) throw new IllegalArgumentException("PID must be non-null");
+        mRangePID = rangePID;
     }
 
-    public void setAimStrength(double strength){
-        if (strength < 0) throw new IllegalArgumentException("Strength must be non-negative");
-        mAimStrength = strength;
+    public void setAimPID(PID aimPID){
+        if (aimPID == null) throw new IllegalArgumentException("PID must be non-null");
+        mAimPID = aimPID;
     }
 
     private boolean cantAimOrRange() {
-        return GMath.approximately(mRangeStrength, 0) && GMath.approximately(mAimStrength, 0);
+        return shouldOnlyAlignAim() && shouldOnlyAlignRange();
     }
 
     private boolean cantFindTarget() {
@@ -126,26 +137,29 @@ public class TargetAlignmentModule implements DriveModule {
     }
 
     private boolean isAimAligned() {
-        var aimError = mDesiredHorizontalOffset - mCamera.getHorizontalOffset();
-        return Math.abs(aimError) <= mAimThreshold;
+        return mAimPID.atSetpoint();
     }
 
     private boolean isRangeAligned(){
-        var rangeError = mDesiredTargetArea - mCamera.getTargetArea();
-        return Math.abs(rangeError) <= mRangeThreshold;
+        return mRangePID.atSetpoint();
     }
 
     private DriveSpeed align(){
-        var aimError = mDesiredHorizontalOffset - mCamera.getHorizontalOffset();
-        var rangeError = mDesiredTargetArea - mCamera.getTargetArea();
-        return DriveSpeed.fromArcade(rangeError * mRangeStrength, aimError * mAimStrength);
+        var aim = mAimPID.calculate(mCamera.getHorizontalOffset(), mDesiredHorizontalOffset);
+        var range = mRangePID.calculate(mCamera.getTargetArea(), mDesiredTargetArea);
+
+        return DriveSpeed.fromArcade(range, aim);
     }
 
     private boolean shouldOnlyAlignRange() {
-        return GMath.approximately(mAimStrength, 0);
+        return GMath.approximately(mAimPID.getP(), 0) && 
+            GMath.approximately(mAimPID.getI(), 0) && 
+            GMath.approximately(mAimPID.getD(), 0);
     }
 
     private boolean shouldOnlyAlignAim() {
-        return GMath.approximately(mRangeStrength, 0);
+        return GMath.approximately(mRangePID.getP(), 0) && 
+            GMath.approximately(mRangePID.getI(), 0) && 
+            GMath.approximately(mRangePID.getD(), 0);
     }
 }

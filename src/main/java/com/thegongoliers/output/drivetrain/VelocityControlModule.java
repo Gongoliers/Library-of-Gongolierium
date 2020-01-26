@@ -1,5 +1,7 @@
 package com.thegongoliers.output.drivetrain;
 
+import com.kylecorry.pid.PID;
+
 import edu.wpi.first.wpilibj.Encoder;
 
 /**
@@ -8,7 +10,7 @@ import edu.wpi.first.wpilibj.Encoder;
 public class VelocityControlModule implements DriveModule {
 
     private Encoder mLeftEncoder, mRightEncoder;
-    private double mStrength;
+    private PID mPID;
     private double maxVelocity;
 
     /**
@@ -19,10 +21,21 @@ public class VelocityControlModule implements DriveModule {
      * @param strength the fortify strength (higher values may become unstable, small values recommended. Values must be greater than or equal to 0)
      */
     public VelocityControlModule(Encoder leftEncoder, Encoder rightEncoder, double maxVelocity, double strength){
+        this(leftEncoder, rightEncoder, maxVelocity, new PID(strength, 0, 0));
+    }
+
+    /**
+     * Default constructor
+     * @param leftEncoder the left encoder
+     * @param rightEncoder the right encoder
+     * @param maxVelocity the maximum velocity of the robot in the same units as the encoder's rate (something / second)
+     * @param strength the fortify strength (higher values may become unstable, small values recommended. Values must be greater than or equal to 0)
+     */
+    public VelocityControlModule(Encoder leftEncoder, Encoder rightEncoder, double maxVelocity, PID velocityPID){
         super();
         setLeftEncoder(leftEncoder);
         setRightEncoder(rightEncoder);
-        setStrength(strength);
+        setPID(velocityPID);
         setMaxVelocity(maxVelocity);
     }
 
@@ -42,8 +55,7 @@ public class VelocityControlModule implements DriveModule {
     }
 
     private double getAdjustedSpeed(double lastSpeed, double actualVelocity, double desiredVelocity){        
-        double error = desiredVelocity - actualVelocity;
-        return mStrength * error + lastSpeed;
+        return mPID.calculate(actualVelocity, desiredVelocity) + lastSpeed;
     }
 
     public void setLeftEncoder(Encoder leftEncoder) {
@@ -56,9 +68,9 @@ public class VelocityControlModule implements DriveModule {
         mRightEncoder = rightEncoder;
     }
 
-    public void setStrength(double strength) {
-        if (strength < 0) throw new IllegalArgumentException("Strength must be non-negative");
-        mStrength = strength;
+    public void setPID(PID pid) {
+        if (pid == null) throw new IllegalArgumentException("PID must be non-null");
+        mPID = pid;
     }
 
     public void setMaxVelocity(double maxVelocity) {
