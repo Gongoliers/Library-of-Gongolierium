@@ -18,7 +18,7 @@ public class VelocityControlModule implements DriveModule {
      * @param leftEncoder the left encoder
      * @param rightEncoder the right encoder
      * @param maxVelocity the maximum velocity of the robot in the same units as the encoder's rate (something / second)
-     * @param strength the fortify strength (higher values may become unstable, small values recommended. Values must be greater than or equal to 0)
+     * @param strength the velocity correction strength
      */
     public VelocityControlModule(Encoder leftEncoder, Encoder rightEncoder, double maxVelocity, double strength){
         this(leftEncoder, rightEncoder, maxVelocity, new PID(strength, 0, 0));
@@ -29,7 +29,7 @@ public class VelocityControlModule implements DriveModule {
      * @param leftEncoder the left encoder
      * @param rightEncoder the right encoder
      * @param maxVelocity the maximum velocity of the robot in the same units as the encoder's rate (something / second)
-     * @param strength the fortify strength (higher values may become unstable, small values recommended. Values must be greater than or equal to 0)
+     * @param velocityPID the PID to control velocity
      */
     public VelocityControlModule(Encoder leftEncoder, Encoder rightEncoder, double maxVelocity, PID velocityPID){
         super();

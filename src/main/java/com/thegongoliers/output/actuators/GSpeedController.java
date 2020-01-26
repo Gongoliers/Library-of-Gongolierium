@@ -20,8 +20,8 @@ public class GSpeedController implements SpeedController {
      * A speed controller with added functionality
      * @param speedController the underlying speed controller
      * @param encoder the encoder which senses the movement of the motor controlled by the speed controller
-     * @param distanceCorrectionStrength the correction strength for setting a distance (ex. 0.1 when distance is in feet)
-     * @param velocityCorrectionStrength the correction strength for setting a velocity (ex. 1 / max velocity)
+     * @param distancePID the PID for setting a distance (ex. 0.1 when distance is in feet)
+     * @param velocityPID the PID for setting a velocity (ex. 1 / max velocity)
      */
     public GSpeedController(SpeedController speedController, Encoder encoder, PID distancePID, PID velocityPID){
         this(speedController, encoder::getDistance, encoder::getRate, distancePID, velocityPID);
@@ -32,7 +32,7 @@ public class GSpeedController implements SpeedController {
      * Potentiometers can not use velocity control!
      * @param speedController the underlying speed controller
      * @param potentiometer the potentiometer which senses the movement of the motor controlled by the speed controller
-     * @param distanceCorrectionStrength the correction strength for setting a distance (ex. 0.1 when distance is in feet)
+     * @param distancePID the PID for setting a distance
      */
     public GSpeedController(SpeedController speedController, Potentiometer potentiometer, PID distancePID){
         this(speedController, potentiometer::get, () -> 0.0, distancePID, new PID(0, 0, 0));
@@ -43,8 +43,8 @@ public class GSpeedController implements SpeedController {
      * @param speedController the underlying speed controller
      * @param distanceSensor
      * @param velocitySensor
-     * @param distanceCorrectionStrength the correction strength for setting a distance (ex. 0.1 when distance is in feet)
-     * @param velocityCorrectionStrength the correction strength for setting a velocity (ex. 1 / max velocity)
+     * @param distancePID the PID for setting a distance
+     * @param velocityPID the PID for setting a velocity
      */
     public GSpeedController(SpeedController speedController, DistanceSensor distanceSensor, VelocitySensor velocitySensor, PID distancePID, PID velocityPID){
         mSpeedController = speedController;
