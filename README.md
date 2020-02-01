@@ -1,5 +1,5 @@
 # Library of Gongolierium
-<!--[![Build Status](https://travis-ci.org/Gongoliers/Library-of-Gongolierium.svg?branch=master)](https://travis-ci.org/Gongoliers/Library-of-Gongolierium)-->
+![](https://github.com/Gongoliers/Library-of-Gongolierium/workflows/Java%20CI/badge.svg)
 
 A library to help teams develop more complex robot programs quicker. 
 
