@@ -1,4 +1,5 @@
 # Library of Gongolierium
+[![Release](https://img.shields.io/github/release/Gongoliers/Library-of-Gongolierium.svg?style=flat)](https://jitpack.io/#Gongoliers/Library-of-Gongolierium)
 ![](https://github.com/Gongoliers/Library-of-Gongolierium/workflows/Java%20CI/badge.svg)
 
 A library to help teams develop more complex robot programs quicker. 
