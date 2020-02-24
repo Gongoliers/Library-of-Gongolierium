@@ -30,7 +30,7 @@ repositories {
 
 dependencies {
     ...
-    compile 'com.github.Gongoliers:Library-of-Gongolierium:v4.0.6'
+    compile 'com.github.Gongoliers:Library-of-Gongolierium:v4.0.7'
 }
 ```
 
