@@ -77,6 +77,13 @@ public class StabilityModule implements DriveModule {
         if (strength < 0) throw new IllegalArgumentException("Strength must be non-negative");
         mStrength = strength;
     }
+    
+    /**
+     * Resets the desired heading of the robot to match the gyro
+     **/
+    public void reset() {
+        updateDesiredHeading();   
+    }
 
     private boolean isTurning(DriveSpeed speed) {
         return Math.abs(speed.getLeftSpeed() - speed.getRightSpeed()) > mTurnThreshold;
