@@ -97,4 +97,15 @@ public class StabilityModuleTest {
         DrivetrainTestUtils.verifyArcade(drivetrain, 1, -0.05);
     }
 
+    @Test
+    public void canResetHeading(){
+        when(gyro.getAngle()).thenReturn(10.0);
+        stabilizedDrivetrain.arcade(1.0, 1.0);
+
+        when(gyro.getAngle()).thenReturn(100.0);
+        stabilityModule.reset();
+        stabilizedDrivetrain.arcade(0.9, 0.9);
+        DrivetrainTestUtils.verifyArcade(drivetrain, 0.9, 0.9);
+    }
+
 }
