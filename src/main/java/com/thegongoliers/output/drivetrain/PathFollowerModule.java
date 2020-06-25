@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import com.thegongoliers.paths.SimplePath;
 import com.kylecorry.pid.PID;
+import com.thegongoliers.annotations.UsedInCompetition;
 import com.thegongoliers.paths.PathStep;
 import com.thegongoliers.paths.PathStepType;
 
@@ -15,6 +16,7 @@ import edu.wpi.first.wpilibj.interfaces.Gyro;
 /**
  * A drivetrain module which will follow a path when activated
  */
+@UsedInCompetition(team = "5112", year = "2020")
 public class PathFollowerModule implements DriveModule {
 
     private static final double DEFAULT_FORWARD_TOLERANCE = 0.1;
