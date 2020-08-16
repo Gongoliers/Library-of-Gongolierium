@@ -4,17 +4,17 @@ import com.thegongoliers.GongolieriumException;
 import com.thegongoliers.output.drivetrain.ModularDrivetrain;
 import com.thegongoliers.output.drivetrain.TargetAlignmentModule;
 
-import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.Subsystem;
 
-public class AlignTargetCommand extends Command {
+public class AlignTargetCommand extends CommandBase {
 
     private ModularDrivetrain drivetrain;
     private TargetAlignmentModule module;
     private double desiredTargetArea, desiredHorizontalOffset;
 
     public AlignTargetCommand(Subsystem subsystem, ModularDrivetrain drivetrain, double desiredTargetArea, double desiredHorizontalOffset){
-        requires(subsystem);
+        addRequirements(subsystem);
         this.drivetrain = drivetrain;
         this.desiredTargetArea = desiredTargetArea;
         this.desiredHorizontalOffset = desiredHorizontalOffset;
@@ -26,22 +26,22 @@ public class AlignTargetCommand extends Command {
     }
 
     @Override
-    protected void initialize() {
+    public void initialize() {
         module.align(desiredHorizontalOffset, desiredTargetArea);
     }
 
     @Override
-    protected void execute() {
+    public void execute() {
         drivetrain.arcade(0, 0); // Causes the module to run, ignores input values
     }
 
     @Override
-    protected void end() {
+    public void end(boolean interrupted) {
         module.stopAligning();
     }
 
     @Override
-    protected boolean isFinished() {
+    public boolean isFinished() {
         return !module.isAligning();
     }
 

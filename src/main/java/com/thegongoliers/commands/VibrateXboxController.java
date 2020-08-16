@@ -2,12 +2,11 @@ package com.thegongoliers.commands;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.command.Command;
-
+import edu.wpi.first.wpilibj2.command.CommandBase;
 /**
  * A command to vibrate an Xbox controller.
  */
-public class VibrateXboxController extends Command {
+public class VibrateXboxController extends CommandBase {
 
     private XboxController controller;
     private double intensity;
@@ -24,21 +23,16 @@ public class VibrateXboxController extends Command {
         this.controller = controller;
         this.rumbleType = rumbleType;
         this.intensity = intensity;
-        setTimeout(time);
+        withTimeout(time);
     }
 
     @Override
-    protected void execute() {
+    public void execute() {
         controller.setRumble(rumbleType, intensity);
     }
 
     @Override
-    protected boolean isFinished() {
-        return isTimedOut();
-    }
-
-    @Override
-    protected void end() {
+    public void end(boolean interrupted) {
         controller.setRumble(rumbleType, 0);
     }
 }

@@ -2,8 +2,8 @@ package com.thegongoliers.commands;
 
 import com.thegongoliers.hardware.Hardware;
 import com.thegongoliers.input.current.HighCurrentSensor;
-import edu.wpi.first.wpilibj.buttons.Trigger;
-import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 import java.util.function.DoubleSupplier;
 
@@ -34,7 +34,7 @@ public class SafetyCommands {
      */
     public static Trigger whileHighCurrent(HighCurrentSensor currentSensor, Command command){
         Trigger trigger = Hardware.makeTrigger(currentSensor::isTriggered);
-        trigger.whileActive(command);
+        trigger.whileActiveContinuous(command);
         return trigger;
     }
 
@@ -62,7 +62,7 @@ public class SafetyCommands {
      */
     public static Trigger whileOutOfBounds(DoubleSupplier value, double minimum, double maximum, Command command){
         Trigger trigger = Hardware.makeTrigger(() -> value.getAsDouble() < minimum || value.getAsDouble() > maximum);
-        trigger.whileActive(command);
+        trigger.whileActiveContinuous(command);
         return trigger;
     }
 
