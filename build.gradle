@@ -8,7 +8,7 @@ targetCompatibility = JavaVersion.VERSION_11
 def includeDesktopSupport = true
 
 group 'com.thegongoliers'
-version '5.0.0'
+version '5.1.0'
 
 repositories {
     mavenCentral()
