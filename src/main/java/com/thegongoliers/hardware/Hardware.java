@@ -7,10 +7,8 @@ import com.thegongoliers.math.GMath;
 import com.thegongoliers.output.interfaces.Drivetrain;
 
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
-import edu.wpi.first.wpilibj.PIDSourceType;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
-import edu.wpi.first.wpilibj.interfaces.Potentiometer;
 import edu.wpi.first.wpilibj2.command.button.Button;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -157,43 +155,13 @@ public class Hardware {
 	}
 
 	/**
-	 * Inverts a potentiometer. If a potentiometer goes from 0 to -100 degrees (after scale and zero point), but should be 0 to 100, use this method. 
-	 * @param potentiometer The potentiometer to invert.
-	 * @return The inverted potentiometer. 
-	 */
-	public static Potentiometer invertPotentiometer(Potentiometer potentiometer){
-		return new Potentiometer(){
-		
-			@Override
-			public void setPIDSourceType(PIDSourceType pidSource) {
-				potentiometer.setPIDSourceType(pidSource);
-			}
-		
-			@Override
-			public double pidGet() {
-				return -potentiometer.pidGet();
-			}
-		
-			@Override
-			public PIDSourceType getPIDSourceType() {
-				return potentiometer.getPIDSourceType();
-			}
-		
-			@Override
-			public double get() {
-				return -potentiometer.get();
-			}
-		};
-	}
-
-	/**
 	 * Creates potentiometer.
 	 * @param port The analog port that the potentiometer is plugged into.
-	 * @param degreeRange The total range in degrees that the potentiometer can turn
+	 * @param degreeRange The total range in degrees that the potentiometer can turn (pass a negative number to invert)
      * @param zeroPoint The zero point of the potentiometer. If you expect a position to be 0, but it is reading X degrees, put X here. (ex. actual 1000 to 1100 degrees, expected 0 to 100 degrees. Put 1000 here.)
 	 * @return A potentiometer.
      */
-	public static Potentiometer createPotentiometer(int port, double degreeRange, double zeroPoint){
+	public static AnalogPotentiometer createPotentiometer(int port, double degreeRange, double zeroPoint){
         return new AnalogPotentiometer(port, degreeRange, -zeroPoint);
     }
 
@@ -203,7 +171,7 @@ public class Hardware {
      * @param zeroPoint The zero point of the potentiometer. If you expect a position to be 0, but it is reading X degrees, put X here. (ex. actual 1000 to 1100 degrees, expected 0 to 100 degrees. Put 1000 here.)
 	 * @return A 10 turn potentiometer.
      */
-	public static Potentiometer create10TurnPotentiometer(int port, double zeroPoint){
+	public static AnalogPotentiometer create10TurnPotentiometer(int port, double zeroPoint){
         return createPotentiometer(port, 3600, -zeroPoint);
     }
 

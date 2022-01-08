@@ -4,13 +4,13 @@ import com.kylecorry.pid.PID;
 import com.thegongoliers.input.odometry.DistanceSensor;
 import com.thegongoliers.input.odometry.VelocitySensor;
 
+import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.SpeedController;
-import edu.wpi.first.wpilibj.interfaces.Potentiometer;
+import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 
-public class GSpeedController implements SpeedController {
+public class GSpeedController implements MotorController {
 
-    private SpeedController mSpeedController;
+    private MotorController mSpeedController;
     private DistanceSensor mDistanceSensor;
     private VelocitySensor mVelocitySensor;
     private PID mDistancePID;
@@ -23,7 +23,7 @@ public class GSpeedController implements SpeedController {
      * @param distancePID the PID for setting a distance (ex. 0.1 when distance is in feet)
      * @param velocityPID the PID for setting a velocity (ex. 1 / max velocity)
      */
-    public GSpeedController(SpeedController speedController, Encoder encoder, PID distancePID, PID velocityPID){
+    public GSpeedController(MotorController speedController, Encoder encoder, PID distancePID, PID velocityPID){
         this(speedController, encoder::getDistance, encoder::getRate, distancePID, velocityPID);
     }
 
@@ -34,7 +34,7 @@ public class GSpeedController implements SpeedController {
      * @param potentiometer the potentiometer which senses the movement of the motor controlled by the speed controller
      * @param distancePID the PID for setting a distance
      */
-    public GSpeedController(SpeedController speedController, Potentiometer potentiometer, PID distancePID){
+    public GSpeedController(MotorController speedController, AnalogPotentiometer potentiometer, PID distancePID){
         this(speedController, potentiometer::get, () -> 0.0, distancePID, new PID(0, 0, 0));
     }
 
@@ -46,17 +46,12 @@ public class GSpeedController implements SpeedController {
      * @param distancePID the PID for setting a distance
      * @param velocityPID the PID for setting a velocity
      */
-    public GSpeedController(SpeedController speedController, DistanceSensor distanceSensor, VelocitySensor velocitySensor, PID distancePID, PID velocityPID){
+    public GSpeedController(MotorController speedController, DistanceSensor distanceSensor, VelocitySensor velocitySensor, PID distancePID, PID velocityPID){
         mSpeedController = speedController;
         mDistanceSensor = distanceSensor;
         mVelocitySensor = velocitySensor;
         mDistancePID = distancePID;
         mVelocityPID = velocityPID;
-    }
-
-    @Override
-    public void pidWrite(double output) {
-        mSpeedController.pidWrite(output);
     }
 
     @Override

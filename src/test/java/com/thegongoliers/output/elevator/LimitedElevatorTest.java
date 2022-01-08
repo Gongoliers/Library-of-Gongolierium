@@ -4,7 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.AdditionalMatchers;
 
-import edu.wpi.first.wpilibj.SpeedController;
+import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 
 import static org.mockito.Mockito.*;
 
@@ -16,12 +16,12 @@ import com.thegongoliers.input.switches.Switch;
 public class LimitedElevatorTest {
 
     private LimitedElevator elevator;
-    private SpeedController speedController;
+    private MotorController speedController;
     private Switch topLimit, bottomLimit;
 
     @Before
     public void setup(){
-        speedController = mock(SpeedController.class);
+        speedController = mock(MotorController.class);
         topLimit = mock(Switch.class);
         bottomLimit = mock(Switch.class);
         elevator = new LimitedElevator(speedController, topLimit::isTriggered, bottomLimit::isTriggered);

@@ -5,7 +5,6 @@ import com.thegongoliers.input.switches.Switch;
 import com.thegongoliers.output.interfaces.Drivetrain;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
-import edu.wpi.first.wpilibj.interfaces.Potentiometer;
 import edu.wpi.first.wpilibj2.command.button.Button;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -168,32 +167,6 @@ public class HardwareTest {
 
         when(gyro.getRate()).thenReturn(-0.5);
         assertEquals(0.5, g.getRate(), 0.0001);
-    }
-
-
-    @Test
-    public void testInvertPotentiometer(){
-        Potentiometer potentiometer = mock(Potentiometer.class);
-        Potentiometer p = Hardware.invertPotentiometer(potentiometer);
-
-        // Goes from 1000 -> 900, but it should be 0 -> 100
-
-        double rawAngle = 1000;
-        double offset = 1000;
-
-        assertNotNull(p);
-
-        when(potentiometer.get()).thenReturn(rawAngle - offset);
-        assertEquals(0, p.get(), 0.001);
-
-        rawAngle = 900;
-        when(potentiometer.get()).thenReturn(rawAngle - offset);
-        assertEquals(100, p.get(), 0.001);
-
-        rawAngle = 1100;
-        when(potentiometer.get()).thenReturn(rawAngle - offset);
-        assertEquals(-100, p.get(), 0.001);
-
     }
 
     @Test

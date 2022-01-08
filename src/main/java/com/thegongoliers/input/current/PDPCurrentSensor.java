@@ -1,10 +1,10 @@
 package com.thegongoliers.input.current;
 
-import edu.wpi.first.wpilibj.PowerDistributionPanel;
+import edu.wpi.first.wpilibj.PowerDistribution;
 
 public class PDPCurrentSensor implements CurrentSensor {
 
-	private PowerDistributionPanel pdp;
+	private PowerDistribution pdp;
 	private int port;
 
 	/**
@@ -14,7 +14,7 @@ public class PDPCurrentSensor implements CurrentSensor {
 	 *            The port on the PDP to monitor
 	 */
 	public PDPCurrentSensor(int port) {
-		pdp = new PowerDistributionPanel();
+		pdp = new PowerDistribution();
 		this.port = port;
 	}
 
@@ -26,7 +26,7 @@ public class PDPCurrentSensor implements CurrentSensor {
 	 * @param port
 	 *            The port on the PDP to monitor
 	 */
-	public PDPCurrentSensor(PowerDistributionPanel pdp, int port) {
+	public PDPCurrentSensor(PowerDistribution pdp, int port) {
 		this.pdp = pdp;
 		this.port = port;
 	}

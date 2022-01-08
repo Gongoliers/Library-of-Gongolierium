@@ -3,8 +3,8 @@ package com.thegongoliers;
 import com.thegongoliers.output.drivetrain.*;
 
 import edu.wpi.first.wpilibj.AnalogGyro;
-import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.motorcontrol.Talon;
 
 class Example {
     public static void main(String[] args) {

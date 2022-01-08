@@ -2,15 +2,16 @@ package com.thegongoliers.input;
 
 import com.thegongoliers.input.current.CurrentSensor;
 import com.thegongoliers.input.current.PDPCurrentSensor;
-import edu.wpi.first.wpilibj.PowerDistributionPanel;
+
+import edu.wpi.first.wpilibj.PowerDistribution;
 
 public class PDP {
 
     private static PDP instance;
-    private final PowerDistributionPanel pdp;
+    private final PowerDistribution pdp;
 
     private PDP(){
-        pdp = new PowerDistributionPanel();
+        pdp = new PowerDistribution();
     }
 
     public static PDP getInstance(){

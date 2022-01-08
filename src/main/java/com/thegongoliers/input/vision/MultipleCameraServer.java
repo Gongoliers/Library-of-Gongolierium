@@ -1,9 +1,9 @@
 package com.thegongoliers.input.vision;
 
 import com.thegongoliers.annotations.UsedInCompetition;
-import edu.wpi.cscore.MjpegServer;
-import edu.wpi.cscore.VideoCamera;
 import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.cscore.MjpegServer;
+import edu.wpi.first.cscore.VideoCamera;
 
 import java.util.HashMap;
 import java.util.Map;

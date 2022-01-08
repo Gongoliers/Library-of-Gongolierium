@@ -5,7 +5,7 @@ import java.util.function.BooleanSupplier;
 import com.thegongoliers.math.GMath;
 import com.thegongoliers.output.interfaces.Stoppable;
 
-import edu.wpi.first.wpilibj.SpeedController;
+import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 
 /**
  * An elevator with upper and/or lower limits.
@@ -13,9 +13,9 @@ import edu.wpi.first.wpilibj.SpeedController;
 public class LimitedElevator implements Stoppable {
 
     private BooleanSupplier mTopLimit, mBottomLimit;
-    private SpeedController mSpeedController;
+    private MotorController mSpeedController;
 
-    public LimitedElevator(SpeedController speedController, BooleanSupplier topLimit, BooleanSupplier bottomLimit){
+    public LimitedElevator(MotorController speedController, BooleanSupplier topLimit, BooleanSupplier bottomLimit){
         mSpeedController = speedController;
         mTopLimit = topLimit;
         mBottomLimit = bottomLimit;

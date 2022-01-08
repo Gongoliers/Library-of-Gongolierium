@@ -1,22 +1,18 @@
 package com.thegongoliers.output.drivetrain;
 
-import java.util.Collection;
 import java.util.List;
 
 import com.kylecorry.pid.PID;
-import com.thegongoliers.hardware.Hardware;
 import com.thegongoliers.input.vision.TargetingCamera;
 import com.thegongoliers.output.interfaces.Drivetrain;
 
 import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
+import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 
 public class GDrivetrain implements Drivetrain {
 
-    private SpeedController _left;
-    private SpeedController _right;
     private DifferentialDrive drivetrain;
     private ModularDrivetrain modularDrivetrain;
     private Encoder _leftEncoder;
@@ -24,9 +20,7 @@ public class GDrivetrain implements Drivetrain {
     private Gyro _gyro;
     private TargetingCamera _camera;
     
-    public GDrivetrain(SpeedController left, SpeedController right, Encoder leftEncoder, Encoder rightEncoder, Gyro gyro, TargetingCamera camera){
-        _left = left;
-        _right = right;
+    public GDrivetrain(MotorController left, MotorController right, Encoder leftEncoder, Encoder rightEncoder, Gyro gyro, TargetingCamera camera){
         drivetrain = new DifferentialDrive(left, right);
         _leftEncoder = leftEncoder;
         _rightEncoder = rightEncoder;

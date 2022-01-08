@@ -5,7 +5,7 @@ import org.junit.Test;
 import org.mockito.AdditionalMatchers;
 
 import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.SpeedController;
+import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 
 import static org.mockito.Mockito.*;
 
@@ -14,12 +14,12 @@ import com.kylecorry.pid.PID;
 public class GSpeedControllerTest {
 
     private GSpeedController speedController;
-    private SpeedController mockSpeedController;
+    private MotorController mockSpeedController;
     private Encoder mockEncoder;
 
     @Before
     public void setup(){
-        mockSpeedController = mock(SpeedController.class);
+        mockSpeedController = mock(MotorController.class);
         mockEncoder = mock(Encoder.class);
         speedController = new GSpeedController(mockSpeedController, mockEncoder, new PID(0.1, 0, 0), new PID(0.2, 0, 0));
     }
@@ -40,9 +40,6 @@ public class GSpeedControllerTest {
 
         speedController.setInverted(true);
         verify(mockSpeedController).setInverted(true);
-
-        speedController.pidWrite(1);
-        verify(mockSpeedController).pidWrite(1);
     }
 
     @Test
