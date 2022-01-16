@@ -1,6 +1,7 @@
 plugins {
     id "edu.wpi.first.GradleRIO" version "2022.1.1"
     id "java-library"
+    id "maven-publish"
 }
 
 sourceCompatibility = JavaVersion.VERSION_11
@@ -26,10 +27,6 @@ dependencies {
     api 'com.github.kylecorry31:PID:v1.0.1'
     testImplementation 'junit:junit:4.12'
     testImplementation "org.mockito:mockito-core:1.+"
-}
-
-wrapper {
-    gradleVersion = '5.0'
 }
 
 jar {
