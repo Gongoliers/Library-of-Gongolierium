@@ -23,7 +23,7 @@ public class MultipleCameraServer {
      * @param name the name of the camera server on SmartDashboard
      */
     public MultipleCameraServer(String name){
-        server = CameraServer.getInstance().addSwitchedCamera(name);
+        server = CameraServer.addSwitchedCamera(name);
         cameras = new HashMap<>();
         currentCamera = null;
     }

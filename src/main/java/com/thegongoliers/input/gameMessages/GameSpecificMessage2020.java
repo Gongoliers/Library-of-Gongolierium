@@ -13,7 +13,7 @@ public class GameSpecificMessage2020 {
     }
 
     public ColorAssignment getColorAssignment(){
-        return parseMessage(DriverStation.getInstance().getGameSpecificMessage());
+        return parseMessage(DriverStation.getGameSpecificMessage());
     }
 
     private ColorAssignment parseMessage(String message){
