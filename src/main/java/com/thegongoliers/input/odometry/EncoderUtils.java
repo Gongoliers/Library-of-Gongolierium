@@ -2,7 +2,7 @@ package com.thegongoliers.input.odometry;
 
 import edu.wpi.first.wpilibj.Encoder;
 
-public class EncoderUtils {
+public final class EncoderUtils {
 
     /**
      * Convert an encoder to a distance sensor

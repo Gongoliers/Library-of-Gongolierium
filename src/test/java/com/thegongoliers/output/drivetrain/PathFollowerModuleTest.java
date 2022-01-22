@@ -5,11 +5,12 @@ import org.junit.Test;
 import org.mockito.InOrder;
 import org.mockito.Mockito;
 
-import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 import java.util.List;
+
+import com.thegongoliers.input.odometry.EncoderSensor;
 import com.thegongoliers.input.time.Clock;
 import com.thegongoliers.output.interfaces.Drivetrain;
 import com.thegongoliers.paths.SimplePath;
@@ -19,7 +20,7 @@ public class PathFollowerModuleTest {
     private Drivetrain drivetrain;
     private ModularDrivetrain modularDrivetrain;
     private PathFollowerModule module;
-    private Encoder encoder1, encoder2;
+    private EncoderSensor encoder1, encoder2;
     private Gyro gyro;
     private InOrder inorder;
 
@@ -27,8 +28,8 @@ public class PathFollowerModuleTest {
     public void setup(){
         drivetrain = mock(Drivetrain.class);
         modularDrivetrain = new ModularDrivetrain(drivetrain, mock(Clock.class));
-        encoder1 = mock(Encoder.class);
-        encoder2 = mock(Encoder.class);
+        encoder1 = mock(EncoderSensor.class);
+        encoder2 = mock(EncoderSensor.class);
         gyro = mock(Gyro.class);
         var encoders = List.of(encoder1, encoder2);
         module = new PathFollowerModule(gyro, encoders, 0.1, 0.2);

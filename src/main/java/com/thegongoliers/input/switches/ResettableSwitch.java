@@ -1,10 +1,5 @@
 package com.thegongoliers.input.switches;
 
-public interface ResettableSwitch extends Switch {
+import com.thegongoliers.utils.Resettable;
 
-	/**
-	 * Reset the state of the switch
-	 */
-	void reset();
-
-}
+public interface ResettableSwitch extends Switch, Resettable {}

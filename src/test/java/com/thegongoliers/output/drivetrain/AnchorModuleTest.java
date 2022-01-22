@@ -3,11 +3,12 @@ package com.thegongoliers.output.drivetrain;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.AdditionalMatchers;
-import edu.wpi.first.wpilibj.Encoder;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.*;
+
+import com.thegongoliers.input.odometry.EncoderSensor;
 import com.thegongoliers.input.time.Clock;
 import com.thegongoliers.output.interfaces.Drivetrain;
 
@@ -16,14 +17,14 @@ public class AnchorModuleTest {
     private Drivetrain drivetrain;
     private ModularDrivetrain modularDrivetrain;
     private AnchorModule module;
-    private Encoder encoder1, encoder2;
+    private EncoderSensor encoder1, encoder2;
 
     @Before
     public void setup(){
         drivetrain = mock(Drivetrain.class);
         modularDrivetrain = new ModularDrivetrain(drivetrain, mock(Clock.class));
-        encoder1 = mock(Encoder.class);
-        encoder2 = mock(Encoder.class);
+        encoder1 = mock(EncoderSensor.class);
+        encoder2 = mock(EncoderSensor.class);
         module = new AnchorModule(encoder1, encoder2, 0.1);
         modularDrivetrain.addModule(module);
     }

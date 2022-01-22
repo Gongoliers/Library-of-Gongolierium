@@ -3,10 +3,10 @@ package com.thegongoliers.output.drivetrain;
 import java.util.List;
 
 import com.kylecorry.pid.PID;
+import com.thegongoliers.input.odometry.EncoderSensor;
 import com.thegongoliers.input.vision.TargetingCamera;
 import com.thegongoliers.output.interfaces.Drivetrain;
 
-import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.motorcontrol.MotorController;
@@ -15,12 +15,12 @@ public class GDrivetrain implements Drivetrain {
 
     private DifferentialDrive drivetrain;
     private ModularDrivetrain modularDrivetrain;
-    private Encoder _leftEncoder;
-    private Encoder _rightEncoder;
+    private EncoderSensor _leftEncoder;
+    private EncoderSensor _rightEncoder;
     private Gyro _gyro;
     private TargetingCamera _camera;
     
-    public GDrivetrain(MotorController left, MotorController right, Encoder leftEncoder, Encoder rightEncoder, Gyro gyro, TargetingCamera camera){
+    public GDrivetrain(MotorController left, MotorController right, EncoderSensor leftEncoder, EncoderSensor rightEncoder, Gyro gyro, TargetingCamera camera){
         drivetrain = new DifferentialDrive(left, right);
         _leftEncoder = leftEncoder;
         _rightEncoder = rightEncoder;
@@ -55,7 +55,7 @@ public class GDrivetrain implements Drivetrain {
     }
 
     public double getSpeed(){
-        return (_leftEncoder.getRate() + _rightEncoder.getRate()) / 2;
+        return (_leftEncoder.getVelocity() + _rightEncoder.getVelocity()) / 2;
     }
 
     public double getDistance(){

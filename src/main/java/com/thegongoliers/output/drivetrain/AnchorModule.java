@@ -1,15 +1,14 @@
 package com.thegongoliers.output.drivetrain;
 
 import com.kylecorry.pid.PID;
-
-import edu.wpi.first.wpilibj.Encoder;
+import com.thegongoliers.input.odometry.DistanceSensor;
 
 /**
  * A drivetrain module which will lock the drivetrain in place while a trigger condition is met
  */
 public class AnchorModule implements DriveModule {
 
-    private Encoder mLeftEncoder, mRightEncoder;
+    private DistanceSensor mLeftDistanceSupplier, mRightDistanceSupplier;
     private PID mLeftPID, mRightPID;
     private boolean mIsEnabled;
 
@@ -17,15 +16,15 @@ public class AnchorModule implements DriveModule {
 
     /**
      * Default constructor
-     * @param leftEncoder the left encoder
-     * @param rightEncoder the right encoder
+     * @param leftEncoder the left distance sensor (encoder)
+     * @param rightEncoder the right distance sensor (encoder)
      * @param strength the fortify strength (higher values may become unstable, small values recommended. Values must be greater than or equal to 0)
      */
-    public AnchorModule(Encoder leftEncoder, Encoder rightEncoder, double strength){
+    public AnchorModule(DistanceSensor leftEncoder, DistanceSensor rightEncoder, double strength){
         this(leftEncoder, rightEncoder, new PID(strength, 0, 0));
     }
 
-    public AnchorModule(Encoder leftEncoder, Encoder rightEncoder, PID pid){
+    public AnchorModule(DistanceSensor leftEncoder, DistanceSensor rightEncoder, PID pid){
         super();
         setLeftEncoder(leftEncoder);
         setRightEncoder(rightEncoder);
@@ -59,8 +58,8 @@ public class AnchorModule implements DriveModule {
     }
 
     private DriveSpeed anchor(){
-        double left = mLeftPID.calculate(mLeftEncoder.getDistance(), lastLeftDistance);
-        double right = mRightPID.calculate(mRightEncoder.getDistance(), lastRightDistance);
+        double left = mLeftPID.calculate(mLeftDistanceSupplier.getDistance(), lastLeftDistance);
+        double right = mRightPID.calculate(mRightDistanceSupplier.getDistance(), lastRightDistance);
 
         return new DriveSpeed(left, right);
     }
@@ -70,18 +69,18 @@ public class AnchorModule implements DriveModule {
     }
 
     private void updateLastPosition() {
-        lastLeftDistance = mLeftEncoder.getDistance();
-        lastRightDistance = mRightEncoder.getDistance();
+        lastLeftDistance = mLeftDistanceSupplier.getDistance();
+        lastRightDistance = mRightDistanceSupplier.getDistance();
     }
 
-    public void setLeftEncoder(Encoder leftEncoder) {
+    public void setLeftEncoder(DistanceSensor leftEncoder) {
         if (leftEncoder == null) throw new IllegalArgumentException("Left encoder must be non-null");
-        mLeftEncoder = leftEncoder;
+        mLeftDistanceSupplier = leftEncoder;
     }
 
-    public void setRightEncoder(Encoder rightEncoder) {
+    public void setRightEncoder(DistanceSensor rightEncoder) {
         if (rightEncoder == null) throw new IllegalArgumentException("Right encoder must be non-null");
-        mRightEncoder = rightEncoder;
+        mRightDistanceSupplier = rightEncoder;
     }
 
     public void setPID(PID pid) {

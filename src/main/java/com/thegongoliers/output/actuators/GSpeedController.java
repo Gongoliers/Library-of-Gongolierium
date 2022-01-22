@@ -2,6 +2,7 @@ package com.thegongoliers.output.actuators;
 
 import com.kylecorry.pid.PID;
 import com.thegongoliers.input.odometry.DistanceSensor;
+import com.thegongoliers.input.odometry.EncoderSensor;
 import com.thegongoliers.input.odometry.VelocitySensor;
 
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
@@ -25,6 +26,17 @@ public class GSpeedController implements MotorController {
      */
     public GSpeedController(MotorController speedController, Encoder encoder, PID distancePID, PID velocityPID){
         this(speedController, encoder::getDistance, encoder::getRate, distancePID, velocityPID);
+    }
+
+    /**
+     * A speed controller with added functionality
+     * @param speedController the underlying speed controller
+     * @param encoder the encoder which senses the movement of the motor controlled by the speed controller
+     * @param distancePID the PID for setting a distance (ex. 0.1 when distance is in feet)
+     * @param velocityPID the PID for setting a velocity (ex. 1 / max velocity)
+     */
+    public GSpeedController(MotorController speedController, EncoderSensor encoder, PID distancePID, PID velocityPID){
+        this(speedController, encoder::getDistance, encoder::getVelocity, distancePID, velocityPID);
     }
 
     /**

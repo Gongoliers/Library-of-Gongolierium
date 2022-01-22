@@ -7,10 +7,10 @@ import java.util.stream.Collectors;
 import com.thegongoliers.paths.SimplePath;
 import com.kylecorry.pid.PID;
 import com.thegongoliers.annotations.UsedInCompetition;
+import com.thegongoliers.input.odometry.EncoderSensor;
 import com.thegongoliers.paths.PathStep;
 import com.thegongoliers.paths.PathStepType;
 
-import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
 
 /**
@@ -23,7 +23,7 @@ public class PathFollowerModule implements DriveModule {
     private static final double DEFAULT_TURN_TOLERANCE = 0.1;
 
     private Gyro mGyro;
-    private List<Encoder> mEncoders;
+    private List<EncoderSensor> mEncoders;
     private PID mForwardPID;
     private PID mTurnPID;
     private SimplePath mPath;
@@ -34,13 +34,13 @@ public class PathFollowerModule implements DriveModule {
     private int currentStepIdx;
 
 
-    public PathFollowerModule(Gyro gyro, List<Encoder> encoders, double forwardStrength, double turnStrength){
+    public PathFollowerModule(Gyro gyro, List<EncoderSensor> encoders, double forwardStrength, double turnStrength){
         this(gyro, encoders, new PID(forwardStrength, 0, 0), new PID(turnStrength, 0, 0));
         setTurnTolerance(DEFAULT_TURN_TOLERANCE);
         setForwardTolerance(DEFAULT_FORWARD_TOLERANCE);
     }
 
-    public PathFollowerModule(Gyro gyro, List<Encoder> encoders, PID forwardPID, PID turnPID){
+    public PathFollowerModule(Gyro gyro, List<EncoderSensor> encoders, PID forwardPID, PID turnPID){
         super();
         setGyro(gyro);
         setEncoders(encoders);
@@ -101,7 +101,7 @@ public class PathFollowerModule implements DriveModule {
         currentStepIdx = 0;
     }
 
-    public void setEncoders(List<Encoder> encoders){
+    public void setEncoders(List<EncoderSensor> encoders){
         if (encoders == null || encoders.isEmpty()) throw new IllegalArgumentException("At least one encoder must be supplied");
         if (encoders.parallelStream().anyMatch(e -> e == null)) throw new IllegalArgumentException("All encoders must be non-null");
         mEncoders = encoders.stream().collect(Collectors.toList());
@@ -198,12 +198,12 @@ public class PathFollowerModule implements DriveModule {
     }
 
     private double getDistance(){
-        OptionalDouble average = mEncoders.stream().mapToDouble(Encoder::getDistance).average();
+        OptionalDouble average = mEncoders.stream().mapToDouble(EncoderSensor::getDistance).average();
         return average.isPresent() ? average.getAsDouble() : 0.0;
     }
 
     private void zeroSensors(){
-        mEncoders.forEach(Encoder::reset);
+        mEncoders.forEach(EncoderSensor::reset);
         mGyro.reset();
     }
 }

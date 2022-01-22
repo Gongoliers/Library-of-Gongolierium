@@ -4,23 +4,23 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.AdditionalMatchers;
 
-import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 
 import static org.mockito.Mockito.*;
 
 import com.kylecorry.pid.PID;
+import com.thegongoliers.input.odometry.EncoderSensor;
 
 public class GSpeedControllerTest {
 
     private GSpeedController speedController;
     private MotorController mockSpeedController;
-    private Encoder mockEncoder;
+    private EncoderSensor mockEncoder;
 
     @Before
     public void setup(){
         mockSpeedController = mock(MotorController.class);
-        mockEncoder = mock(Encoder.class);
+        mockEncoder = mock(EncoderSensor.class);
         speedController = new GSpeedController(mockSpeedController, mockEncoder, new PID(0.1, 0, 0), new PID(0.2, 0, 0));
     }
 
@@ -68,25 +68,25 @@ public class GSpeedControllerTest {
 
     @Test
     public void canSetVelocity(){
-        when(mockEncoder.getRate()).thenReturn(0.0);
+        when(mockEncoder.getVelocity()).thenReturn(0.0);
         when(mockSpeedController.get()).thenReturn(0.0);
         speedController.setVelocity(1);
 
         verify(mockSpeedController, times(1)).set(AdditionalMatchers.eq(0.2, 0.001));
 
-        when(mockEncoder.getRate()).thenReturn(0.5);
+        when(mockEncoder.getVelocity()).thenReturn(0.5);
         when(mockSpeedController.get()).thenReturn(0.2);
         speedController.setVelocity(1);
 
         verify(mockSpeedController, times(1)).set(AdditionalMatchers.eq(0.3, 0.001));
 
-        when(mockEncoder.getRate()).thenReturn(1.0);
+        when(mockEncoder.getVelocity()).thenReturn(1.0);
         when(mockSpeedController.get()).thenReturn(0.3);
         speedController.setVelocity(1);
 
         verify(mockSpeedController, times(2)).set(AdditionalMatchers.eq(0.3, 0.001));
 
-        when(mockEncoder.getRate()).thenReturn(1.5);
+        when(mockEncoder.getVelocity()).thenReturn(1.5);
         when(mockSpeedController.get()).thenReturn(0.3);
         speedController.setVelocity(1);
 
@@ -96,6 +96,6 @@ public class GSpeedControllerTest {
     @Test
     public void canGetVelocity(){
         speedController.getVelocity();
-        verify(mockEncoder).getRate();
+        verify(mockEncoder).getVelocity();
     }
 }
