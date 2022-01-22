@@ -15,7 +15,7 @@ public class GameSpecificMessageCommand extends ConditionalCommand {
     public GameSpecificMessageCommand(Command onTrue, Command onFalse, GameSpecificMessageHandler handler) {
         super(onTrue, onFalse, () -> {
             return handler != null && handler.shouldRunTrueCommand(
-                new GameSpecificMessage2018(DriverStation.getInstance().getGameSpecificMessage()));
+                new GameSpecificMessage2018(DriverStation.getGameSpecificMessage()));
         });
     }
 }
