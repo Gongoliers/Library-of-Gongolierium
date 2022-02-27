@@ -11,4 +11,12 @@ public interface DistanceSensor {
      */
     double getDistance();
 
+    public default DistanceSensor inverted(){
+        return () -> -getDistance();
+    }
+
+    public default DistanceSensor scaledBy(double scale){
+        return () -> scale * getDistance();
+    }
+
 }

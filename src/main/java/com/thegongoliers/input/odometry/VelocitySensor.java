@@ -11,4 +11,12 @@ public interface VelocitySensor {
      */
     double getVelocity();
 
+    public default VelocitySensor inverted(){
+        return () -> -getVelocity();
+    }
+
+    public default  VelocitySensor scaledBy(double scale){
+        return () -> scale * getVelocity();
+    }
+
 }
