@@ -4,11 +4,11 @@ import com.thegongoliers.utils.Resettable;
 public interface EncoderSensor extends DistanceSensor, VelocitySensor, Resettable {
 
     public default EncoderSensor scaledBy(double scale){
-        return new BaseEncoderSensor(() -> getDistance() * scale, () -> getVelocity() * scale);
+        return new BaseEncoderSensor(() -> getDistance() * scale, () -> getVelocity() * scale, () -> reset());
     }
 
     public default EncoderSensor inverted(){
-        return new BaseEncoderSensor(() -> -getDistance(), () -> -getVelocity());
+        return new BaseEncoderSensor(() -> -getDistance(), () -> -getVelocity(), () -> reset());
     }
 
 }
