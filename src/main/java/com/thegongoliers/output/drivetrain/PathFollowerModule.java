@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.OptionalDouble;
 import java.util.stream.Collectors;
 
+import com.thegongoliers.input.odometry.AverageEncoderSensor;
 import com.thegongoliers.paths.SimplePath;
 import com.kylecorry.pid.PID;
 import com.thegongoliers.annotations.UsedInCompetition;
@@ -11,6 +12,7 @@ import com.thegongoliers.input.odometry.EncoderSensor;
 import com.thegongoliers.paths.PathStep;
 import com.thegongoliers.paths.PathStepType;
 
+import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
 
 /**
@@ -23,7 +25,7 @@ public class PathFollowerModule implements DriveModule {
     private static final double DEFAULT_TURN_TOLERANCE = 0.1;
 
     private Gyro mGyro;
-    private List<EncoderSensor> mEncoders;
+    private EncoderSensor mEncoder;
     private PID mForwardPID;
     private PID mTurnPID;
     private SimplePath mPath;
@@ -104,7 +106,7 @@ public class PathFollowerModule implements DriveModule {
     public void setEncoders(List<EncoderSensor> encoders){
         if (encoders == null || encoders.isEmpty()) throw new IllegalArgumentException("At least one encoder must be supplied");
         if (encoders.parallelStream().anyMatch(e -> e == null)) throw new IllegalArgumentException("All encoders must be non-null");
-        mEncoders = encoders.stream().collect(Collectors.toList());
+        mEncoder = new AverageEncoderSensor(encoders);
     }
 
     public void setGyro(Gyro gyro){
@@ -141,6 +143,8 @@ public class PathFollowerModule implements DriveModule {
     }
 
     private void startFollowingPath() {
+        mForwardPID.reset();
+        mTurnPID.reset();
         currentPath = mPath;
         currentStepIdx = 0;
         zeroSensors();
@@ -198,12 +202,11 @@ public class PathFollowerModule implements DriveModule {
     }
 
     private double getDistance(){
-        OptionalDouble average = mEncoders.stream().mapToDouble(EncoderSensor::getDistance).average();
-        return average.isPresent() ? average.getAsDouble() : 0.0;
+        return mEncoder.getDistance();
     }
 
     private void zeroSensors(){
-        mEncoders.forEach(EncoderSensor::reset);
+        mEncoder.reset();
         mGyro.reset();
     }
 }

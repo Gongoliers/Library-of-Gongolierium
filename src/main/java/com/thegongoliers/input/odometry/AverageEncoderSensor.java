@@ -33,7 +33,7 @@ public class AverageEncoderSensor implements EncoderSensor {
 
     @Override
     public void reset() {
-        encoders.stream().forEach(EncoderSensor::reset);
+        encoders.forEach(EncoderSensor::reset);
     }
     
 }

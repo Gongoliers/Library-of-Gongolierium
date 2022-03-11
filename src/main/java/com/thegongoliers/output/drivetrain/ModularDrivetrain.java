@@ -24,18 +24,20 @@ public class ModularDrivetrain implements Drivetrain {
 
     /**
      * Default constructor
+     *
      * @param drivetrain the drivetrain
      */
-    public ModularDrivetrain(Drivetrain drivetrain){
+    public ModularDrivetrain(Drivetrain drivetrain) {
         this(drivetrain, new RobotClock());
     }
 
     /**
      * Constructor (for testing)
+     *
      * @param drivetrain the drivetrain
-     * @param clock the clock to use to calculate delta time
+     * @param clock      the clock to use to calculate delta time
      */
-    public ModularDrivetrain(Drivetrain drivetrain, Clock clock){
+    public ModularDrivetrain(Drivetrain drivetrain, Clock clock) {
         this.drivetrain = drivetrain;
         modules = new ArrayList<>();
         currentSpeed = DriveSpeed.STOP;
@@ -45,10 +47,11 @@ public class ModularDrivetrain implements Drivetrain {
 
     /**
      * Create a modular drivetrain from a differential drive
+     *
      * @param differentialDrive the differential drive
      * @return the drivetrain
      */
-    public static ModularDrivetrain from(DifferentialDrive differentialDrive){
+    public static ModularDrivetrain from(DifferentialDrive differentialDrive) {
         return new ModularDrivetrain(Hardware.createDrivetrain(differentialDrive));
     }
 
@@ -73,27 +76,29 @@ public class ModularDrivetrain implements Drivetrain {
 
         var overrides = modules.stream().filter(DriveModule::overridesUser).collect(Collectors.toList());
         DriveModule override = null;
-        if (!overrides.isEmpty()){
+        if (!overrides.isEmpty()) {
             override = overrides.get(overrides.size() - 1);
         }
 
-        if (override != null){
+        if (override != null) {
             desiredSpeed = override.run(currentSpeed, desiredSpeed, dt);
         }
 
-        for(DriveModule module : modules){
+        for (DriveModule module : modules) {
             if (override == module) {
+                // The override has been seen, and its speed is already desired speed, so let everything else run
                 override = null;
                 continue;
             }
 
-            if (override == null){
+            if (override == null) {
                 desiredSpeed = module.run(currentSpeed, desiredSpeed, dt);
             } else {
+                // Run the module to ensure it stay updated, but don't update the desired speed since it should be overridden
                 module.run(currentSpeed, desiredSpeed, dt);
             }
         }
-        
+
         currentSpeed = desiredSpeed;
         lastTime = time;
         drivetrain.tank(currentSpeed.getLeftSpeed(), currentSpeed.getRightSpeed());
@@ -101,52 +106,57 @@ public class ModularDrivetrain implements Drivetrain {
 
     /**
      * Installs modules into the drivetrain
+     *
      * @param modules the modules
      */
-    public void setModules(DriveModule... modules){
+    public void setModules(DriveModule... modules) {
         this.modules = new ArrayList<>(List.of(modules));
     }
 
     /**
      * Add a module to the drivetrain.
      * Note: you can add a module more than once, though this may produce undesired behavior
+     *
      * @param module the module to add
      */
-    public void addModule(DriveModule module){
+    public void addModule(DriveModule module) {
         if (module == null) return;
         modules.add(module);
     }
 
     /**
      * Remove a module from the drivetrain
+     *
      * @param module the module to remove
      */
-    public void removeModule(DriveModule module){
+    public void removeModule(DriveModule module) {
         modules.remove(module);
     }
 
     /**
      * Get all the installed modules
+     *
      * @return the modules
      */
-    public List<DriveModule> getInstalledModules(){
+    public List<DriveModule> getInstalledModules() {
         return modules;
     }
 
     /**
      * Gets the first installed module of the given type
+     *
      * @param cls the class of the module to find
      * @return the first module of the given type, or null if it was not found
      */
     @SuppressWarnings("unchecked")
-    public <T> T getInstalledModule(Class<T> cls){
-        for (DriveModule module : modules){
-            if (module.getClass() == cls){
+    public <T> T getInstalledModule(Class<T> cls) {
+        for (DriveModule module : modules) {
+            if (module.getClass() == cls) {
                 return (T) module;
             }
         }
         return null;
     }
 
-    
+
 }
