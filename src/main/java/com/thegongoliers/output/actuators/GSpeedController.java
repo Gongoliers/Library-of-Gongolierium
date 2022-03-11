@@ -27,6 +27,22 @@ public class GSpeedController implements MotorController {
     /**
      * A speed controller with added functionality
      * @param speedController the underlying speed controller
+     */
+    public GSpeedController(MotorController speedController, Clock clock){
+        this(speedController, () -> 0.0, () -> 0.0, new PID(0, 0, 0), new PID(0, 0, 0), clock);
+    }
+
+    /**
+     * A speed controller with added functionality
+     * @param speedController the underlying speed controller
+     */
+    public GSpeedController(MotorController speedController){
+        this(speedController, new RobotClock());
+    }
+
+    /**
+     * A speed controller with added functionality
+     * @param speedController the underlying speed controller
      * @param encoder the encoder which senses the movement of the motor controlled by the speed controller
      * @param distancePID the PID for setting a distance (ex. 0.1 when distance is in feet)
      * @param velocityPID the PID for setting a velocity (ex. 1 / max velocity)
@@ -137,7 +153,7 @@ public class GSpeedController implements MotorController {
 
     /**
      * Controls the ramping of the motor. Set to 0 to disable.
-     * @param secondsToReachFullSpeed the ramping time in seconds from 0 to full speed
+     * @param secondsToFullSpeed the ramping time in seconds from 0 to full speed
      */
     public void setSecondsToFullSpeed(double secondsToFullSpeed){
         mSecondsToFullSpeed = Math.abs(secondsToFullSpeed);
