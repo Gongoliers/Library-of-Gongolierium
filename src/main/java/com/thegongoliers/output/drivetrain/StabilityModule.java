@@ -3,12 +3,13 @@ package com.thegongoliers.output.drivetrain;
 import com.thegongoliers.input.time.Clock;
 import com.thegongoliers.input.time.RobotClock;
 
+import com.thegongoliers.utils.Resettable;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
 
 /**
  * A drivetrain module which will stabilize the drivetrain (rotation-wise) while attempting to drive straight
  */
-public class StabilityModule implements DriveModule {
+public class StabilityModule implements DriveModule, Resettable {
 
     private static final double DEFAULT_TURN_THRESHOLD = 0.01;
 
@@ -28,7 +29,6 @@ public class StabilityModule implements DriveModule {
      * @param settlingTime the amount of time to allow the drivetrain to settle after turn inputs stop before applying turn corrections
      */
     public StabilityModule(Gyro gyro, double strength, double settlingTime){
-        super();
         setGyro(gyro);
         setStrength(strength);
         setSettlingTime(settlingTime);
@@ -81,6 +81,7 @@ public class StabilityModule implements DriveModule {
     /**
      * Resets the desired heading of the robot to match the gyro
      **/
+    @Override
     public void reset() {
         updateDesiredHeading();   
     }

@@ -12,6 +12,7 @@ import com.thegongoliers.input.odometry.EncoderSensor;
 import com.thegongoliers.paths.PathStep;
 import com.thegongoliers.paths.PathStepType;
 
+import com.thegongoliers.utils.Resettable;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
 
@@ -19,7 +20,7 @@ import edu.wpi.first.wpilibj.interfaces.Gyro;
  * A drivetrain module which will follow a path when activated
  */
 @UsedInCompetition(team = "5112", year = "2020")
-public class PathFollowerModule implements DriveModule {
+public class PathFollowerModule implements DriveModule, Resettable {
 
     private static final double DEFAULT_FORWARD_TOLERANCE = 0.1;
     private static final double DEFAULT_TURN_TOLERANCE = 0.1;
@@ -34,6 +35,9 @@ public class PathFollowerModule implements DriveModule {
 
     private SimplePath currentPath;
     private int currentStepIdx;
+
+    private double distanceZero;
+    private double angleZero;
 
 
     public PathFollowerModule(Gyro gyro, List<EncoderSensor> encoders, double forwardStrength, double turnStrength){
@@ -185,7 +189,7 @@ public class PathFollowerModule implements DriveModule {
     }
 
     private DriveSpeed rotateTowards(double angle){
-        return DriveSpeed.fromArcade(0, mTurnPID.calculate(mGyro.getAngle(), angle));
+        return DriveSpeed.fromArcade(0, mTurnPID.calculate(getAngle(), angle));
     }
 
     private DriveSpeed driveTowards(double distance){
@@ -202,11 +206,20 @@ public class PathFollowerModule implements DriveModule {
     }
 
     private double getDistance(){
-        return mEncoder.getDistance();
+        return mEncoder.getDistance() - distanceZero;
+    }
+
+    private double getAngle(){
+        return mGyro.getAngle() - angleZero;
     }
 
     private void zeroSensors(){
-        mEncoder.reset();
-        mGyro.reset();
+        distanceZero = mEncoder.getDistance();
+        angleZero = mGyro.getAngle();
+    }
+
+    @Override
+    public void reset() {
+        stopFollowingPath();
     }
 }

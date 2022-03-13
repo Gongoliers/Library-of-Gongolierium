@@ -9,18 +9,20 @@ import com.thegongoliers.input.time.Clock;
 import com.thegongoliers.input.time.RobotClock;
 import com.thegongoliers.output.interfaces.Drivetrain;
 
+import com.thegongoliers.utils.Resettable;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 
 /**
  * A wrapper class for a drivetrain which adds support for drive modules. Does not apply drive modules during tank driving.
  */
-public class ModularDrivetrain implements Drivetrain {
+public class ModularDrivetrain implements Drivetrain, Resettable {
 
     private Drivetrain drivetrain;
     private List<DriveModule> modules;
     private DriveSpeed currentSpeed;
     private Clock clock;
     private double lastTime;
+    private double resetThreshold = Double.POSITIVE_INFINITY;
 
     /**
      * Default constructor
@@ -74,6 +76,10 @@ public class ModularDrivetrain implements Drivetrain {
         double time = clock.getTime();
         double dt = time - lastTime;
 
+        if (dt >= resetThreshold){
+            reset();
+        }
+
         var overrides = modules.stream().filter(DriveModule::overridesUser).collect(Collectors.toList());
         DriveModule override = null;
         if (!overrides.isEmpty()) {
@@ -94,8 +100,8 @@ public class ModularDrivetrain implements Drivetrain {
             if (override == null) {
                 desiredSpeed = module.run(currentSpeed, desiredSpeed, dt);
             } else {
-                // Run the module to ensure it stay updated, but don't update the desired speed since it should be overridden
-                module.run(currentSpeed, desiredSpeed, dt);
+                // Reset the modules not being run
+                resetModule(module);
             }
         }
 
@@ -134,6 +140,16 @@ public class ModularDrivetrain implements Drivetrain {
     }
 
     /**
+     * Reset a module
+     * @param module the module to reset
+     */
+    public void resetModule(DriveModule module){
+        if (module instanceof Resettable){
+            ((Resettable)module).reset();
+        }
+    }
+
+    /**
      * Get all the installed modules
      *
      * @return the modules
@@ -159,4 +175,16 @@ public class ModularDrivetrain implements Drivetrain {
     }
 
 
+    @Override
+    public void reset() {
+        modules.forEach(this::resetModule);
+    }
+
+    /**
+     * If a drive method was not called within the reset threshold, all modules will be reset on the next invocation.
+     * @param resetThreshold The reset threshold in seconds.
+     */
+    public void setInactiveResetSeconds(double resetThreshold){
+        this.resetThreshold = resetThreshold;
+    }
 }

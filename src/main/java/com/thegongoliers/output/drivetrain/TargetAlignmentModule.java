@@ -3,11 +3,12 @@ package com.thegongoliers.output.drivetrain;
 import com.kylecorry.pid.PID;
 import com.thegongoliers.input.vision.TargetingCamera;
 import com.thegongoliers.math.GMath;
+import com.thegongoliers.utils.Resettable;
 
 /**
  * A drivetrain module which align to vision targets
  */
-public class TargetAlignmentModule implements DriveModule {
+public class TargetAlignmentModule implements DriveModule, Resettable {
 
     private static final double DEFAULT_RANGE_THRESHOLD = 0.1;
     private static final double DEFAULT_AIM_THRESHOLD = 0.1;
@@ -161,5 +162,10 @@ public class TargetAlignmentModule implements DriveModule {
         return GMath.approximately(mRangePID.getP(), 0) && 
             GMath.approximately(mRangePID.getI(), 0) && 
             GMath.approximately(mRangePID.getD(), 0);
+    }
+
+    @Override
+    public void reset() {
+        stopAligning();
     }
 }

@@ -2,11 +2,12 @@ package com.thegongoliers.output.drivetrain;
 
 import com.kylecorry.pid.PID;
 import com.thegongoliers.input.odometry.DistanceSensor;
+import com.thegongoliers.utils.Resettable;
 
 /**
  * A drivetrain module which will lock the drivetrain in place while a trigger condition is met
  */
-public class AnchorModule implements DriveModule {
+public class AnchorModule implements DriveModule, Resettable {
 
     private DistanceSensor mLeftDistanceSupplier, mRightDistanceSupplier;
     private PID mLeftPID, mRightPID;
@@ -87,5 +88,10 @@ public class AnchorModule implements DriveModule {
         if (pid == null) throw new IllegalArgumentException("PID must be non-null");
         mLeftPID = new PID(pid.getP(), pid.getI(), pid.getD());
         mRightPID = new PID(pid.getP(), pid.getI(), pid.getD());
+    }
+
+    @Override
+    public void reset() {
+        stopHoldingPosition();
     }
 }

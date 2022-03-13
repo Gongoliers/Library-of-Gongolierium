@@ -9,7 +9,7 @@ targetCompatibility = JavaVersion.VERSION_11
 def includeDesktopSupport = true
 
 group 'com.thegongoliers'
-version '6.1.1'
+version '6.1.2'
 
 
 publishing {

@@ -1,12 +1,12 @@
 package com.thegongoliers.output.drivetrain;
 
+import com.thegongoliers.utils.Resettable;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.AdditionalMatchers;
 
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 import java.util.List;
@@ -21,11 +21,13 @@ public class ModularDrivetrainTest {
 
     private Drivetrain drivetrain;
     private ModularDrivetrain modularDrivetrain;
+    private Clock clock;
 
     @Before
     public void setup(){
         drivetrain = mock(Drivetrain.class);
-        modularDrivetrain = new ModularDrivetrain(drivetrain, mock(Clock.class));
+        clock = mock(Clock.class);
+        modularDrivetrain = new ModularDrivetrain(drivetrain, clock);
     }
 
     @Test
@@ -55,10 +57,13 @@ public class ModularDrivetrainTest {
     public void canAddMultipleModules(){
         DriveModule module1 = new AddModule(0.1);
         DriveModule module2 = new AddModule(0.3);
+        ResettableModule module3 = new ResettableModule();
         modularDrivetrain.addModule(module1);
         modularDrivetrain.addModule(module2);
+        modularDrivetrain.addModule(module3);
         modularDrivetrain.tank(0, 0.1);
         verifyTank(0.4, 0.5);
+        assertFalse(module3.wasReset);
     }
 
     @Test
@@ -72,20 +77,54 @@ public class ModularDrivetrainTest {
 
     @Test
     public void canUseAnOverrideModule(){
-        DriveModule module1 = new AddModule(0.3);
-        DriveModule module2 = new OverrideModule(0.5);
+        ResettableModule module1 = new ResettableModule();
+        OverrideModule module2 = new OverrideModule(0.5);
         DriveModule module3 = new AddModule(0.1);
         modularDrivetrain.setModules(module1, module2, module3);
         modularDrivetrain.tank(0, 0);
+        assertTrue(module1.wasReset);
         verifyTank(0.6, 0.6);
 
+        module1.wasReset = false;
         modularDrivetrain.setModules(module1, module3, module2);
         modularDrivetrain.tank(0.1, 0.1);
+        assertTrue(module1.wasReset);
         verifyTank(0.5, 0.5);
 
+        reset(drivetrain);
+        module1.wasReset = false;
         modularDrivetrain.setModules(module2, module1, module3);
         modularDrivetrain.tank(0.2, 0.2);
-        verifyTank(0.9, 0.9);
+        assertFalse(module1.wasReset);
+        verifyTank(0.6, 0.6);
+
+        module1.wasReset = false;
+        module2.isOverriding = false;
+        modularDrivetrain.setModules(module2, module1, module3);
+        modularDrivetrain.tank(0.2, 0.2);
+        assertFalse(module1.wasReset);
+        verifyTank(0.3, 0.3);
+    }
+
+    @Test
+    public void resetsAfterInactive(){
+        ResettableModule module = new ResettableModule();
+        modularDrivetrain.setModules(module);
+        modularDrivetrain.setInactiveResetSeconds(1.0);
+        modularDrivetrain.tank(0, 0);
+        assertFalse(module.wasReset);
+
+        when(clock.getTime()).thenReturn(0.5);
+        modularDrivetrain.tank(0, 0);
+        assertFalse(module.wasReset);
+
+        when(clock.getTime()).thenReturn(1.0);
+        modularDrivetrain.tank(0, 0);
+        assertFalse(module.wasReset);
+
+        when(clock.getTime()).thenReturn(2.0);
+        modularDrivetrain.tank(0, 0);
+        assertTrue(module.wasReset);
     }
 
     @Test
@@ -165,9 +204,25 @@ public class ModularDrivetrainTest {
         }
     }
 
+    private class ResettableModule implements DriveModule, Resettable {
+
+        public boolean wasReset = false;
+
+        @Override
+        public DriveSpeed run(DriveSpeed currentSpeed, DriveSpeed desiredSpeed, double deltaTime) {
+            return desiredSpeed;
+        }
+
+        @Override
+        public void reset() {
+            wasReset = true;
+        }
+    }
+
     private class OverrideModule implements DriveModule {
 
         private double value;
+        boolean isOverriding = true;
 
         public OverrideModule(double value){
             super();
@@ -176,7 +231,16 @@ public class ModularDrivetrainTest {
 
         @Override
         public DriveSpeed run(DriveSpeed currentSpeed, DriveSpeed desiredSpeed, double deltaTime) {
-            return new DriveSpeed(value, value);
+            if (isOverriding) {
+                return new DriveSpeed(value, value);
+            }
+
+            return desiredSpeed;
+        }
+
+        @Override
+        public boolean overridesUser() {
+            return isOverriding;
         }
     }
 

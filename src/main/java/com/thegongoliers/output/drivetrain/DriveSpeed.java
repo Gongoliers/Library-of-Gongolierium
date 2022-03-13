@@ -2,6 +2,8 @@ package com.thegongoliers.output.drivetrain;
 
 import com.thegongoliers.math.GMath;
 
+import java.util.Objects;
+
 /**
  * A class representing the speed of a differential drivetrain
  */
@@ -85,4 +87,16 @@ public class DriveSpeed {
       return new DriveSpeed(GMath.clamp(l, -1, 1), GMath.clamp(r, -1, 1));
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        DriveSpeed that = (DriveSpeed) o;
+        return Double.compare(that.left, left) == 0 && Double.compare(that.right, right) == 0;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(left, right);
+    }
 }
