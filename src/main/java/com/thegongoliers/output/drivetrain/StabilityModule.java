@@ -87,7 +87,7 @@ public class StabilityModule implements DriveModule, Resettable {
     }
 
     private boolean isTurning(DriveSpeed speed) {
-        return Math.abs(speed.getLeftSpeed() - speed.getRightSpeed()) > mTurnThreshold;
+        return Math.abs(speed.turn()) > mTurnThreshold;
     }
 
     private void updateDesiredHeading() {
@@ -103,13 +103,9 @@ public class StabilityModule implements DriveModule, Resettable {
     }
 
     private DriveSpeed getCorrectedDriveSpeed(DriveSpeed desiredSpeed) {
-        double forward = calculateForwardSpeed(desiredSpeed);
+        double forward = desiredSpeed.forward();
         double turn = calculateTurnCorrection();
         return DriveSpeed.fromArcade(forward, turn);
-    }
-
-    private double calculateForwardSpeed(DriveSpeed speed) {
-        return (speed.getLeftSpeed() + speed.getRightSpeed()) / 2;
     }
 
     private double calculateTurnCorrection() {

@@ -64,6 +64,54 @@ public class DriveSpeed {
         return new DriveSpeed(left, right);
     }
 
+    public double forward(){
+        if (Math.signum(left) != Math.signum(right)){
+            return right + left;
+        }
+
+        if (Math.abs(left) > Math.abs(right)){
+            return left;
+        }
+
+        return right;
+    }
+
+    public double turn(){
+        var f = forward();
+
+        if (f >= 0.0) {
+            // First quadrant, else second quadrant
+            if (left >= right) {
+                if (right < 0){
+                    return left;
+                } else {
+                    return left - right;
+                }
+            } else {
+                if (left < 0){
+                    return -right;
+                } else {
+                    return left - right;
+                }
+            }
+        } else {
+            // Third quadrant, else fourth quadrant
+            if (left >= right) {
+                if (left < 0){
+                    return left - right;
+                } else {
+                    return -right;
+                }
+            } else {
+                if (right < 0){
+                    return left - right;
+                } else {
+                    return -left;
+                }
+            }
+        }
+    }
+
     /**
      * The left speed of the drivetrain
      * @return the left speed

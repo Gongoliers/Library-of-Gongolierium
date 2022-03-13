@@ -12,6 +12,6 @@ public class StopCommand extends InstantCommand {
 	 * @param system The subsystem on the robot which implements the Stoppable interface.
 	 */
     public <T extends Subsystem & Stoppable> StopCommand(T system) {
-		super(() -> system.stop(), system);
+		super(system::stop, system);
     }
 }
