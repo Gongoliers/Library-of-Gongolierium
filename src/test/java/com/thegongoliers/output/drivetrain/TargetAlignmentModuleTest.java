@@ -10,7 +10,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.*;
 
-import com.kylecorry.pid.PID;
 import com.thegongoliers.input.time.Clock;
 import com.thegongoliers.input.vision.TargetingCamera;
 import com.thegongoliers.output.interfaces.Drivetrain;
