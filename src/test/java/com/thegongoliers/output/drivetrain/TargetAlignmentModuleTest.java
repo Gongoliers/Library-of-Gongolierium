@@ -1,5 +1,6 @@
 package com.thegongoliers.output.drivetrain;
 
+import com.thegongoliers.output.control.PIDController;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InOrder;
@@ -21,13 +22,19 @@ public class TargetAlignmentModuleTest {
     private TargetAlignmentModule module;
     private TargetingCamera camera;
     private InOrder inorder;
+    private Clock clock;
 
     @Before
     public void setup(){
         drivetrain = mock(Drivetrain.class);
-        modularDrivetrain = new ModularDrivetrain(drivetrain, mock(Clock.class));
+        clock = mock(Clock.class);
+        modularDrivetrain = new ModularDrivetrain(drivetrain, clock);
         camera = mock(TargetingCamera.class);
-        module = new TargetAlignmentModule(camera, 0.1, 0.2, false);
+        var aim = new PIDController(0.1, 0, 0);
+        var range = new PIDController(0.2, 0, 0);
+        aim.setPositionTolerance(0.1);
+        range.setPositionTolerance(0.1);
+        module = new TargetAlignmentModule(camera, aim, range, false);
         modularDrivetrain.addModule(module);
         inorder = Mockito.inOrder(drivetrain);
     }
@@ -80,17 +87,23 @@ public class TargetAlignmentModuleTest {
         when(camera.hasTarget()).thenReturn(true);
         when(camera.getHorizontalOffset()).thenReturn(10.0);
         when(camera.getTargetArea()).thenReturn(25.0);
-        module.setRangePID(new PID(0, 0, 0));
-        module.setAimPID(new PID(0.1, 0, 0));
-        module.setAimThreshold(0.1);
+        var aim = new PIDController(0.1, 0, 0);
+        aim.setPositionTolerance(0.1);
+        module.setRangeController(null);
+        module.setAimController(aim);
         module.align(0, 0);
         assertTrue(module.isAligning());
+
         modularDrivetrain.tank(1, 1);
         DrivetrainTestUtils.inorderVerifyArcade(inorder, drivetrain, 0, -1);
         when(camera.getHorizontalOffset()).thenReturn(5.0);
+
+        when(clock.getTime()).thenReturn(0.01);
         modularDrivetrain.tank(1, 1);
         DrivetrainTestUtils.inorderVerifyArcade(inorder, drivetrain, 0, -0.5);
         when(camera.getHorizontalOffset()).thenReturn(0.1);
+
+        when(clock.getTime()).thenReturn(0.02);
         modularDrivetrain.tank(1, 1);
         DrivetrainTestUtils.inorderVerifyTank(inorder, drivetrain, 1, 1);
         assertFalse(module.isAligning());
@@ -101,17 +114,22 @@ public class TargetAlignmentModuleTest {
         when(camera.hasTarget()).thenReturn(true);
         when(camera.getHorizontalOffset()).thenReturn(10.0);
         when(camera.getTargetArea()).thenReturn(25.0);
-        module.setAimPID(new PID(0, 0, 0));
-        module.setRangePID(new PID(0.1, 0, 0));
-        module.setRangeThreshold(0.1);
+        var range = new PIDController(0.1, 0, 0);
+        range.setPositionTolerance(0.1);
+        module.setAimController(null);
+        module.setRangeController(range);
         module.align(0, 50);
         assertTrue(module.isAligning());
         modularDrivetrain.tank(1, 1);
         DrivetrainTestUtils.inorderVerifyArcade(inorder, drivetrain, 1, 0);
         when(camera.getTargetArea()).thenReturn(45.0);
+
+        when(clock.getTime()).thenReturn(0.01);
         modularDrivetrain.tank(1, 1);
         DrivetrainTestUtils.inorderVerifyArcade(inorder, drivetrain, 0.5, 0);
         when(camera.getTargetArea()).thenReturn(50.0);
+
+        when(clock.getTime()).thenReturn(0.02);
         modularDrivetrain.tank(1, 1);
         DrivetrainTestUtils.inorderVerifyTank(inorder, drivetrain, 1, 1);
         assertFalse(module.isAligning());
@@ -122,23 +140,31 @@ public class TargetAlignmentModuleTest {
         when(camera.hasTarget()).thenReturn(true);
         when(camera.getHorizontalOffset()).thenReturn(10.0);
         when(camera.getTargetArea()).thenReturn(25.0);
-        module.setAimPID(new PID(0.2, 0, 0));
-        module.setRangePID(new PID(0.1, 0, 0));
-        module.setRangeThreshold(0.1);
-        module.setAimThreshold(0.2);
+        var aim = new PIDController(0.2, 0, 0);
+        aim.setPositionTolerance(0.2);
+        var range = new PIDController(0.1, 0, 0);
+        range.setPositionTolerance(0.1);
+        module.setAimController(aim);
+        module.setRangeController(range);
         module.align(0, 50);
         assertTrue(module.isAligning());
         modularDrivetrain.tank(1, 1);
         DrivetrainTestUtils.inorderVerifyArcade(inorder, drivetrain, 1, -1);
         when(camera.getTargetArea()).thenReturn(45.0);
         when(camera.getHorizontalOffset()).thenReturn(2.5);
+
+        when(clock.getTime()).thenReturn(0.01);
         modularDrivetrain.tank(1, 1);
         DrivetrainTestUtils.inorderVerifyArcade(inorder, drivetrain, 0.5, -0.5);
         when(camera.getTargetArea()).thenReturn(50.0);
         when(camera.getHorizontalOffset()).thenReturn(1.0);
+
+        when(clock.getTime()).thenReturn(0.02);
         modularDrivetrain.tank(1, 1);
         DrivetrainTestUtils.inorderVerifyArcade(inorder, drivetrain, 0, -0.2);
         when(camera.getHorizontalOffset()).thenReturn(0.1);
+
+        when(clock.getTime()).thenReturn(0.03);
         modularDrivetrain.tank(1, 1);
         DrivetrainTestUtils.inorderVerifyTank(inorder, drivetrain, 1, 1);
         assertFalse(module.isAligning());

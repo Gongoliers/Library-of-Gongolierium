@@ -1,23 +1,20 @@
 package com.thegongoliers.output.drivetrain;
 
-import com.kylecorry.pid.PID;
 import com.thegongoliers.input.vision.TargetingCamera;
 import com.thegongoliers.math.GMath;
+import com.thegongoliers.output.control.MotionController;
 import com.thegongoliers.utils.Resettable;
 
 /**
  * A drivetrain module which align to vision targets
  */
 public class TargetAlignmentModule implements DriveModule, Resettable {
-
-    private static final double DEFAULT_RANGE_THRESHOLD = 0.1;
-    private static final double DEFAULT_AIM_THRESHOLD = 0.1;
     private static final double DEFAULT_SEEK_SPEED = 0.3;
 
     private TargetingCamera mCamera;
     private boolean mShouldSeek;
-    private PID mAimPID;
-    private PID mRangePID;
+    private MotionController mAimController;
+    private MotionController mRangeController;
     private double mSeekSpeed;
 
     private double mDesiredHorizontalOffset;
@@ -25,19 +22,11 @@ public class TargetAlignmentModule implements DriveModule, Resettable {
 
     private boolean mIsEnabled;
 
-    public TargetAlignmentModule(TargetingCamera camera, double aimStrength, double rangeStrength, boolean shouldSeek){
-        this(camera, new PID(aimStrength, 0, 0), new PID(rangeStrength, 0, 0), shouldSeek);
-        setRangeThreshold(DEFAULT_RANGE_THRESHOLD);
-        setAimThreshold(DEFAULT_AIM_THRESHOLD);
-    }
-
-    public TargetAlignmentModule(TargetingCamera camera, PID aimPID, PID rangePID, boolean shouldSeek){
+    public TargetAlignmentModule(TargetingCamera camera, MotionController aimController, MotionController rangeController, boolean shouldSeek){
         mCamera = camera;
         setShouldSeek(shouldSeek);
-        setAimPID(aimPID);
-        setRangePID(rangePID);
-        setAimThreshold(DEFAULT_AIM_THRESHOLD);
-        setRangeThreshold(DEFAULT_RANGE_THRESHOLD);
+        setAimController(aimController);
+        setRangeController(rangeController);
         setSeekSpeed(DEFAULT_SEEK_SPEED);
         
         if (cantAimOrRange()){
@@ -54,7 +43,7 @@ public class TargetAlignmentModule implements DriveModule, Resettable {
             return seek();
         }
 
-        var alignmentSpeed = align();
+        var alignmentSpeed = align(deltaTime);
 
         if (isAligned()){
             stopAligning();
@@ -73,14 +62,12 @@ public class TargetAlignmentModule implements DriveModule, Resettable {
         mDesiredTargetArea = desiredTargetArea;
         mDesiredHorizontalOffset = desiredHorizontalOffset;
         mIsEnabled = true;
-        mAimPID.reset();
-        mRangePID.reset();
+        resetControllers();
     }
 
     public void stopAligning(){
         mIsEnabled = false;
-        mAimPID.reset();
-        mRangePID.reset();
+        resetControllers();
     }
 
     public boolean isAligning(){
@@ -96,24 +83,12 @@ public class TargetAlignmentModule implements DriveModule, Resettable {
         mSeekSpeed = speed;
     }
 
-    public void setRangeThreshold(double threshold){
-        if (threshold < 0) throw new IllegalArgumentException("Threshold must be non-negative");
-        mRangePID.setPositionTolerance(threshold);
+    public void setRangeController(MotionController rangeController){
+        mRangeController = rangeController;
     }
 
-    public void setAimThreshold(double threshold){
-        if (threshold < 0) throw new IllegalArgumentException("Threshold must be non-negative");
-        mAimPID.setPositionTolerance(threshold);
-    }
-
-    public void setRangePID(PID rangePID){
-        if (rangePID == null) throw new IllegalArgumentException("PID must be non-null");
-        mRangePID = rangePID;
-    }
-
-    public void setAimPID(PID aimPID){
-        if (aimPID == null) throw new IllegalArgumentException("PID must be non-null");
-        mAimPID = aimPID;
+    public void setAimController(MotionController aimController){
+        mAimController = aimController;
     }
 
     private boolean cantAimOrRange() {
@@ -138,34 +113,52 @@ public class TargetAlignmentModule implements DriveModule, Resettable {
     }
 
     private boolean isAimAligned() {
-        return mAimPID.atSetpoint();
+        if (mAimController == null) return true;
+        return mAimController.atSetpoint();
     }
 
     private boolean isRangeAligned(){
-        return mRangePID.atSetpoint();
+        if (mRangeController == null) return true;
+        return mRangeController.atSetpoint();
     }
 
-    private DriveSpeed align(){
-        var aim = mAimPID.calculate(mCamera.getHorizontalOffset(), mDesiredHorizontalOffset);
-        var range = mRangePID.calculate(mCamera.getTargetArea(), mDesiredTargetArea);
+    private DriveSpeed align(double delta){
+        double aim = 0.0;
+        double range = 0.0;
+
+        if (mAimController != null){
+            mAimController.setSetpoint(mDesiredHorizontalOffset);
+            aim = mAimController.calculate(mCamera.getHorizontalOffset(), delta);
+        }
+
+        if (mRangeController != null){
+            mRangeController.setSetpoint(mDesiredTargetArea);
+            range = mRangeController.calculate(mCamera.getTargetArea(), delta);
+        }
 
         return DriveSpeed.fromArcade(range, aim);
     }
 
     private boolean shouldOnlyAlignRange() {
-        return GMath.approximately(mAimPID.getP(), 0) && 
-            GMath.approximately(mAimPID.getI(), 0) && 
-            GMath.approximately(mAimPID.getD(), 0);
+        return mAimController == null;
     }
 
     private boolean shouldOnlyAlignAim() {
-        return GMath.approximately(mRangePID.getP(), 0) && 
-            GMath.approximately(mRangePID.getI(), 0) && 
-            GMath.approximately(mRangePID.getD(), 0);
+        return mRangeController == null;
     }
 
     @Override
     public void reset() {
         stopAligning();
+    }
+
+    private void resetControllers(){
+        if (mRangeController != null){
+            mRangeController.reset();
+        }
+
+        if (mAimController != null){
+            mAimController.reset();
+        }
     }
 }

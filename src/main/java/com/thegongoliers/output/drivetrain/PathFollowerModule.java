@@ -1,6 +1,5 @@
 package com.thegongoliers.output.drivetrain;
 
-import com.kylecorry.pid.PID;
 import com.thegongoliers.annotations.UsedInCompetition;
 import com.thegongoliers.input.odometry.EncoderSensor;
 import com.thegongoliers.output.control.MotionController;

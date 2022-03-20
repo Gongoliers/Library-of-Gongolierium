@@ -1,7 +1,5 @@
 package com.thegongoliers.output.drivetrain;
 
-import java.util.List;
-
 import com.kylecorry.pid.PID;
 import com.thegongoliers.input.odometry.AverageEncoderSensor;
 import com.thegongoliers.input.odometry.EncoderSensor;
@@ -30,8 +28,8 @@ public class GDrivetrain implements Drivetrain {
         _gyro = gyro;
         _camera = camera;
 
-        var aimPID = new PID(0.12, 0.05, 0.005);
-        var rangePID = new PID(0, 0, 0);
+        var aimPID = new PIDController(0.12, 0.05, 0.005);
+        var rangePID = new PIDController(0, 0, 0);
         var shouldSeek = false;
         var targetModule = new TargetAlignmentModule(camera, aimPID, rangePID, shouldSeek);
 
@@ -90,11 +88,11 @@ public class GDrivetrain implements Drivetrain {
         }
     }
 
-    public void setTargetingStrength(PID aim, PID range){
+    public void setTargetingStrength(MotionController aim, MotionController range){
         var module = modularDrivetrain.getInstalledModule(TargetAlignmentModule.class);
         if (module != null){
-            module.setAimPID(aim);
-            module.setRangePID(range);
+            module.setAimController(aim);
+            module.setRangeController(range);
         }
     }
 
