@@ -6,6 +6,8 @@ import com.kylecorry.pid.PID;
 import com.thegongoliers.input.odometry.AverageEncoderSensor;
 import com.thegongoliers.input.odometry.EncoderSensor;
 import com.thegongoliers.input.vision.TargetingCamera;
+import com.thegongoliers.output.control.MotionController;
+import com.thegongoliers.output.control.PIDController;
 import com.thegongoliers.output.interfaces.Drivetrain;
 
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
@@ -34,9 +36,12 @@ public class GDrivetrain implements Drivetrain {
         var targetModule = new TargetAlignmentModule(camera, aimPID, rangePID, shouldSeek);
 
 
-        var pathModule = new PathFollowerModule(gyro, new AverageEncoderSensor(leftEncoder, rightEncoder), 0.5, 0.02);
-        pathModule.setForwardTolerance(0.5);
-        pathModule.setTurnTolerance(1);
+        var forwardPID = new PIDController(0.5, 0, 0);
+        forwardPID.setPositionTolerance(0.5);
+
+        var turnPID = new PIDController(0.02, 0, 0);
+        turnPID.setPositionTolerance(1);
+        var pathModule = new PathFollowerModule(gyro, new AverageEncoderSensor(leftEncoder, rightEncoder), forwardPID, turnPID);
 
         var stabilityModule = new StabilityModule(gyro, 0.05, 0.25);
         stabilityModule.setTurnThreshold(0.075);
@@ -93,19 +98,11 @@ public class GDrivetrain implements Drivetrain {
         }
     }
 
-    public void setPathFollowingStrength(PID forward, PID turn){
+    public void setPathFollowingStrength(MotionController forward, MotionController turn){
         var module = modularDrivetrain.getInstalledModule(PathFollowerModule.class);
         if (module != null){
-            module.setForwardPID(forward);
-            module.setTurnPID(turn);
-        }
-    }
-
-    public void setPathFollowingThreshold(double forward, double turnDegrees){
-        var module = modularDrivetrain.getInstalledModule(PathFollowerModule.class);
-        if (module != null){
-            module.setForwardTolerance(forward);
-            module.setTurnTolerance(turnDegrees);
+            module.setForwardController(forward);
+            module.setTurnController(turn);
         }
     }
 

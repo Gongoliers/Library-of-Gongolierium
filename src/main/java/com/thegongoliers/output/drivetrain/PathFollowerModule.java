@@ -3,6 +3,7 @@ package com.thegongoliers.output.drivetrain;
 import com.kylecorry.pid.PID;
 import com.thegongoliers.annotations.UsedInCompetition;
 import com.thegongoliers.input.odometry.EncoderSensor;
+import com.thegongoliers.output.control.MotionController;
 import com.thegongoliers.paths.PathStep;
 import com.thegongoliers.paths.PathStepType;
 import com.thegongoliers.paths.SimplePath;
@@ -15,13 +16,10 @@ import edu.wpi.first.wpilibj.interfaces.Gyro;
 @UsedInCompetition(team = "5112", year = "2020")
 public class PathFollowerModule implements DriveModule, Resettable {
 
-    private static final double DEFAULT_FORWARD_TOLERANCE = 0.1;
-    private static final double DEFAULT_TURN_TOLERANCE = 0.1;
-
     private Gyro mGyro;
     private EncoderSensor mEncoder;
-    private PID mForwardPID;
-    private PID mTurnPID;
+    private MotionController mForwardController;
+    private MotionController mTurnController;
     private SimplePath mPath;
 
     private boolean isEnabled;
@@ -33,38 +31,30 @@ public class PathFollowerModule implements DriveModule, Resettable {
     private double angleZero;
 
 
-    public PathFollowerModule(Gyro gyro, EncoderSensor encoder, double forwardStrength, double turnStrength){
-        this(gyro, encoder, new PID(forwardStrength, 0, 0), new PID(turnStrength, 0, 0));
-        setTurnTolerance(DEFAULT_TURN_TOLERANCE);
-        setForwardTolerance(DEFAULT_FORWARD_TOLERANCE);
-    }
-
-    public PathFollowerModule(Gyro gyro, EncoderSensor encoder, PID forwardPID, PID turnPID){
+    public PathFollowerModule(Gyro gyro, EncoderSensor encoder, MotionController forwardController, MotionController turnController) {
         super();
         setGyro(gyro);
         setEncoder(encoder);
-        setForwardPID(forwardPID);
-        setTurnPID(turnPID);
-        setForwardTolerance(DEFAULT_FORWARD_TOLERANCE);
-        setTurnTolerance(DEFAULT_TURN_TOLERANCE);
+        setForwardController(forwardController);
+        setTurnController(turnController);
         mPath = null;
         stopFollowingPath();
     }
 
     @Override
-    public DriveSpeed run(DriveSpeed currentSpeed, DriveSpeed desiredSpeed, double deltaTime){
+    public DriveSpeed run(DriveSpeed currentSpeed, DriveSpeed desiredSpeed, double deltaTime) {
         if (!isEnabled || !hasPathToFollow()) return desiredSpeed;
 
-        if (hasNotStartedPath()){
+        if (hasNotStartedPath()) {
             startFollowingPath();
         }
 
-        if (isDoneFollowingPath()){
+        if (isDoneFollowingPath()) {
             stopFollowingPath();
             return DriveSpeed.STOP;
         }
 
-        return followPath();
+        return followPath(deltaTime);
     }
 
     @Override
@@ -74,9 +64,10 @@ public class PathFollowerModule implements DriveModule, Resettable {
 
     /**
      * Start following a path (note, drivetrain's tank or arcade methods must be called repeatedly with any value)
+     *
      * @param path The path to follow
      */
-    public void startFollowingPath(SimplePath path){
+    public void startFollowingPath(SimplePath path) {
         mPath = path;
         isEnabled = true;
         currentStepIdx = 0;
@@ -87,7 +78,7 @@ public class PathFollowerModule implements DriveModule, Resettable {
     /**
      * Determines if it is following a path
      */
-    public boolean isFollowingPath(){
+    public boolean isFollowingPath() {
         return isEnabled && hasPathToFollow();
     }
 
@@ -100,33 +91,23 @@ public class PathFollowerModule implements DriveModule, Resettable {
         currentStepIdx = 0;
     }
 
-    public void setEncoder(EncoderSensor encoder){
+    public void setEncoder(EncoderSensor encoder) {
         mEncoder = encoder;
     }
 
-    public void setGyro(Gyro gyro){
+    public void setGyro(Gyro gyro) {
         if (gyro == null) throw new IllegalArgumentException("Gyro must be non-null");
         mGyro = gyro;
     }
 
-    public void setForwardTolerance(double tolerance){
-        if (tolerance < 0) throw new IllegalArgumentException("Tolerance must be non-negative");
-        mForwardPID.setPositionTolerance(tolerance);
+    public void setForwardController(MotionController forwardController) {
+        if (forwardController == null) throw new IllegalArgumentException("Controller must be non-null");
+        mForwardController = forwardController;
     }
 
-    public void setTurnTolerance(double tolerance){
-        if (tolerance < 0) throw new IllegalArgumentException("Tolerance must be non-negative");
-        mTurnPID.setPositionTolerance(tolerance);
-    }
-
-    public void setForwardPID(PID forwardPID){
-        if (forwardPID == null) throw new IllegalArgumentException("PID must be non-null");
-        mForwardPID = forwardPID;
-    }
-
-    public void setTurnPID(PID turnPID){
-        if (turnPID == null) throw new IllegalArgumentException("PID must be non-null");
-        mTurnPID = turnPID;
+    public void setTurnController(MotionController turnController) {
+        if (turnController == null) throw new IllegalArgumentException("Controller must be non-null");
+        mTurnController = turnController;
     }
 
     private boolean hasPathToFollow() {
@@ -138,8 +119,8 @@ public class PathFollowerModule implements DriveModule, Resettable {
     }
 
     private void startFollowingPath() {
-        mForwardPID.reset();
-        mTurnPID.reset();
+        mForwardController.reset();
+        mTurnController.reset();
         currentPath = mPath;
         currentStepIdx = 0;
         zeroSensors();
@@ -149,20 +130,20 @@ public class PathFollowerModule implements DriveModule, Resettable {
         return currentPath.getSteps().size() <= currentStepIdx;
     }
 
-    private DriveSpeed followPath(){
+    private DriveSpeed followPath(double delta) {
         PathStep step = getCurrentPathStep();
 
-        if (step.getType() == PathStepType.ROTATION){
-            DriveSpeed speed = rotateTowards(step.getValue());
-            if (isDoneRotating()){
-                mTurnPID.reset();
+        if (step.getType() == PathStepType.ROTATION) {
+            DriveSpeed speed = rotateTowards(step.getValue(), delta);
+            if (isDoneRotating()) {
+                mTurnController.reset();
                 return getToNextStep();
             }
             return speed;
         } else {
-            DriveSpeed speed = driveTowards(step.getValue());
-            if (isDoneDriving()){
-                mForwardPID.reset();
+            DriveSpeed speed = driveTowards(step.getValue(), delta);
+            if (isDoneDriving()) {
+                mForwardController.reset();
                 return getToNextStep();
             }
             return speed;
@@ -179,32 +160,34 @@ public class PathFollowerModule implements DriveModule, Resettable {
         return DriveSpeed.STOP;
     }
 
-    private DriveSpeed rotateTowards(double angle){
-        return DriveSpeed.fromArcade(0, mTurnPID.calculate(getAngle(), angle));
+    private DriveSpeed rotateTowards(double angle, double delta) {
+        mTurnController.setSetpoint(angle);
+        return DriveSpeed.fromArcade(0, mTurnController.calculate(getAngle(), delta));
     }
 
-    private DriveSpeed driveTowards(double distance){
-        var speed = mForwardPID.calculate(getDistance(), distance);
+    private DriveSpeed driveTowards(double distance, double delta) {
+        mForwardController.setSetpoint(distance);
+        var speed = mForwardController.calculate(getDistance(), delta);
         return new DriveSpeed(speed, speed);
     }
 
-    private boolean isDoneRotating(){
-        return mTurnPID.atSetpoint();
+    private boolean isDoneRotating() {
+        return mTurnController.atSetpoint();
     }
 
-    private boolean isDoneDriving(){
-        return mForwardPID.atSetpoint();
+    private boolean isDoneDriving() {
+        return mForwardController.atSetpoint();
     }
 
-    private double getDistance(){
+    private double getDistance() {
         return mEncoder.getDistance() - distanceZero;
     }
 
-    private double getAngle(){
+    private double getAngle() {
         return mGyro.getAngle() - angleZero;
     }
 
-    private void zeroSensors(){
+    private void zeroSensors() {
         distanceZero = mEncoder.getDistance();
         angleZero = mGyro.getAngle();
     }
