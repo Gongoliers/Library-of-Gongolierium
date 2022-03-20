@@ -1,5 +1,6 @@
 package com.thegongoliers.output.drivetrain;
 
+import com.thegongoliers.input.odometry.AverageEncoderSensor;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InOrder;
@@ -31,7 +32,7 @@ public class PathFollowerModuleTest {
         encoder1 = mock(EncoderSensor.class);
         encoder2 = mock(EncoderSensor.class);
         gyro = mock(Gyro.class);
-        var encoders = List.of(encoder1, encoder2);
+        var encoders = new AverageEncoderSensor(encoder1, encoder2);
         module = new PathFollowerModule(gyro, encoders, 0.1, 0.2);
         module.setForwardTolerance(0.2);
         module.setTurnTolerance(0.2);

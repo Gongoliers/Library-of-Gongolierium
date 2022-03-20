@@ -3,6 +3,7 @@ package com.thegongoliers.output.drivetrain;
 import java.util.List;
 
 import com.kylecorry.pid.PID;
+import com.thegongoliers.input.odometry.AverageEncoderSensor;
 import com.thegongoliers.input.odometry.EncoderSensor;
 import com.thegongoliers.input.vision.TargetingCamera;
 import com.thegongoliers.output.interfaces.Drivetrain;
@@ -33,7 +34,7 @@ public class GDrivetrain implements Drivetrain {
         var targetModule = new TargetAlignmentModule(camera, aimPID, rangePID, shouldSeek);
 
 
-        var pathModule = new PathFollowerModule(gyro, List.of(leftEncoder, rightEncoder), 0.5, 0.02);
+        var pathModule = new PathFollowerModule(gyro, new AverageEncoderSensor(leftEncoder, rightEncoder), 0.5, 0.02);
         pathModule.setForwardTolerance(0.5);
         pathModule.setTurnTolerance(1);
 
