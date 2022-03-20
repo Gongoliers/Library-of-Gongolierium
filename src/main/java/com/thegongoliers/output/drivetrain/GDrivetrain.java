@@ -1,6 +1,5 @@
 package com.thegongoliers.output.drivetrain;
 
-import com.kylecorry.pid.PID;
 import com.thegongoliers.input.odometry.AverageEncoderSensor;
 import com.thegongoliers.input.odometry.EncoderSensor;
 import com.thegongoliers.input.vision.TargetingCamera;

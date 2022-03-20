@@ -1,31 +1,33 @@
 package com.thegongoliers.output.motors;
 
-import com.kylecorry.pid.PID;
 import com.thegongoliers.annotations.Untested;
 import com.thegongoliers.input.odometry.VelocitySensor;
+import com.thegongoliers.output.control.MotionController;
+import com.thegongoliers.output.control.PIDController;
 
 @Untested
 public class VelocityControlMotorModule implements MotorModule {
 
     private final VelocitySensor mVelocitySensor;
     private double mMaxVelocity;
-    private final PID mVelocityPID;
+    private final MotionController mVelocityController;
 
-    public VelocityControlMotorModule(VelocitySensor velocitySensor, double maxVelocity, PID velocityPID) {
+    public VelocityControlMotorModule(VelocitySensor velocitySensor, double maxVelocity, MotionController velocityController) {
         mVelocitySensor = velocitySensor;
         mMaxVelocity = maxVelocity;
-        mVelocityPID = velocityPID;
+        mVelocityController = velocityController;
     }
 
     public VelocityControlMotorModule(VelocitySensor velocitySensor, double maxVelocity, double strength) {
-        this(velocitySensor, maxVelocity, new PID(strength, 0.0, 0.0));
+        this(velocitySensor, maxVelocity, new PIDController(strength, 0.0, 0.0));
     }
 
     @Override
     public double run(double currentSpeed, double desiredSpeed, double deltaTime) {
         var desiredVelocity = desiredSpeed * mMaxVelocity;
         var actualVelocity = mVelocitySensor.getVelocity();
-        return mVelocityPID.calculate(actualVelocity, desiredVelocity) + currentSpeed;
+        mVelocityController.setSetpoint(desiredVelocity);
+        return mVelocityController.calculate(actualVelocity, deltaTime) + currentSpeed;
     }
 
     public void setMaxVelocity(double velocity){
