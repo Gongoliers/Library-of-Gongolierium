@@ -1,7 +1,8 @@
 package com.thegongoliers.output.drivetrain;
 
-import com.kylecorry.pid.PID;
 import com.thegongoliers.input.odometry.DistanceSensor;
+import com.thegongoliers.output.control.MotionController;
+import com.thegongoliers.output.control.PIDController;
 import com.thegongoliers.utils.Resettable;
 
 /**
@@ -10,7 +11,7 @@ import com.thegongoliers.utils.Resettable;
 public class AnchorModule implements DriveModule, Resettable {
 
     private DistanceSensor mLeftDistanceSupplier, mRightDistanceSupplier;
-    private PID mLeftPID, mRightPID;
+    private MotionController mLeftController, mRightController;
     private boolean mIsEnabled;
 
     private double lastLeftDistance, lastRightDistance;
@@ -22,14 +23,14 @@ public class AnchorModule implements DriveModule, Resettable {
      * @param strength the fortify strength (higher values may become unstable, small values recommended. Values must be greater than or equal to 0)
      */
     public AnchorModule(DistanceSensor leftEncoder, DistanceSensor rightEncoder, double strength){
-        this(leftEncoder, rightEncoder, new PID(strength, 0, 0));
+        this(leftEncoder, rightEncoder, new PIDController(strength, 0, 0));
     }
 
-    public AnchorModule(DistanceSensor leftEncoder, DistanceSensor rightEncoder, PID pid){
+    public AnchorModule(DistanceSensor leftEncoder, DistanceSensor rightEncoder, MotionController controller){
         super();
         setLeftEncoder(leftEncoder);
         setRightEncoder(rightEncoder);
-        setPID(pid);
+        setController(controller);
         mIsEnabled = false;
 
         updateLastPosition();
@@ -38,7 +39,7 @@ public class AnchorModule implements DriveModule, Resettable {
     @Override
     public DriveSpeed run(DriveSpeed currentSpeed, DriveSpeed desiredSpeed, double deltaTime) {
         if (isAnchoring()){
-            return anchor();
+            return anchor(deltaTime);
         } 
 
         updateLastPosition();
@@ -58,9 +59,11 @@ public class AnchorModule implements DriveModule, Resettable {
         mIsEnabled = false;
     }
 
-    private DriveSpeed anchor(){
-        double left = mLeftPID.calculate(mLeftDistanceSupplier.getDistance(), lastLeftDistance);
-        double right = mRightPID.calculate(mRightDistanceSupplier.getDistance(), lastRightDistance);
+    private DriveSpeed anchor(double delta){
+        mLeftController.setSetpoint(lastLeftDistance);
+        mRightController.setSetpoint(lastRightDistance);
+        double left = mLeftController.calculate(mLeftDistanceSupplier.getDistance(), delta);
+        double right = mRightController.calculate(mRightDistanceSupplier.getDistance(), delta);
 
         return new DriveSpeed(left, right);
     }
@@ -84,10 +87,10 @@ public class AnchorModule implements DriveModule, Resettable {
         mRightDistanceSupplier = rightEncoder;
     }
 
-    public void setPID(PID pid) {
-        if (pid == null) throw new IllegalArgumentException("PID must be non-null");
-        mLeftPID = new PID(pid.getP(), pid.getI(), pid.getD());
-        mRightPID = new PID(pid.getP(), pid.getI(), pid.getD());
+    public void setController(MotionController controller) {
+        if (controller == null) throw new IllegalArgumentException("Controller must be non-null");
+        mLeftController = controller.copy();
+        mRightController = controller.copy();
     }
 
     @Override

@@ -18,11 +18,13 @@ public class AnchorModuleTest {
     private ModularDrivetrain modularDrivetrain;
     private AnchorModule module;
     private EncoderSensor encoder1, encoder2;
+    private Clock clock;
 
     @Before
     public void setup(){
         drivetrain = mock(Drivetrain.class);
-        modularDrivetrain = new ModularDrivetrain(drivetrain, mock(Clock.class));
+        clock = mock(Clock.class);
+        modularDrivetrain = new ModularDrivetrain(drivetrain, clock);
         encoder1 = mock(EncoderSensor.class);
         encoder2 = mock(EncoderSensor.class);
         module = new AnchorModule(encoder1, encoder2, 0.1);
@@ -50,21 +52,22 @@ public class AnchorModuleTest {
 
         when(encoder1.getDistance()).thenReturn(0.0);
         when(encoder2.getDistance()).thenReturn(0.0);
+        when(clock.getTime()).thenReturn(0.01);
         modularDrivetrain.tank(1, 1);
         verifyTank(0, 0);
 
         when(encoder1.getDistance()).thenReturn(1.0);
         when(encoder2.getDistance()).thenReturn(1.0);
+        when(clock.getTime()).thenReturn(0.02);
         modularDrivetrain.tank(1, 1);
         verifyTank(-0.1, -0.1);
 
         when(encoder1.getDistance()).thenReturn(0.0);
         when(encoder2.getDistance()).thenReturn(1.0);
+        when(clock.getTime()).thenReturn(0.03);
         modularDrivetrain.tank(1, 1);
         verifyTank(0, -0.1);
     }
-
-    
 
     private void verifyTank(double left, double right){
         verify(drivetrain).tank(AdditionalMatchers.eq(left, 0.001), AdditionalMatchers.eq(right, 0.001));

@@ -45,6 +45,11 @@ public class BangBangController implements MotionController {
     }
 
     @Override
+    public MotionController copy() {
+        return new BangBangController(mSpeed, mTolerance);
+    }
+
+    @Override
     public void reset() {
         mError = Double.NaN;
     }

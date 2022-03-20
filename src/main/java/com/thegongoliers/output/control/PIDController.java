@@ -24,7 +24,6 @@ public class PIDController implements MotionController {
         pid.setIntegratorRange(new Range(min, max));
     }
 
-
     @Override
     public void setSetpoint(double setpoint) {
         mSetpoint = setpoint;
@@ -38,6 +37,15 @@ public class PIDController implements MotionController {
     @Override
     public boolean atSetpoint() {
         return pid.atSetpoint();
+    }
+
+    @Override
+    public MotionController copy() {
+        var pidCopy = new PIDController(pid.getP(), pid.getI(), pid.getD());
+        pidCopy.setPositionTolerance(pid.getPositionTolerance());
+        pidCopy.setVelocityTolerance(pid.getVelocityTolerance());
+        pidCopy.setIntegratorRange(pid.getIntegratorRange().getMin(), pid.getIntegratorRange().getMax());
+        return pidCopy;
     }
 
     @Override

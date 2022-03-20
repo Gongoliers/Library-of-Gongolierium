@@ -10,4 +10,6 @@ public interface MotionController extends Resettable {
 
     boolean atSetpoint();
 
+    MotionController copy();
+
 }

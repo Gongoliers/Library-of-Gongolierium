@@ -1,5 +1,6 @@
 package com.thegongoliers.output.actuators;
 
+import com.thegongoliers.output.control.PIDController;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.AdditionalMatchers;
@@ -9,7 +10,6 @@ import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 
-import com.kylecorry.pid.PID;
 import com.thegongoliers.input.odometry.EncoderSensor;
 import com.thegongoliers.input.time.Clock;
 
@@ -26,7 +26,7 @@ public class GSpeedControllerTest {
         mockEncoder = mock(EncoderSensor.class);
         mockClock = mock(Clock.class);
         when(mockClock.getTime()).thenReturn(0.0);
-        speedController = new GSpeedController(mockSpeedController, mockEncoder, new PID(0.1, 0, 0), new PID(0.2, 0, 0), mockClock);
+        speedController = new GSpeedController(mockSpeedController, mockEncoder, new PIDController(0.1, 0, 0), new PIDController(0.2, 0, 0), mockClock);
     }
 
     @Test
