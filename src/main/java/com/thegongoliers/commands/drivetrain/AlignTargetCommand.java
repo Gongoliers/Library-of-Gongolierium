@@ -1,4 +1,4 @@
-package com.thegongoliers.commands;
+package com.thegongoliers.commands.drivetrain;
 
 import com.thegongoliers.GongolieriumException;
 import com.thegongoliers.output.drivetrain.ModularDrivetrain;

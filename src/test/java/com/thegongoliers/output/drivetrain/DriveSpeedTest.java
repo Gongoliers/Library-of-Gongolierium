@@ -16,7 +16,8 @@ public class DriveSpeedTest {
             List.of(DriveSpeed.fromArcade(1.0, 0.0), new DriveSpeed(1.0, 1.0)),
             List.of(DriveSpeed.fromArcade(-1.0, 0.0), new DriveSpeed(-1.0, -1.0)),
             List.of(DriveSpeed.fromArcade(0.0, 1.0), new DriveSpeed(1.0, -1.0)),
-            List.of(DriveSpeed.fromArcade(0.0, -1.0), new DriveSpeed(-1.0, 1.0))
+            List.of(DriveSpeed.fromArcade(0.0, -1.0), new DriveSpeed(-1.0, 1.0)),
+            List.of(DriveSpeed.fromArcade(-0.5, 0.1), new DriveSpeed(-0.4, -0.5))
         );
 
         for (var c: cases) {
