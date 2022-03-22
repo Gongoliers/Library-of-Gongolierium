@@ -9,6 +9,7 @@ import com.thegongoliers.output.interfaces.Drivetrain;
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
+import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.button.Button;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -207,6 +208,11 @@ public class Hardware {
 		}
     	double rawPWM = voltage / batteryVoltageSensor.getVoltage();
 		return GMath.clamp(rawPWM, -1, 1);
+	}
+
+	public static Subsystem noSubsystem(){
+    	return new Subsystem() {
+		};
 	}
 
 }
