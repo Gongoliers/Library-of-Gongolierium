@@ -5,12 +5,12 @@ import com.thegongoliers.annotations.Untested;
 import java.util.function.BooleanSupplier;
 
 @Untested
-public class LimitedMotorModule implements MotorModule {
+public class LimiterMotorModule implements MotorModule {
 
     private BooleanSupplier mPositiveLimit;
     private BooleanSupplier mNegativeLimit;
 
-    public LimitedMotorModule(BooleanSupplier positiveLimit, BooleanSupplier negativeLimit) {
+    public LimiterMotorModule(BooleanSupplier positiveLimit, BooleanSupplier negativeLimit) {
         mPositiveLimit = positiveLimit;
         mNegativeLimit = negativeLimit;
 
@@ -31,12 +31,20 @@ public class LimitedMotorModule implements MotorModule {
         return desiredSpeed;
     }
 
+    public boolean isAtPositiveLimit(){
+        return mPositiveLimit.getAsBoolean();
+    }
+
+    public boolean isAtNegativeLimit(){
+        return mNegativeLimit.getAsBoolean();
+    }
+
     private boolean shouldStop(double speed) {
-        if (speed > 0 && mPositiveLimit.getAsBoolean()) {
+        if (speed > 0 && isAtPositiveLimit()) {
             return true;
         }
 
-        if (speed < 0 && mNegativeLimit.getAsBoolean()) {
+        if (speed < 0 && isAtNegativeLimit()) {
             return true;
         }
 
