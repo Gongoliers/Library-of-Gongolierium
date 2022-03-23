@@ -7,6 +7,7 @@ public class PIDController implements MotionController {
 
     private final PID pid;
     private double mSetpoint = 0.0;
+    private double mMaxOutput = 1.0;
 
     public PIDController(double p, double i, double d) {
         pid = new PID(p, i, d);
@@ -24,6 +25,10 @@ public class PIDController implements MotionController {
         pid.setIntegratorRange(new Range(min, max));
     }
 
+    public void setMaxOutput(double max){
+        mMaxOutput = max;
+    }
+
     @Override
     public void setSetpoint(double setpoint) {
         mSetpoint = setpoint;
@@ -31,7 +36,8 @@ public class PIDController implements MotionController {
 
     @Override
     public double calculate(double actual, double deltaTime) {
-        return pid.calculate(actual, mSetpoint, deltaTime);
+        var calculated = pid.calculate(actual, mSetpoint, deltaTime);
+        return Math.min(mMaxOutput, Math.abs(calculated)) * Math.signum(calculated);
     }
 
     @Override
