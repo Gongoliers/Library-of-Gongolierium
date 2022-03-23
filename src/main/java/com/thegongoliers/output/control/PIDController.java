@@ -2,6 +2,7 @@ package com.thegongoliers.output.control;
 
 import com.kylecorry.pid.PID;
 import com.kylecorry.pid.Range;
+import com.thegongoliers.math.GMath;
 
 public class PIDController implements MotionController {
 
@@ -37,7 +38,7 @@ public class PIDController implements MotionController {
     @Override
     public double calculate(double actual, double deltaTime) {
         var calculated = pid.calculate(actual, mSetpoint, deltaTime);
-        return Math.min(mMaxOutput, Math.abs(calculated)) * Math.signum(calculated);
+        return GMath.clamp(calculated, -mMaxOutput, mMaxOutput);
     }
 
     @Override
