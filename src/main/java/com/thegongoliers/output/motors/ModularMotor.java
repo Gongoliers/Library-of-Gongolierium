@@ -8,10 +8,11 @@ import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.DoubleConsumer;
 import java.util.stream.Collectors;
 
 @Untested
-public class ModularMotor extends BaseMotorControllerDecorator {
+public class ModularMotor extends BaseMotorControllerDecorator implements DoubleConsumer {
 
     private final Clock mClock;
     private List<MotorModule> mModules;
@@ -118,5 +119,10 @@ public class ModularMotor extends BaseMotorControllerDecorator {
             }
         }
         return null;
+    }
+
+    @Override
+    public void accept(double speed) {
+        set(speed);
     }
 }

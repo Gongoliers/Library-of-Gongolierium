@@ -1,6 +1,5 @@
 package com.thegongoliers.output.motors;
 
-import com.thegongoliers.input.switches.Switch;
 import com.thegongoliers.input.time.Clock;
 import com.thegongoliers.input.time.RobotClock;
 import com.thegongoliers.utils.Resettable;
