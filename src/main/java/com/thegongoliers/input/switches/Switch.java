@@ -1,12 +1,19 @@
 package com.thegongoliers.input.switches;
 
-public interface Switch {
+import java.util.function.BooleanSupplier;
+
+public interface Switch extends BooleanSupplier {
 	/**
 	 * Determines if the switch is triggered
 	 * 
 	 * @return true if the switch is triggered, false otherwise
 	 */
 	boolean isTriggered();
+
+	@Override
+	default boolean getAsBoolean(){
+		return isTriggered();
+	}
 
 	/**
 	 * Invert the output of the switch
