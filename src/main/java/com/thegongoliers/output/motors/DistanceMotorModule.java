@@ -4,9 +4,10 @@ import com.thegongoliers.annotations.Untested;
 import com.thegongoliers.input.odometry.DistanceSensor;
 import com.thegongoliers.output.control.MotionController;
 import com.thegongoliers.output.control.PIDController;
+import com.thegongoliers.utils.Resettable;
 
 @Untested
-public class DistanceMotorModule implements MotorModule {
+public class DistanceMotorModule implements MotorModule, Resettable {
 
     private boolean mIsEnabled;
     private final DistanceSensor mDistanceSensor;
@@ -62,5 +63,11 @@ public class DistanceMotorModule implements MotorModule {
 
     private double getDistance() {
         return mDistanceSensor.getDistance() - mDistanceZero;
+    }
+
+    @Override
+    public void reset() {
+        mController.reset();
+        mIsEnabled = false;
     }
 }

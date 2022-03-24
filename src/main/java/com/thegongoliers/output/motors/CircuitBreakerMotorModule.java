@@ -6,7 +6,7 @@ import com.thegongoliers.utils.Resettable;
 
 import java.util.function.BooleanSupplier;
 
-public class CircuitBreakerMotorModule implements MotorModule {
+public class CircuitBreakerMotorModule implements MotorModule, Resettable {
 
     private final BooleanSupplier mSwitch;
     private final double mBreakDuration;
@@ -36,7 +36,7 @@ public class CircuitBreakerMotorModule implements MotorModule {
         }
 
         if (mIsTripped && mClock.getTime() - mLastTripTime < mBreakDuration){
-            mIsTripped = false;
+            reset();
         }
 
         if (mIsTripped){
@@ -51,4 +51,8 @@ public class CircuitBreakerMotorModule implements MotorModule {
         mLastTripTime = mClock.getTime();
     }
 
+    @Override
+    public void reset() {
+        mIsTripped = false;
+    }
 }

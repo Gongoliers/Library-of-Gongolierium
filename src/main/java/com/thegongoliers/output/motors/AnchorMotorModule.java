@@ -4,9 +4,10 @@ import com.thegongoliers.annotations.Untested;
 import com.thegongoliers.input.odometry.DistanceSensor;
 import com.thegongoliers.output.control.MotionController;
 import com.thegongoliers.output.control.PIDController;
+import com.thegongoliers.utils.Resettable;
 
 @Untested
-public class AnchorMotorModule implements MotorModule {
+public class AnchorMotorModule implements MotorModule, Resettable {
 
     private boolean mIsEnabled;
     private final DistanceSensor mDistanceSensor;
@@ -52,5 +53,10 @@ public class AnchorMotorModule implements MotorModule {
 
     private void updateLastPosition() {
         mLastDistance = mDistanceSensor.getDistance();
+    }
+
+    @Override
+    public void reset() {
+        stopHoldingPosition();
     }
 }

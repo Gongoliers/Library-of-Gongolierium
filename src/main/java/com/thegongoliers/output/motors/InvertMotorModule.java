@@ -1,28 +1,38 @@
 package com.thegongoliers.output.motors;
 
+import java.util.function.BooleanSupplier;
+
 public class InvertMotorModule implements MotorModule {
 
-    private boolean mIsEnabled;
+    private BooleanSupplier mIsEnabled;
 
     public InvertMotorModule() {
         this(false);
     }
 
     public InvertMotorModule(boolean enabled) {
-        mIsEnabled = enabled;
+        mIsEnabled = () -> enabled;
+    }
+
+    public InvertMotorModule(BooleanSupplier isEnabled) {
+        mIsEnabled = isEnabled;
     }
 
     public void setEnabled(boolean enabled) {
+        mIsEnabled = () -> enabled;
+    }
+
+    public void setEnabled(BooleanSupplier enabled) {
         mIsEnabled = enabled;
     }
 
     public boolean isEnabled() {
-        return mIsEnabled;
+        return mIsEnabled.getAsBoolean();
     }
 
     @Override
     public double run(double currentSpeed, double desiredSpeed, double deltaTime) {
-        if (!mIsEnabled) return desiredSpeed;
+        if (!isEnabled()) return desiredSpeed;
         return -desiredSpeed;
     }
 }

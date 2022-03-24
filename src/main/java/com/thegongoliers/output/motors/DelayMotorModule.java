@@ -2,8 +2,9 @@ package com.thegongoliers.output.motors;
 
 import com.thegongoliers.input.time.Clock;
 import com.thegongoliers.input.time.RobotClock;
+import com.thegongoliers.utils.Resettable;
 
-public class DelayMotorModule implements MotorModule {
+public class DelayMotorModule implements MotorModule, Resettable {
 
     private final Clock mClock;
     private final double mDelay;
@@ -21,7 +22,7 @@ public class DelayMotorModule implements MotorModule {
 
     @Override
     public double run(double currentSpeed, double desiredSpeed, double deltaTime) {
-        if (desiredSpeed == 0.0){
+        if (desiredSpeed == 0.0 || lastStopTime == 0.0) {
             lastStopTime = mClock.getTime();
         }
 
@@ -30,5 +31,10 @@ public class DelayMotorModule implements MotorModule {
         }
 
         return 0;
+    }
+
+    @Override
+    public void reset() {
+        lastStopTime = 0.0;
     }
 }

@@ -4,6 +4,8 @@ import com.thegongoliers.annotations.Untested;
 import com.thegongoliers.input.time.Clock;
 import com.thegongoliers.input.time.RobotClock;
 import com.thegongoliers.output.actuators.BaseMotorControllerDecorator;
+import com.thegongoliers.output.drivetrain.DriveModule;
+import com.thegongoliers.utils.Resettable;
 import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 
 import java.util.ArrayList;
@@ -12,11 +14,12 @@ import java.util.function.DoubleConsumer;
 import java.util.stream.Collectors;
 
 @Untested
-public class ModularMotor extends BaseMotorControllerDecorator implements DoubleConsumer {
+public class ModularMotor extends BaseMotorControllerDecorator implements DoubleConsumer, Resettable {
 
     private final Clock mClock;
     private List<MotorModule> mModules;
     private double mLastTime;
+    private double resetThreshold = Double.POSITIVE_INFINITY;
 
     public ModularMotor(MotorController speedController, Clock clock) {
         super(speedController);
@@ -36,6 +39,11 @@ public class ModularMotor extends BaseMotorControllerDecorator implements Double
     public void set(double speed) {
         double time = mClock.getTime();
         double dt = time - mLastTime;
+
+        if (dt >= resetThreshold){
+            reset();
+        }
+
         double current = get();
         double desired = speed;
 
@@ -59,8 +67,8 @@ public class ModularMotor extends BaseMotorControllerDecorator implements Double
             if (override == null) {
                 desired = module.run(current, desired, dt);
             } else {
-                // Run the module to ensure it stay updated, but don't update the desired speed since it should be overridden
-                module.run(current, desired, dt);
+                // Reset the module
+                resetModule(module);
             }
         }
         mLastTime = time;
@@ -85,6 +93,16 @@ public class ModularMotor extends BaseMotorControllerDecorator implements Double
     public void addModule(MotorModule module) {
         if (module == null) return;
         mModules.add(module);
+    }
+
+    /**
+     * Add a module to the motor at the specified index
+     * @param index The index to add the module at
+     * @param module The module to add
+     */
+    public void addModule(int index, MotorModule module) {
+        if (module == null) return;
+        mModules.add(index, module);
     }
 
     /**
@@ -121,8 +139,32 @@ public class ModularMotor extends BaseMotorControllerDecorator implements Double
         return null;
     }
 
+    /**
+     * Reset a module
+     * @param module the module to reset
+     */
+    public void resetModule(MotorModule module){
+        if (module instanceof Resettable){
+            ((Resettable)module).reset();
+        }
+    }
+
+    // Reset
+    @Override
+    public void reset() {
+        mModules.forEach(this::resetModule);
+    }
+
     @Override
     public void accept(double speed) {
         set(speed);
+    }
+
+    /**
+     * If a drive method was not called within the reset threshold, all modules will be reset on the next invocation.
+     * @param resetThreshold The reset threshold in seconds.
+     */
+    public void setInactiveResetSeconds(double resetThreshold){
+        this.resetThreshold = resetThreshold;
     }
 }

@@ -2,8 +2,9 @@ package com.thegongoliers.output.motors;
 
 import com.thegongoliers.input.time.Clock;
 import com.thegongoliers.input.time.RobotClock;
+import com.thegongoliers.utils.Resettable;
 
-public class PulseMotorModule implements MotorModule {
+public class PulseMotorModule implements MotorModule, Resettable {
 
     private final double mOnDuration;
     private final double mOffDuration;
@@ -56,4 +57,8 @@ public class PulseMotorModule implements MotorModule {
         mLastStateChangeTime = mClock.getTime();
     }
 
+    @Override
+    public void reset() {
+        changeState(STATE_PULSE_ON);
+    }
 }

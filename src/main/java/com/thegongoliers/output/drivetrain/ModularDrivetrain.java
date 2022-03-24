@@ -131,6 +131,16 @@ public class ModularDrivetrain implements Drivetrain, Resettable {
     }
 
     /**
+     * Add a module to the drivetrain at a specific index.
+     * @param index The index to add the module at
+     * @param module The module to add
+     */
+    public void addModule(int index, DriveModule module) {
+        if (module == null) return;
+        modules.add(index, module);
+    }
+
+    /**
      * Remove a module from the drivetrain
      *
      * @param module the module to remove
