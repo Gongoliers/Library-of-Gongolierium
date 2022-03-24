@@ -1,12 +1,13 @@
 package com.thegongoliers.output.motors;
 
-import com.thegongoliers.input.current.HighCurrentSensor;
+import com.thegongoliers.input.switches.Switch;
 import com.thegongoliers.input.time.Clock;
 import com.thegongoliers.input.time.RobotClock;
+import com.thegongoliers.utils.Resettable;
 
 public class CircuitBreakerMotorModule implements MotorModule {
 
-    private final HighCurrentSensor mCurrentSensor;
+    private final Switch mSwitch;
     private final double mBreakDuration;
     private final Clock mClock;
 
@@ -14,20 +15,23 @@ public class CircuitBreakerMotorModule implements MotorModule {
 
     private boolean mIsTripped;
 
-    public CircuitBreakerMotorModule(HighCurrentSensor currentSensor, double breakDuration, Clock clock){
-        mCurrentSensor = currentSensor;
+    public CircuitBreakerMotorModule(Switch tripSwitch, double breakDuration, Clock clock){
+        mSwitch = tripSwitch;
         mBreakDuration = breakDuration;
         mClock = clock;
     }
 
-    public CircuitBreakerMotorModule(HighCurrentSensor currentSensor, double breakDuration){
-        this(currentSensor, breakDuration, new RobotClock());
+    public CircuitBreakerMotorModule(Switch tripSwitch, double breakDuration){
+        this(tripSwitch, breakDuration, new RobotClock());
     }
 
     @Override
     public double run(double currentSpeed, double desiredSpeed, double deltaTime) {
-        if (mCurrentSensor.isTriggered()){
+        if (mSwitch.isTriggered()){
             trip();
+            if (mSwitch instanceof Resettable){
+                ((Resettable) mSwitch).reset();
+            }
         }
 
         if (mIsTripped && mClock.getTime() - mLastTripTime < mBreakDuration){
