@@ -36,7 +36,7 @@ public class BaseEncoderSensor implements EncoderSensor {
             return;
         }
 
-        mLastDistance = getDistance();
+        mLastDistance = mDistanceSensor.getDistance();
     }
     
 }
