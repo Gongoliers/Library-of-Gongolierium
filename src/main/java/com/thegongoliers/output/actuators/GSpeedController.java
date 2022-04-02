@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 
+@Deprecated( forRemoval = true)
 public class GSpeedController implements MotorController {
 
     private MotorController mSpeedController;
@@ -208,19 +209,19 @@ public class GSpeedController implements MotorController {
     }
 
     public boolean atDistanceSetpoint(){
-        return mDistancePID.atSetpoint();
+        return mDistanceController.atSetpoint();
     }
 
     public boolean atVelocitySetpoint(){
-        return mVelocityPID.atSetpoint();
+        return mVelocityController.atSetpoint();
     }
 
-    public void resetDistancePID(){
-        mDistancePID.reset();
+    public void resetDistanceController(){
+        mDistanceController.reset();
     }
 
-    public void resetVelocityPID(){
-        mVelocityPID.reset();
+    public void resetVelocityController(){
+        mVelocityController.reset();
     }
 
     /**
