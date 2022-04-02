@@ -23,6 +23,9 @@ public class GSpeedController implements MotorController {
     private Clock mClock;
     private double mLastTime;
     private double mScale = 1.0;
+    private boolean mUseVoltageControl = false;
+    private double mMaxVoltage = 12.0;
+    private double mResetDuration = Double.POSITIVE_INFINITY;
 
     /**
      * A speed controller with added functionality
@@ -134,21 +137,49 @@ public class GSpeedController implements MotorController {
         mDistancePID = distancePID;
         mVelocityPID = velocityPID;
         mClock = clock;
-        mLastTime = mClock.getTime();
+        mLastTime = 0.0;
     }
 
     @Override
     public void set(double speed) {
         if (mSecondsToFullSpeed <= 0){
-            mSpeedController.set(speed * mScale);
+            setHelper(speed);
         } else {
+            if (mLastTime == 0.0){
+                mLastTime = mClock.getTime();
+            }
             var time = mClock.getTime();
             var deltaTime = time - mLastTime;
+            if (deltaTime > mResetDuration || deltaTime == 0.0){
+                deltaTime = 0.02;
+            }
             mLastTime = time;
             double maximumRate = getMaxRate(deltaTime);
             var newSpeed = GMath.rateLimit(maximumRate, speed, get());
-            mSpeedController.set(newSpeed * mScale);
+            setHelper(newSpeed);
         }
+    }
+
+    private void setHelper(double speed){
+        var newSpeed = speed * mScale;
+        if (mUseVoltageControl){
+            mSpeedController.setVoltage(newSpeed * mMaxVoltage);
+        } else {
+            mSpeedController.set(newSpeed);
+        }
+    }
+
+    public void useVoltageControl(double maxVoltage){
+        mUseVoltageControl = true;
+        mMaxVoltage = maxVoltage;
+    }
+
+    public void disableVoltageControl(){
+        mUseVoltageControl = false;
+    }
+
+    public void setResetDuration(double seconds){
+        mResetDuration = seconds;
     }
 
     /**
@@ -171,6 +202,22 @@ public class GSpeedController implements MotorController {
      */
     public double getVelocity(){
         return mVelocitySensor.getVelocity();
+    }
+
+    public boolean atDistanceSetpoint(){
+        return mDistancePID.atSetpoint();
+    }
+
+    public boolean atVelocitySetpoint(){
+        return mVelocityPID.atSetpoint();
+    }
+
+    public void resetDistancePID(){
+        mDistancePID.reset();
+    }
+
+    public void resetVelocityPID(){
+        mVelocityPID.reset();
     }
 
     /**
