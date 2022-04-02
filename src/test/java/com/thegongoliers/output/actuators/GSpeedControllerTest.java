@@ -115,15 +115,16 @@ public class GSpeedControllerTest {
 
     @Test
     public void limitsAccelerationOnUnfixedDT(){
+        speedController.setScale(1.0);
         speedController.setSecondsToFullSpeed(0.2);
         when(mockClock.getTime()).thenReturn(0.01);
-        speedController.set(0.1);
-        verify(mockSpeedController).set(AdditionalMatchers.eq(0.05, 0.001));
-        when(mockSpeedController.get()).thenReturn(0.05);
+        speedController.set(0.2);
+        verify(mockSpeedController).set(AdditionalMatchers.eq(0.1, 0.01));
+        when(mockSpeedController.get()).thenReturn(0.1);
 
          when(mockClock.getTime()).thenReturn(0.2);
          speedController.set(0.05);
-         verify(mockSpeedController, times(2)).set(AdditionalMatchers.eq(0.05, 0.001));
+         verify(mockSpeedController).set(AdditionalMatchers.eq(0.05, 0.001));
          when(mockSpeedController.get()).thenReturn(0.05);
 
          when(mockClock.getTime()).thenReturn(0.21);
