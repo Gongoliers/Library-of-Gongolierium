@@ -1,10 +1,12 @@
 package com.thegongoliers.output.drivetrain;
 
+import com.thegongoliers.annotations.UsedInCompetition;
 import com.thegongoliers.math.GMath;
 
 /**
  * A drivetrain module which will force the drivetrain to accelerate slower. 
  */
+@UsedInCompetition(team = "5112", year = "2022")
 public class RampModule implements DriveModule {
 
     private static final double DEFAULT_TURN_THRESHOLD = 2.0;

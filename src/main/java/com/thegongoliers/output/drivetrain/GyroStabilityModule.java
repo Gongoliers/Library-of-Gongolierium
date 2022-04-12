@@ -1,5 +1,6 @@
 package com.thegongoliers.output.drivetrain;
 
+import com.thegongoliers.annotations.UsedInCompetition;
 import com.thegongoliers.input.time.Clock;
 import com.thegongoliers.input.time.RobotClock;
 
@@ -9,6 +10,7 @@ import edu.wpi.first.wpilibj.interfaces.Gyro;
 /**
  * A drivetrain module which will stabilize the drivetrain (rotation-wise) while attempting to drive straight
  */
+@UsedInCompetition(team = "5112", year = "2020")
 public class GyroStabilityModule implements DriveModule, Resettable {
 
     private static final double DEFAULT_TURN_THRESHOLD = 0.01;

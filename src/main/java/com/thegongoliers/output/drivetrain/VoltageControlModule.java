@@ -1,11 +1,13 @@
 package com.thegongoliers.output.drivetrain;
 
+import com.thegongoliers.annotations.UsedInCompetition;
 import com.thegongoliers.input.voltage.BatteryVoltageSensor;
 import com.thegongoliers.input.voltage.VoltageSensor;
 
 /**
  * Ensures that the drivetrain runs at a consistent voltage, compensating for battery voltage fluctuations
  */
+@UsedInCompetition(team = "5112", year = "2022")
 public class VoltageControlModule implements DriveModule {
 
     private double mMaxVoltage;

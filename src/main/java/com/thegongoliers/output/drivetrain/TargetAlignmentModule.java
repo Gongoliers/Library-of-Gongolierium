@@ -1,5 +1,6 @@
 package com.thegongoliers.output.drivetrain;
 
+import com.thegongoliers.annotations.UsedInCompetition;
 import com.thegongoliers.input.vision.TargetingCamera;
 import com.thegongoliers.math.GMath;
 import com.thegongoliers.output.control.MotionController;
@@ -8,6 +9,7 @@ import com.thegongoliers.utils.Resettable;
 /**
  * A drivetrain module which align to vision targets
  */
+@UsedInCompetition(team = "5112", year = "2020")
 public class TargetAlignmentModule implements DriveModule, Resettable {
     private static final double DEFAULT_SEEK_SPEED = 0.3;
 
