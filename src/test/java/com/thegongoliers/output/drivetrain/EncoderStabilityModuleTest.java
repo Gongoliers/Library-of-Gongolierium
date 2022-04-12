@@ -12,7 +12,7 @@ import com.thegongoliers.output.interfaces.Drivetrain;
 /**
  * TractionControlModuleTest
  */
-public class TractionControlModuleTest {
+public class EncoderStabilityModuleTest {
 
     private Drivetrain drivetrain;
     private ModularDrivetrain modularDrivetrain;
@@ -25,7 +25,7 @@ public class TractionControlModuleTest {
         modularDrivetrain = new ModularDrivetrain(drivetrain, mock(Clock.class));
         encoder1 = mock(EncoderSensor.class);
         encoder2 = mock(EncoderSensor.class);
-        module = new TractionControlModule(encoder1, encoder2, 0.1, 0.1);
+        module = new EncoderStabilityModule(encoder1, encoder2, 0.1, 0.1);
         modularDrivetrain.addModule(module);
     }
 

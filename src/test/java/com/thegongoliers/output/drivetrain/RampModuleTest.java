@@ -11,11 +11,11 @@ import com.thegongoliers.output.interfaces.Drivetrain;
 /**
  * PowerEfficiencyModuleTest
  */
-public class PowerEfficiencyModuleTest {
+public class RampModuleTest {
 
     private Drivetrain drivetrain;
     private ModularDrivetrain modularDrivetrain;
-    private PowerEfficiencyModule module;
+    private RampModule module;
     private Clock clock;
 
     @Before
@@ -24,7 +24,7 @@ public class PowerEfficiencyModuleTest {
         clock = mock(Clock.class);
         when(clock.getTime()).thenReturn(0.0);
         modularDrivetrain = new ModularDrivetrain(drivetrain, clock);
-        module = new PowerEfficiencyModule(0.2);
+        module = new RampModule(0.2);
         modularDrivetrain.addModule(module);
     }
 
@@ -72,12 +72,12 @@ public class PowerEfficiencyModuleTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void throwsWhenRampingTimeIsNegative(){
-        new PowerEfficiencyModule(-1);
+        new RampModule(-1);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void throwsWhenTurningThresholdIsNegative(){
-        new PowerEfficiencyModule(1, -1);
+        new RampModule(1, -1);
     }
 
 }

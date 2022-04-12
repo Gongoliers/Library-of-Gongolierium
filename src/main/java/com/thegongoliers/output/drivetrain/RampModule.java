@@ -5,7 +5,7 @@ import com.thegongoliers.math.GMath;
 /**
  * A drivetrain module which will force the drivetrain to accelerate slower. 
  */
-public class PowerEfficiencyModule implements DriveModule {
+public class RampModule implements DriveModule {
 
     private static final double DEFAULT_TURN_THRESHOLD = 2.0;
 
@@ -17,7 +17,7 @@ public class PowerEfficiencyModule implements DriveModule {
      * @param secondsToReachFullSpeed the ramping time in seconds from 0 to full speed
      * @param turnThreshold the maximum difference between the two wheel speeds to run the power efficiency module on. Defaults to 2.
      */
-    public PowerEfficiencyModule(double secondsToReachFullSpeed, double turnThreshold){
+    public RampModule(double secondsToReachFullSpeed, double turnThreshold){
         super();
         setRampingTime(secondsToReachFullSpeed);
         setTurnThreshold(turnThreshold);
@@ -27,7 +27,7 @@ public class PowerEfficiencyModule implements DriveModule {
      * Default constructor
      * @param secondsToReachFullSpeed the ramping time in seconds from 0 to full speed
      */
-    public PowerEfficiencyModule(double secondsToReachFullSpeed){
+    public RampModule(double secondsToReachFullSpeed){
         this(secondsToReachFullSpeed, DEFAULT_TURN_THRESHOLD);
     }
 

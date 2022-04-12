@@ -18,8 +18,8 @@ class Example {
         // Install the drive modules
         drivetrain.setModules(
             new PrecisionModule(0.5),
-            new PowerEfficiencyModule(0.1),
-            new StabilityModule(new AnalogGyro(0), 0.02, 0.5),
+            new RampModule(0.1),
+            new GyroStabilityModule(new AnalogGyro(0), 0.02, 0.5),
             new SpeedConstraintModule(0.9, false)
         );
 

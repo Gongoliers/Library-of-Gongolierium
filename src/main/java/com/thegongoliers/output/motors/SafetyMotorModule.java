@@ -2,11 +2,11 @@ package com.thegongoliers.output.motors;
 
 import java.util.function.BooleanSupplier;
 
-public class ConditionalMotorModule implements MotorModule {
+public class SafetyMotorModule implements MotorModule {
 
     private final BooleanSupplier mCanRun;
 
-    public ConditionalMotorModule(BooleanSupplier canRun){
+    public SafetyMotorModule(BooleanSupplier canRun){
         mCanRun = canRun;
     }
 

@@ -4,11 +4,11 @@ import com.thegongoliers.annotations.Untested;
 import com.thegongoliers.math.GMath;
 
 @Untested
-public class PowerEfficiencyMotorModule implements MotorModule {
+public class RampMotorModule implements MotorModule {
 
     private final double mSecondsToReachFullSpeed;
 
-    public PowerEfficiencyMotorModule(double secondsToReachFullSpeed){
+    public RampMotorModule(double secondsToReachFullSpeed){
         mSecondsToReachFullSpeed = secondsToReachFullSpeed;
     }
 

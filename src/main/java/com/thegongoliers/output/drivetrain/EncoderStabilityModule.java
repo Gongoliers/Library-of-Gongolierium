@@ -6,7 +6,7 @@ import com.thegongoliers.math.GMath;
 /**
  * A drivetrain module which work to prevent wheel slip while driving straight
  */
-public class TractionControlModule implements DriveModule {
+public class EncoderStabilityModule implements DriveModule {
 
     private static final double DEFAULT_TURNING_THRESHOLD = 0;
 
@@ -22,7 +22,7 @@ public class TractionControlModule implements DriveModule {
      * @param strength the strength (higher values may become unstable, small values recommended. Values must be greater than or equal to 0)
      * @param slipThreshold the maximum slip ratio to consider as slipping
      */
-    public TractionControlModule(EncoderSensor leftEncoder, EncoderSensor rightEncoder, double strength, double slipThreshold){
+    public EncoderStabilityModule(EncoderSensor leftEncoder, EncoderSensor rightEncoder, double strength, double slipThreshold){
         super();
         mLeftEncoder = leftEncoder;
         mRightEncoder = rightEncoder;

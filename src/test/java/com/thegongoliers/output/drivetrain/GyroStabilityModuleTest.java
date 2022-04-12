@@ -14,12 +14,12 @@ import com.thegongoliers.output.interfaces.Drivetrain;
 /**
  * StabilityModuleTest
  */
-public class StabilityModuleTest {
+public class GyroStabilityModuleTest {
 
     private Drivetrain drivetrain;
     private Gyro gyro;
     private ModularDrivetrain stabilizedDrivetrain;
-    private StabilityModule stabilityModule;
+    private GyroStabilityModule gyroStabilityModule;
 
     @Before
     public void setup(){
@@ -29,9 +29,9 @@ public class StabilityModuleTest {
 
         stabilizedDrivetrain = new ModularDrivetrain(drivetrain, mock(Clock.class));
 
-        stabilityModule = new StabilityModule(gyro, kp, 0);
-        stabilityModule.setClock(mock(Clock.class));
-        stabilizedDrivetrain.addModule(stabilityModule);
+        gyroStabilityModule = new GyroStabilityModule(gyro, kp, 0);
+        gyroStabilityModule.setClock(mock(Clock.class));
+        stabilizedDrivetrain.addModule(gyroStabilityModule);
     }
 
     @Test
@@ -74,8 +74,8 @@ public class StabilityModuleTest {
     public void allowsSettling(){
         Clock clock = mock(Clock.class);
 
-        stabilityModule.setSettlingTime(1);
-        stabilityModule.setClock(clock);
+        gyroStabilityModule.setSettlingTime(1);
+        gyroStabilityModule.setClock(clock);
 
         when(clock.getTime()).thenReturn(0.0);
         when(gyro.getAngle()).thenReturn(10.0);
@@ -103,7 +103,7 @@ public class StabilityModuleTest {
         stabilizedDrivetrain.arcade(1.0, 1.0);
 
         when(gyro.getAngle()).thenReturn(100.0);
-        stabilityModule.reset();
+        gyroStabilityModule.reset();
         stabilizedDrivetrain.arcade(0.9, 0.9);
         DrivetrainTestUtils.verifyArcade(drivetrain, 0.9, 0.9);
     }

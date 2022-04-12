@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj.interfaces.Gyro;
 /**
  * A drivetrain module which will stabilize the drivetrain (rotation-wise) while attempting to drive straight
  */
-public class StabilityModule implements DriveModule, Resettable {
+public class GyroStabilityModule implements DriveModule, Resettable {
 
     private static final double DEFAULT_TURN_THRESHOLD = 0.01;
 
@@ -28,7 +28,7 @@ public class StabilityModule implements DriveModule, Resettable {
      * @param strength the stabilizing strength (higher values may become unstable, recommended ~0.02. Values must be greater than or equal to 0)
      * @param settlingTime the amount of time to allow the drivetrain to settle after turn inputs stop before applying turn corrections
      */
-    public StabilityModule(Gyro gyro, double strength, double settlingTime){
+    public GyroStabilityModule(Gyro gyro, double strength, double settlingTime){
         setGyro(gyro);
         setStrength(strength);
         setSettlingTime(settlingTime);

@@ -40,7 +40,7 @@ public class GDrivetrain implements Drivetrain {
         turnPID.setPositionTolerance(1);
         var pathModule = new PathFollowerModule(gyro, new AverageEncoderSensor(leftEncoder, rightEncoder), forwardPID, turnPID);
 
-        var stabilityModule = new StabilityModule(gyro, 0.05, 0.25);
+        var stabilityModule = new GyroStabilityModule(gyro, 0.05, 0.25);
         stabilityModule.setTurnThreshold(0.075);
 
         modularDrivetrain = ModularDrivetrain.from(drivetrain);
@@ -49,7 +49,7 @@ public class GDrivetrain implements Drivetrain {
             pathModule,
             targetModule,
             new VoltageControlModule(10.5),
-            new PowerEfficiencyModule(0.25, 0.2)
+            new RampModule(0.25, 0.2)
         );
     }
 
@@ -81,7 +81,7 @@ public class GDrivetrain implements Drivetrain {
     }
 
     public void setRampTime(double secondsToReachFullSpeed){
-        var module = modularDrivetrain.getInstalledModule(PowerEfficiencyModule.class);
+        var module = modularDrivetrain.getInstalledModule(RampModule.class);
         if (module != null){
             module.setRampingTime(secondsToReachFullSpeed);
         }
@@ -104,14 +104,14 @@ public class GDrivetrain implements Drivetrain {
     }
 
     public void setStabilityStrength(double strength){
-        var module = modularDrivetrain.getInstalledModule(StabilityModule.class);
+        var module = modularDrivetrain.getInstalledModule(GyroStabilityModule.class);
         if (module != null){
             module.setStrength(strength);
         }
     }
 
     public void setStabilitySettlingTime(double settlingTime){
-        var module = modularDrivetrain.getInstalledModule(StabilityModule.class);
+        var module = modularDrivetrain.getInstalledModule(GyroStabilityModule.class);
         if (module != null){
             module.setSettlingTime(settlingTime);
         }
