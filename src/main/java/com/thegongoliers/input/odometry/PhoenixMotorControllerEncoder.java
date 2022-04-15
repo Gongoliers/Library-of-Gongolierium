@@ -2,7 +2,6 @@ package com.thegongoliers.input.odometry;
 
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.BaseMotorController;
-import com.thegongoliers.input.odometry.BaseEncoderSensor;
 
 public class PhoenixMotorControllerEncoder extends BaseEncoderSensor {
 
