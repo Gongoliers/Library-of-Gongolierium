@@ -62,6 +62,12 @@ public class SwerveWheel {
         return new SwerveModuleState(getVelocity(), Rotation2d.fromDegrees(getAngle()));
     }
 
+    public void reset() {
+        mDriveEncoder.reset();
+        mTurnEncoder.reset();
+        mAngleController.reset();
+    }
+
     public void set(double driveSpeed, double angle) {
         double dt = mClock.getTime() - lastTime;
         if (dt > 0.1) {

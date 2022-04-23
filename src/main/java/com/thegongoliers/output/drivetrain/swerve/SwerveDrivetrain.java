@@ -74,6 +74,13 @@ public class SwerveDrivetrain {
         mOdometry.resetPosition(new Pose2d(0, 0, Rotation2d.fromDegrees(0)), mGyro.getRotation2d());
     }
 
+    public void resetWheels() {
+        mFrontLeft.reset();
+        mFrontRight.reset();
+        mBackLeft.reset();
+        mBackRight.reset();
+    }
+
     public void updatePosition() {
         mOdometry.update(
                 mGyro.getRotation2d(),
