@@ -23,6 +23,14 @@ public class LimiterMotorModule implements MotorModule {
         }
     }
 
+    public void setNegativeLimit(BooleanSupplier mNegativeLimit) {
+        this.mNegativeLimit = mNegativeLimit;
+    }
+
+    public void setPositiveLimit(BooleanSupplier mPositiveLimit) {
+        this.mPositiveLimit = mPositiveLimit;
+    }
+
     @Override
     public double run(double currentSpeed, double desiredSpeed, double deltaTime) {
         if (shouldStop(desiredSpeed)) {
