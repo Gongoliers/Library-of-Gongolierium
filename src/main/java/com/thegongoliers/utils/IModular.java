@@ -13,5 +13,5 @@ public interface IModular<T> {
 
     List<IModule<T>> getInstalledModules();
 
-    <K extends IModule<T>> K getInstalledModule(Class<K> cls);
+    <K> K getInstalledModule(Class<K> cls);
 }

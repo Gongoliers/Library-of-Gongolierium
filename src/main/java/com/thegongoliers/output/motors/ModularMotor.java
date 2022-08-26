@@ -63,7 +63,7 @@ public class ModularMotor extends BaseMotorControllerDecorator implements Double
     }
 
     @Override
-    public <K extends IModule<Double>> K getInstalledModule(Class<K> cls) {
+    public <K> K getInstalledModule(Class<K> cls) {
         return modules.getInstalledModule(cls);
     }
 

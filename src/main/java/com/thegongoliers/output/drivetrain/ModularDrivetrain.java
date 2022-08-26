@@ -99,7 +99,7 @@ public class ModularDrivetrain implements Drivetrain, Resettable, IModular<Drive
     }
 
     @Override
-    public <K extends IModule<DriveSpeed>> K getInstalledModule(Class<K> cls) {
+    public <K> K getInstalledModule(Class<K> cls) {
         return modules.getInstalledModule(cls);
     }
 

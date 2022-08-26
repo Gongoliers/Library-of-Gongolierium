@@ -1,16 +1,15 @@
-package com.thegongoliers.output.drivetrain;
+package com.thegongoliers.output.drivetrain.swerve;
 
-import com.thegongoliers.annotations.UsedInCompetition;
 import com.thegongoliers.input.vision.TargetingCamera;
-import com.thegongoliers.math.GMath;
 import com.thegongoliers.output.control.MotionController;
+import com.thegongoliers.output.drivetrain.ITargetAligner;
+import com.thegongoliers.utils.IModule;
 import com.thegongoliers.utils.Resettable;
 
 /**
  * A drivetrain module which align to vision targets
  */
-@UsedInCompetition(team = "5112", year = "2020")
-public class TargetAlignmentModule implements DriveModule, Resettable, ITargetAligner {
+public class TargetAlignmentSwerveModule implements IModule<SwerveSpeed>, Resettable, ITargetAligner {
     private static final double DEFAULT_SEEK_SPEED = 0.3;
 
     private TargetingCamera mCamera;
@@ -24,34 +23,34 @@ public class TargetAlignmentModule implements DriveModule, Resettable, ITargetAl
 
     private boolean mIsEnabled;
 
-    public TargetAlignmentModule(TargetingCamera camera, MotionController aimController, MotionController rangeController, boolean shouldSeek){
+    public TargetAlignmentSwerveModule(TargetingCamera camera, MotionController aimController, MotionController rangeController, boolean shouldSeek) {
         mCamera = camera;
         setShouldSeek(shouldSeek);
         setAimController(aimController);
         setRangeController(rangeController);
         setSeekSpeed(DEFAULT_SEEK_SPEED);
-        
-        if (cantAimOrRange()){
+
+        if (cantAimOrRange()) {
             throw new IllegalArgumentException("Range strength and aim strength can't both be 0");
         }
     }
 
     @Override
-    public DriveSpeed run(DriveSpeed currentSpeed, DriveSpeed desiredSpeed, double deltaTime) {
+    public SwerveSpeed run(SwerveSpeed currentSpeed, SwerveSpeed desiredSpeed, double deltaTime) {
         if (!mIsEnabled) return desiredSpeed;
         if (cantFindTarget()) return desiredSpeed;
 
-        if (!mCamera.hasTarget()){
+        if (!mCamera.hasTarget()) {
             return seek();
         }
 
         var alignmentSpeed = align(deltaTime);
 
-        if (isAligned()){
+        if (isAligned()) {
             stopAligning();
             return desiredSpeed;
         }
-        
+
         return alignmentSpeed;
     }
 
@@ -61,7 +60,7 @@ public class TargetAlignmentModule implements DriveModule, Resettable, ITargetAl
     }
 
     @Override
-    public void align(double desiredHorizontalOffset, double desiredTargetArea){
+    public void align(double desiredHorizontalOffset, double desiredTargetArea) {
         mDesiredTargetArea = desiredTargetArea;
         mDesiredHorizontalOffset = desiredHorizontalOffset;
         mIsEnabled = true;
@@ -69,30 +68,30 @@ public class TargetAlignmentModule implements DriveModule, Resettable, ITargetAl
     }
 
     @Override
-    public void stopAligning(){
+    public void stopAligning() {
         mIsEnabled = false;
         resetControllers();
     }
 
     @Override
-    public boolean isAligning(){
+    public boolean isAligning() {
         return mIsEnabled;
     }
 
-    public void setShouldSeek(boolean shouldSeek){
+    public void setShouldSeek(boolean shouldSeek) {
         mShouldSeek = shouldSeek;
     }
 
-    public void setSeekSpeed(double speed){
+    public void setSeekSpeed(double speed) {
         if (speed < -1 || speed > 1) throw new IllegalArgumentException("Speed must be between -1 and 1");
         mSeekSpeed = speed;
     }
 
-    public void setRangeController(MotionController rangeController){
+    public void setRangeController(MotionController rangeController) {
         mRangeController = rangeController;
     }
 
-    public void setAimController(MotionController aimController){
+    public void setAimController(MotionController aimController) {
         mAimController = aimController;
     }
 
@@ -104,14 +103,14 @@ public class TargetAlignmentModule implements DriveModule, Resettable, ITargetAl
         return !mCamera.hasTarget() && !mShouldSeek;
     }
 
-    private DriveSpeed seek(){
-        return DriveSpeed.fromArcade(0, mSeekSpeed);
+    private SwerveSpeed seek() {
+        return new SwerveSpeed(0, 0, mSeekSpeed);
     }
 
-    private boolean isAligned(){
-        if (shouldOnlyAlignRange()){
+    private boolean isAligned() {
+        if (shouldOnlyAlignRange()) {
             return isRangeAligned();
-        } else if (shouldOnlyAlignAim()){
+        } else if (shouldOnlyAlignAim()) {
             return isAimAligned();
         }
         return isAimAligned() && isRangeAligned();
@@ -122,26 +121,26 @@ public class TargetAlignmentModule implements DriveModule, Resettable, ITargetAl
         return mAimController.atSetpoint();
     }
 
-    private boolean isRangeAligned(){
+    private boolean isRangeAligned() {
         if (mRangeController == null) return true;
         return mRangeController.atSetpoint();
     }
 
-    private DriveSpeed align(double delta){
+    private SwerveSpeed align(double delta) {
         double aim = 0.0;
         double range = 0.0;
 
-        if (mAimController != null){
+        if (mAimController != null) {
             mAimController.setSetpoint(mDesiredHorizontalOffset);
             aim = mAimController.calculate(mCamera.getHorizontalOffset(), delta);
         }
 
-        if (mRangeController != null){
+        if (mRangeController != null) {
             mRangeController.setSetpoint(mDesiredTargetArea);
             range = mRangeController.calculate(mCamera.getTargetArea(), delta);
         }
 
-        return DriveSpeed.fromArcade(range, aim);
+        return new SwerveSpeed(0, range, aim);
     }
 
     private boolean shouldOnlyAlignRange() {
@@ -157,12 +156,12 @@ public class TargetAlignmentModule implements DriveModule, Resettable, ITargetAl
         stopAligning();
     }
 
-    private void resetControllers(){
-        if (mRangeController != null){
+    private void resetControllers() {
+        if (mRangeController != null) {
             mRangeController.reset();
         }
 
-        if (mAimController != null){
+        if (mAimController != null) {
             mAimController.reset();
         }
     }

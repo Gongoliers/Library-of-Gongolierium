@@ -130,7 +130,7 @@ public final class ModuleRunner<T> implements Resettable, IModular<T> {
      */
     @SuppressWarnings("unchecked")
     @Override
-    public <K extends IModule<T>> K getInstalledModule(Class<K> cls) {
+    public <K> K getInstalledModule(Class<K> cls) {
         for (IModule<T> module : modules) {
             if (module.getClass() == cls) {
                 return (K) module;

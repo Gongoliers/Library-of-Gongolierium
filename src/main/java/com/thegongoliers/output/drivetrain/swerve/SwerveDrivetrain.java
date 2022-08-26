@@ -92,7 +92,7 @@ public class SwerveDrivetrain implements IModular<SwerveSpeed>, Stoppable, Reset
     }
 
     @Override
-    public <K extends IModule<SwerveSpeed>> K getInstalledModule(Class<K> cls) {
+    public <K> K getInstalledModule(Class<K> cls) {
         return modules.getInstalledModule(cls);
     }
 
