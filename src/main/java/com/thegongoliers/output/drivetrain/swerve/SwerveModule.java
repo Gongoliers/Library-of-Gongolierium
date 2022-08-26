@@ -74,6 +74,10 @@ public class SwerveModule {
         mAngleController.reset();
     }
 
+    public void set(SwerveModuleSpeed speed){
+        set(speed.getSpeed(), speed.getAngle());
+    }
+
     public void set(double driveSpeed, double angle) {
         double dt = mClock.getTime() - lastTime;
         if (dt > 0.1) {

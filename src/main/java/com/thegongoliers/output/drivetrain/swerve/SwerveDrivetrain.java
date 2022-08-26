@@ -2,60 +2,40 @@ package com.thegongoliers.output.drivetrain.swerve;
 
 import com.thegongoliers.input.time.Clock;
 import com.thegongoliers.input.time.RobotClock;
+import com.thegongoliers.math.SwerveKinematics;
 import com.thegongoliers.output.interfaces.Stoppable;
 import com.thegongoliers.utils.IModular;
 import com.thegongoliers.utils.IModule;
 import com.thegongoliers.utils.ModuleRunner;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
-import edu.wpi.first.wpilibj.interfaces.Gyro;
+import com.thegongoliers.utils.Resettable;
 
 import java.util.List;
 
-public class SwerveDrivetrain implements IModular<SwerveSpeed>, Stoppable {
+public class SwerveDrivetrain implements IModular<SwerveSpeed>, Stoppable, Resettable {
 
     private final SwerveModule mFrontLeft;
     private final SwerveModule mFrontRight;
     private final SwerveModule mBackLeft;
     private final SwerveModule mBackRight;
-    private final Gyro mGyro;
-
-    private double maxDegreesPerSecond = 180;
-    private double maxWheelSpeed = 1;
-
-    private final SwerveDriveKinematics mKinematics;
-
-    private final SwerveDriveOdometry mOdometry;
-
+    private final SwerveKinematics mKinematics;
     private final ModuleRunner<SwerveSpeed> modules;
-
     private SwerveSpeed _currentSpeed = SwerveSpeed.STOP;
 
-    public SwerveDrivetrain(SwerveModule frontLeft, SwerveModule frontRight, SwerveModule backLeft, SwerveModule backRight, Gyro gyro) {
-        this(frontLeft, frontRight, backLeft, backRight, gyro, new RobotClock());
+    public SwerveDrivetrain(SwerveModule frontLeft, SwerveModule frontRight, SwerveModule backLeft, SwerveModule backRight) {
+        this(frontLeft, frontRight, backLeft, backRight, 1, 180, new RobotClock());
     }
 
-    public SwerveDrivetrain(SwerveModule frontLeft, SwerveModule frontRight, SwerveModule backLeft, SwerveModule backRight, Gyro gyro, Clock clock) {
+    public SwerveDrivetrain(SwerveModule frontLeft, SwerveModule frontRight, SwerveModule backLeft, SwerveModule backRight, double maxSpeed, double maxRotationSpeedDegrees) {
+        this(frontLeft, frontRight, backLeft, backRight, maxSpeed, maxRotationSpeedDegrees, new RobotClock());
+    }
+
+    public SwerveDrivetrain(SwerveModule frontLeft, SwerveModule frontRight, SwerveModule backLeft, SwerveModule backRight, double maxSpeed, double maxRotationSpeedDegrees, Clock clock) {
         mFrontLeft = frontLeft;
         mFrontRight = frontRight;
         mBackLeft = backLeft;
         mBackRight = backRight;
-        // TODO: Extract odometry
-        mGyro = gyro;
-        mKinematics = new SwerveDriveKinematics(frontLeft.getLocation(), frontRight.getLocation(), backLeft.getLocation(), backRight.getLocation());
-        mOdometry = new SwerveDriveOdometry(mKinematics, mGyro.getRotation2d());
+        mKinematics = new SwerveKinematics(frontLeft, frontRight, backLeft, backRight, maxSpeed, maxRotationSpeedDegrees);
         modules = new ModuleRunner<>(clock);
-    }
-
-    public void setMaxDegreesPerSecond(double maxDegreesPerSecond) {
-        this.maxDegreesPerSecond = maxDegreesPerSecond;
-    }
-
-    public void setMaxWheelSpeed(double maxWheelSpeed) {
-        this.maxWheelSpeed = maxWheelSpeed;
     }
 
     /**
@@ -68,13 +48,11 @@ public class SwerveDrivetrain implements IModular<SwerveSpeed>, Stoppable {
     public void drive(double x, double y, double rotation) {
         var desiredSpeed = new SwerveSpeed(x, y, rotation);
         _currentSpeed = modules.run(_currentSpeed, desiredSpeed);
-        var speed = new ChassisSpeeds(x * maxWheelSpeed, y * maxWheelSpeed, Math.toRadians(rotation * maxDegreesPerSecond));
-        var states = mKinematics.toSwerveModuleStates(speed);
-        SwerveDriveKinematics.desaturateWheelSpeeds(states, maxWheelSpeed);
-        mFrontLeft.set(states[0].speedMetersPerSecond / maxWheelSpeed, states[0].angle.getDegrees());
-        mFrontRight.set(states[1].speedMetersPerSecond / maxWheelSpeed, states[1].angle.getDegrees());
-        mBackLeft.set(states[2].speedMetersPerSecond / maxWheelSpeed, states[2].angle.getDegrees());
-        mBackRight.set(states[3].speedMetersPerSecond / maxWheelSpeed, states[3].angle.getDegrees());
+        var speeds = mKinematics.calculate(_currentSpeed);
+        mFrontLeft.set(speeds.getFrontLeft());
+        mFrontRight.set(speeds.getFrontRight());
+        mBackLeft.set(speeds.getBackLeft());
+        mBackRight.set(speeds.getBackRight());
     }
 
     /**
@@ -86,38 +64,6 @@ public class SwerveDrivetrain implements IModular<SwerveSpeed>, Stoppable {
      */
     public void drivePolar(double magnitude, double direction, double rotation) {
         drive(magnitude * Math.cos(Math.toRadians(direction)), magnitude * Math.sin(Math.toRadians(direction)), rotation);
-    }
-
-    public double getX() {
-        return mOdometry.getPoseMeters().getX();
-    }
-
-    public double getY() {
-        return mOdometry.getPoseMeters().getY();
-    }
-
-    public double getRotation() {
-        return mGyro.getAngle();
-    }
-
-    public void resetPosition() {
-        mOdometry.resetPosition(new Pose2d(0, 0, Rotation2d.fromDegrees(0)), mGyro.getRotation2d());
-    }
-
-    public void resetWheels() {
-        mFrontLeft.reset();
-        mFrontRight.reset();
-        mBackLeft.reset();
-        mBackRight.reset();
-    }
-
-    public void updatePosition() {
-        mOdometry.update(
-                mGyro.getRotation2d(),
-                mFrontLeft.getState(),
-                mFrontRight.getState(),
-                mBackLeft.getState(),
-                mBackRight.getState());
     }
 
     @Override
@@ -166,5 +112,13 @@ public class SwerveDrivetrain implements IModular<SwerveSpeed>, Stoppable {
      */
     public void setInactiveResetSeconds(double resetThreshold) {
         modules.setInactiveResetSeconds(resetThreshold);
+    }
+
+    @Override
+    public void reset() {
+        mFrontLeft.reset();
+        mFrontRight.reset();
+        mBackLeft.reset();
+        mBackRight.reset();
     }
 }
