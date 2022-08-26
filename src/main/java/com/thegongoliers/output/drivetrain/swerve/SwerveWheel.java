@@ -21,6 +21,8 @@ public class SwerveWheel {
 
     private double lastTime = 0.0;
 
+    private double mStopThreshold = 0.001;
+
     public SwerveWheel(MotorController driveMotor,
                        MotorController turnMotor,
                        EncoderSensor driveEncoder,
@@ -62,6 +64,10 @@ public class SwerveWheel {
         return new SwerveModuleState(getVelocity(), Rotation2d.fromDegrees(getAngle()));
     }
 
+    public void setStopThreshold(double threshold) {
+        mStopThreshold = Math.abs(threshold);
+    }
+
     public void reset() {
         mDriveEncoder.reset();
         mTurnEncoder.reset();
@@ -79,9 +85,19 @@ public class SwerveWheel {
                 new SwerveModuleState(driveSpeed, Rotation2d.fromDegrees(angle)),
                 new Rotation2d(getAngle()));
 
+        if (Math.abs(state.speedMetersPerSecond) < mStopThreshold) {
+            stop();
+            return;
+        }
+
         mDriveMotor.set(state.speedMetersPerSecond);
         mAngleController.setSetpoint(state.angle.getDegrees());
         mTurnMotor.set(mAngleController.calculate(getAngle(), dt));
+    }
+
+    public void stop() {
+        mDriveMotor.set(0);
+        mTurnMotor.set(0);
     }
 
 }
