@@ -1,5 +1,11 @@
 package com.thegongoliers.output.drivetrain.swerve;
 
+import com.thegongoliers.input.time.Clock;
+import com.thegongoliers.input.time.RobotClock;
+import com.thegongoliers.output.interfaces.Stoppable;
+import com.thegongoliers.utils.IModular;
+import com.thegongoliers.utils.IModule;
+import com.thegongoliers.utils.ModuleRunner;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -7,12 +13,14 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
 
-public class SwerveDrivetrain {
+import java.util.List;
 
-    private final SwerveWheel mFrontLeft;
-    private final SwerveWheel mFrontRight;
-    private final SwerveWheel mBackLeft;
-    private final SwerveWheel mBackRight;
+public class SwerveDrivetrain implements IModular<SwerveSpeed>, Stoppable {
+
+    private final SwerveModule mFrontLeft;
+    private final SwerveModule mFrontRight;
+    private final SwerveModule mBackLeft;
+    private final SwerveModule mBackRight;
     private final Gyro mGyro;
 
     private double maxDegreesPerSecond = 180;
@@ -22,14 +30,24 @@ public class SwerveDrivetrain {
 
     private final SwerveDriveOdometry mOdometry;
 
-    public SwerveDrivetrain(SwerveWheel frontLeft, SwerveWheel frontRight, SwerveWheel backLeft, SwerveWheel backRight, Gyro gyro) {
+    private final ModuleRunner<SwerveSpeed> modules;
+
+    private SwerveSpeed _currentSpeed = SwerveSpeed.STOP;
+
+    public SwerveDrivetrain(SwerveModule frontLeft, SwerveModule frontRight, SwerveModule backLeft, SwerveModule backRight, Gyro gyro) {
+        this(frontLeft, frontRight, backLeft, backRight, gyro, new RobotClock());
+    }
+
+    public SwerveDrivetrain(SwerveModule frontLeft, SwerveModule frontRight, SwerveModule backLeft, SwerveModule backRight, Gyro gyro, Clock clock) {
         mFrontLeft = frontLeft;
         mFrontRight = frontRight;
         mBackLeft = backLeft;
         mBackRight = backRight;
+        // TODO: Extract odometry
         mGyro = gyro;
         mKinematics = new SwerveDriveKinematics(frontLeft.getLocation(), frontRight.getLocation(), backLeft.getLocation(), backRight.getLocation());
         mOdometry = new SwerveDriveOdometry(mKinematics, mGyro.getRotation2d());
+        modules = new ModuleRunner<>(clock);
     }
 
     public void setMaxDegreesPerSecond(double maxDegreesPerSecond) {
@@ -48,7 +66,8 @@ public class SwerveDrivetrain {
      * @param rotation The rotation speed [-1, 1]
      */
     public void drive(double x, double y, double rotation) {
-        // TODO: Add modules which take in and output x, y, rotation percentages (field relative, velocity control, voltage control, ramp, path follower, target alignment)
+        var desiredSpeed = new SwerveSpeed(x, y, rotation);
+        _currentSpeed = modules.run(_currentSpeed, desiredSpeed);
         var speed = new ChassisSpeeds(x * maxWheelSpeed, y * maxWheelSpeed, Math.toRadians(rotation * maxDegreesPerSecond));
         var states = mKinematics.toSwerveModuleStates(speed);
         SwerveDriveKinematics.desaturateWheelSpeeds(states, maxWheelSpeed);
@@ -101,4 +120,51 @@ public class SwerveDrivetrain {
                 mBackRight.getState());
     }
 
+    @Override
+    public void setModules(IModule<SwerveSpeed>... modules) {
+        this.modules.setModules(modules);
+    }
+
+    @Override
+    public void addModule(IModule<SwerveSpeed> module) {
+        modules.addModule(module);
+    }
+
+    @Override
+    public void addModule(int index, IModule<SwerveSpeed> module) {
+        modules.addModule(index, module);
+    }
+
+    @Override
+    public void removeModule(IModule<SwerveSpeed> module) {
+        modules.removeModule(module);
+    }
+
+    @Override
+    public List<IModule<SwerveSpeed>> getInstalledModules() {
+        return modules.getInstalledModules();
+    }
+
+    @Override
+    public <K extends IModule<SwerveSpeed>> K getInstalledModule(Class<K> cls) {
+        return modules.getInstalledModule(cls);
+    }
+
+    @Override
+    public void stop() {
+        mFrontLeft.stop();
+        mFrontRight.stop();
+        mBackLeft.stop();
+        mBackRight.stop();
+        _currentSpeed = SwerveSpeed.STOP;
+    }
+
+    /**
+     * If a drive method was not called within the reset threshold, all modules will be reset on the next invocation.
+     *
+     * @param resetThreshold The reset threshold in seconds.
+     */
+    public void setInactiveResetSeconds(double resetThreshold) {
+        modules.setInactiveResetSeconds(resetThreshold);
+    }
 }

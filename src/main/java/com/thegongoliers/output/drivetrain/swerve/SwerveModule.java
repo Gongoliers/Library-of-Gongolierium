@@ -8,7 +8,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 
-public class SwerveWheel {
+public class SwerveModule {
 
     private final MotorController mDriveMotor;
     private final MotorController mTurnMotor;
@@ -23,13 +23,13 @@ public class SwerveWheel {
 
     private double mStopThreshold = 0.001;
 
-    public SwerveWheel(MotorController driveMotor,
-                       MotorController turnMotor,
-                       EncoderSensor driveEncoder,
-                       EncoderSensor turnEncoder,
-                       Translation2d location,
-                       MotionController angleController,
-                       Clock clock) {
+    public SwerveModule(MotorController driveMotor,
+                        MotorController turnMotor,
+                        EncoderSensor driveEncoder,
+                        EncoderSensor turnEncoder,
+                        Translation2d location,
+                        MotionController angleController,
+                        Clock clock) {
 
         mDriveMotor = driveMotor;
         mTurnMotor = turnMotor;
