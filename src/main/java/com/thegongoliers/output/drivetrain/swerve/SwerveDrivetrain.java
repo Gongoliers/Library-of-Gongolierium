@@ -41,21 +41,32 @@ public class SwerveDrivetrain {
     }
 
     /**
-     * Drive with given speeds (percentages)
+     * Drive with given speeds (percentages of max speed)
      *
      * @param x        The x speed [-1, 1]
      * @param y        The y speed [-1, 1]
      * @param rotation The rotation speed [-1, 1]
      */
     public void drive(double x, double y, double rotation) {
-        // TODO: Add modules which take in and output a ChassisSpeeds object (field relative, velocity control, voltage control, ramp, path follower, target alignment)
-        var speed = new ChassisSpeeds(x, y, rotation * maxDegreesPerSecond);
+        // TODO: Add modules which take in and output x, y, rotation percentages (field relative, velocity control, voltage control, ramp, path follower, target alignment)
+        var speed = new ChassisSpeeds(x * maxWheelSpeed, y * maxWheelSpeed, Math.toRadians(rotation * maxDegreesPerSecond));
         var states = mKinematics.toSwerveModuleStates(speed);
         SwerveDriveKinematics.desaturateWheelSpeeds(states, maxWheelSpeed);
-        mFrontLeft.set(states[0].speedMetersPerSecond, states[0].angle.getDegrees());
-        mFrontRight.set(states[1].speedMetersPerSecond, states[1].angle.getDegrees());
-        mBackLeft.set(states[2].speedMetersPerSecond, states[2].angle.getDegrees());
-        mBackRight.set(states[3].speedMetersPerSecond, states[3].angle.getDegrees());
+        mFrontLeft.set(states[0].speedMetersPerSecond / maxWheelSpeed, states[0].angle.getDegrees());
+        mFrontRight.set(states[1].speedMetersPerSecond / maxWheelSpeed, states[1].angle.getDegrees());
+        mBackLeft.set(states[2].speedMetersPerSecond / maxWheelSpeed, states[2].angle.getDegrees());
+        mBackRight.set(states[3].speedMetersPerSecond / maxWheelSpeed, states[3].angle.getDegrees());
+    }
+
+    /**
+     * Drive with given speeds (percentages of max speed)
+     *
+     * @param magnitude The speed [-1, 1]
+     * @param direction The direction to drive in degrees
+     * @param rotation  The rotation speed [-1, 1]
+     */
+    public void drivePolar(double magnitude, double direction, double rotation) {
+        drive(magnitude * Math.cos(Math.toRadians(direction)), magnitude * Math.sin(Math.toRadians(direction)), rotation);
     }
 
     public double getX() {
