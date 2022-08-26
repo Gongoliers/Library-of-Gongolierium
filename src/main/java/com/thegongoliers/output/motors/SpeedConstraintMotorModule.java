@@ -15,7 +15,7 @@ public class SpeedConstraintMotorModule implements MotorModule {
     }
 
     @Override
-    public double run(double currentSpeed, double desiredSpeed, double deltaTime) {
+    public Double run(Double currentSpeed, Double desiredSpeed, double deltaTime) {
         if (mShouldScaleSpeeds) {
             return desiredSpeed * mMaxSpeed;
         } else {

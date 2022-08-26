@@ -27,7 +27,7 @@ public class CircuitBreakerMotorModule implements MotorModule, Resettable {
     }
 
     @Override
-    public double run(double currentSpeed, double desiredSpeed, double deltaTime) {
+    public Double run(Double currentSpeed, Double desiredSpeed, double deltaTime) {
         if (mSwitch.getAsBoolean()){
             trip();
             if (mSwitch instanceof Resettable){
@@ -40,7 +40,7 @@ public class CircuitBreakerMotorModule implements MotorModule, Resettable {
         }
 
         if (mIsTripped){
-            return 0;
+            return 0.0;
         }
 
         return desiredSpeed;

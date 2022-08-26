@@ -25,7 +25,7 @@ public class AnchorMotorModule implements MotorModule, Resettable {
     }
 
     @Override
-    public double run(double currentSpeed, double desiredSpeed, double deltaTime) {
+    public Double run(Double currentSpeed, Double desiredSpeed, double deltaTime) {
         if (isAnchoring()) {
             mController.setSetpoint(mLastDistance);
             return mController.calculate(mDistanceSensor.getDistance(), deltaTime);

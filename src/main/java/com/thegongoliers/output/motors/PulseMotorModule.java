@@ -28,17 +28,17 @@ public class PulseMotorModule implements MotorModule, Resettable {
     }
 
     @Override
-    public double run(double currentSpeed, double desiredSpeed, double deltaTime) {
+    public Double run(Double currentSpeed, Double desiredSpeed, double deltaTime) {
         if (desiredSpeed == 0.0){
             changeState(STATE_PULSE_ON);
-            return 0;
+            return 0.0;
         }
 
         switch (mState){
             case STATE_PULSE_ON:
                 if (mClock.getTime() - mLastStateChangeTime >= mOnDuration){
                     changeState(STATE_PULSE_OFF);
-                    return 0;
+                    return 0.0;
                 }
                 return desiredSpeed;
             case STATE_PULSE_OFF:
@@ -46,10 +46,10 @@ public class PulseMotorModule implements MotorModule, Resettable {
                     changeState(STATE_PULSE_ON);
                     return desiredSpeed;
                 }
-                return 0;
+                return 0.0;
         }
 
-        return 0;
+        return 0.0;
     }
 
     private void changeState(int state){

@@ -21,7 +21,7 @@ public class DelayMotorModule implements MotorModule, Resettable {
     }
 
     @Override
-    public double run(double currentSpeed, double desiredSpeed, double deltaTime) {
+    public Double run(Double currentSpeed, Double desiredSpeed, double deltaTime) {
         if (desiredSpeed == 0.0 || lastStopTime == 0.0) {
             lastStopTime = mClock.getTime();
         }
@@ -30,7 +30,7 @@ public class DelayMotorModule implements MotorModule, Resettable {
             return desiredSpeed;
         }
 
-        return 0;
+        return 0.0;
     }
 
     @Override

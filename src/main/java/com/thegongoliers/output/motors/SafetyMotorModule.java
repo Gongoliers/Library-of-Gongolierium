@@ -11,11 +11,11 @@ public class SafetyMotorModule implements MotorModule {
     }
 
     @Override
-    public double run(double currentSpeed, double desiredSpeed, double deltaTime) {
+    public Double run(Double currentSpeed, Double desiredSpeed, double deltaTime) {
         if (mCanRun.getAsBoolean()){
             return desiredSpeed;
         }
 
-        return 0;
+        return 0.0;
     }
 }

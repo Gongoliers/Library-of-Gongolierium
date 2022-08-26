@@ -26,7 +26,7 @@ public class DistanceMotorModule implements MotorModule, Resettable {
     }
 
     @Override
-    public double run(double currentSpeed, double desiredSpeed, double deltaTime) {
+    public Double run(Double currentSpeed, Double desiredSpeed, double deltaTime) {
         if (!isRunning()) {
             return desiredSpeed;
         }

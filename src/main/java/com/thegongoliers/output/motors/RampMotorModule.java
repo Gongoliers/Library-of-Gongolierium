@@ -13,7 +13,7 @@ public class RampMotorModule implements MotorModule {
     }
 
     @Override
-    public double run(double currentSpeed, double desiredSpeed, double deltaTime) {
+    public Double run(Double currentSpeed, Double desiredSpeed, double deltaTime) {
         double maximumRate = getMaxRate(deltaTime);
         return GMath.rateLimit(maximumRate, desiredSpeed, currentSpeed);
     }

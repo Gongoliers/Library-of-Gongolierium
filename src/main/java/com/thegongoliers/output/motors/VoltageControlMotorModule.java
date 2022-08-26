@@ -20,7 +20,7 @@ public class VoltageControlMotorModule implements MotorModule {
     }
 
     @Override
-    public double run(double currentSpeed, double desiredSpeed, double deltaTime) {
+    public Double run(Double currentSpeed, Double desiredSpeed, double deltaTime) {
         return (desiredSpeed * mMaxVoltage) / mVoltageSensor.getVoltage();
     }
 }

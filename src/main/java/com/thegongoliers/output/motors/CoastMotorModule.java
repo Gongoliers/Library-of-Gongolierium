@@ -12,7 +12,7 @@ public class CoastMotorModule implements MotorModule {
     }
 
     @Override
-    public double run(double currentSpeed, double desiredSpeed, double deltaTime) {
+    public Double run(Double currentSpeed, Double desiredSpeed, double deltaTime) {
         mMotor.setNeutralMode(NeutralMode.Coast);
         return desiredSpeed;
     }

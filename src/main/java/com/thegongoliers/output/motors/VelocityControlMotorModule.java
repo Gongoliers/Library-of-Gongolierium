@@ -23,7 +23,7 @@ public class VelocityControlMotorModule implements MotorModule {
     }
 
     @Override
-    public double run(double currentSpeed, double desiredSpeed, double deltaTime) {
+    public Double run(Double currentSpeed, Double desiredSpeed, double deltaTime) {
         var desiredVelocity = desiredSpeed * mMaxVelocity;
         var actualVelocity = mVelocitySensor.getVelocity();
         mVelocityController.setSetpoint(desiredVelocity);

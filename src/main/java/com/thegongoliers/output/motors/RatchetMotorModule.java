@@ -18,7 +18,7 @@ public class RatchetMotorModule implements MotorModule {
     }
 
     @Override
-    public double run(double currentSpeed, double desiredSpeed, double deltaTime) {
+    public Double run(Double currentSpeed, Double desiredSpeed, double deltaTime) {
 
         if (desiredSpeed == 0.0 && mDefaultState != null) {
             mRatchet.set(mDefaultState);
@@ -36,6 +36,6 @@ public class RatchetMotorModule implements MotorModule {
             mRatchet.set(RatchetState.LockForward);
         }
 
-        return 0;
+        return 0.0;
     }
 }

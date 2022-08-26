@@ -13,7 +13,7 @@ public class PrecisionMotorModule implements MotorModule {
     }
 
     @Override
-    public double run(double currentSpeed, double desiredSpeed, double deltaTime) {
+    public Double run(Double currentSpeed, Double desiredSpeed, double deltaTime) {
         var exponent = 4 * GMath.clamp01(mStrength);
         return GMath.signPreservingPower(desiredSpeed, exponent);
     }
