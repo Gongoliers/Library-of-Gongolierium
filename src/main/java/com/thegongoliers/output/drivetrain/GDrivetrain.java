@@ -7,6 +7,7 @@ import com.thegongoliers.output.control.MotionController;
 import com.thegongoliers.output.control.PIDController;
 import com.thegongoliers.output.interfaces.Drivetrain;
 
+import com.thegongoliers.utils.IModule;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.motorcontrol.MotorController;
@@ -69,7 +70,7 @@ public class GDrivetrain implements Drivetrain {
         return _gyro.getAngle();
     }
 
-    public <T> T getModule(Class<T> module){
+    public <T extends IModule<DriveSpeed>> T getModule(Class<T> module){
         return modularDrivetrain.getInstalledModule(module);
     }
 

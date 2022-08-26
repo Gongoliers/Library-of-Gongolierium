@@ -1,5 +1,6 @@
 package com.thegongoliers.output.drivetrain;
 
+import com.thegongoliers.utils.IModule;
 import com.thegongoliers.utils.Resettable;
 import org.junit.Before;
 import org.junit.Test;
@@ -146,7 +147,7 @@ public class ModularDrivetrainTest {
         DriveModule module2 = new AddModule(0.1);
         modularDrivetrain.addModule(module2);
         modularDrivetrain.addModule(module1);
-        List<DriveModule> modules = modularDrivetrain.getInstalledModules();
+        List<IModule<DriveSpeed>> modules = modularDrivetrain.getInstalledModules();
         assertEquals(2, modules.size());
         assertTrue(modules.contains(module1));
         assertTrue(modules.contains(module2));
