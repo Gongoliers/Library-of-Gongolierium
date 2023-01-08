@@ -8,11 +8,7 @@ View the [Wiki](https://github.com/Gongoliers/Library-of-Gongolierium/wiki) for 
 
 View the [JavaDocs](https://gongoliers.github.io/Library-of-Gongolierium/).
 
-Up to date with the 2020 FRC build season.
-
-*Important note: the focus of the Library of Gongolierium has changed, and many features were removed / added. See the features below for a list of our priorities.*
-
-Teams wanting the old functionality can download the code from previous releases (will need to be updated to the 2020 WPILib).
+Up to date with the 2023 FRC build season.
 
 ### Features
 - Use higher level joystick, sensor, and actuator components
@@ -30,7 +26,7 @@ repositories {
 
 dependencies {
     ...
-    compile 'com.github.Gongoliers:Library-of-Gongolierium:v5.1.0'
+    compile 'com.github.Gongoliers:Library-of-Gongolierium:v7.0.0'
 }
 ```
 
