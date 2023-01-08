@@ -1,8 +1,9 @@
 package com.thegongoliers.output.drivetrain;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 import com.thegongoliers.input.time.Clock;
@@ -18,7 +19,7 @@ public class RampModuleTest {
     private RampModule module;
     private Clock clock;
 
-    @Before
+    @BeforeEach
     public void setup(){
         drivetrain = mock(Drivetrain.class);
         clock = mock(Clock.class);
@@ -70,14 +71,14 @@ public class RampModuleTest {
         DrivetrainTestUtils.verifyTank(drivetrain, 1, 0);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void throwsWhenRampingTimeIsNegative(){
-        new RampModule(-1);
+        assertThrows(IllegalArgumentException.class, () -> new RampModule(-1));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void throwsWhenTurningThresholdIsNegative(){
-        new RampModule(1, -1);
+        assertThrows(IllegalArgumentException.class, () -> new RampModule(1, -1));
     }
 
 }

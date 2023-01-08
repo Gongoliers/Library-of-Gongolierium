@@ -1,17 +1,14 @@
 package com.thegongoliers.input.odometry;
 
-import static org.junit.Assert.assertEquals;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
+
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.only;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.thegongoliers.utils.Resettable;
-
-import org.junit.Test;
-
-import edu.wpi.first.wpilibj.Encoder;
 
 public class BaseEncoderSensorTest {
     

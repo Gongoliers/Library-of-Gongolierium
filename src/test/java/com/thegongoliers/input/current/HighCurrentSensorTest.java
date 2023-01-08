@@ -1,9 +1,9 @@
 package com.thegongoliers.input.current;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 import static org.mockito.Mockito.*;
-import static org.junit.Assert.*;
 
 public class HighCurrentSensorTest {
 

@@ -4,16 +4,23 @@ import com.thegongoliers.input.switches.ResettableSwitch;
 import com.thegongoliers.input.switches.Switch;
 import com.thegongoliers.output.interfaces.Drivetrain;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.event.EventLoop;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj2.command.button.Button;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 public class HardwareTest {
+
+    @BeforeEach
+    public void setup(){
+        Hardware.overrideEventLoop = new EventLoop();
+    }
 
     @Test
     public void testMakeTrigger(){
@@ -23,10 +30,10 @@ public class HardwareTest {
         assertNotNull(t);
 
         when(s.isTriggered()).thenReturn(false);
-        assertFalse(t.get());
+        assertFalse(t.getAsBoolean());
 
         when(s.isTriggered()).thenReturn(true);
-        assertTrue(t.get());
+        assertTrue(t.getAsBoolean());
     }
 
     @Test
@@ -37,81 +44,51 @@ public class HardwareTest {
         assertNotNull(t);
 
         when(s.isTriggered()).thenReturn(false);
-        assertFalse(t.get());
+        assertFalse(t.getAsBoolean());
 
         when(s.isTriggered()).thenReturn(true);
-        assertTrue(t.get());
+        assertTrue(t.getAsBoolean());
     }
 
     @Test
-    public void testMakeButton(){
-        Switch s = mock(Switch.class);
-        Button t = Hardware.makeButton(s::isTriggered);
-
-        assertNotNull(t);
-
-        when(s.isTriggered()).thenReturn(false);
-        assertFalse(t.get());
-
-        when(s.isTriggered()).thenReturn(true);
-        assertTrue(t.get());
-    }
-
-    @Test
-    public void testCombineButtons(){
+    public void testCombineTriggers(){
         Switch s1 = mock(Switch.class);
         Switch s2 = mock(Switch.class);
         Switch s3 = mock(Switch.class);
 
-        Button button1 = Hardware.makeButton(s1::isTriggered);
-        Button button2 = Hardware.makeButton(s2::isTriggered);
-        Button button3 = Hardware.makeButton(s3::isTriggered);
+        var button1 = Hardware.makeTrigger(s1::isTriggered);
+        var button2 = Hardware.makeTrigger(s2::isTriggered);
+        var button3 = Hardware.makeTrigger(s3::isTriggered);
 
-        Button combined = Hardware.combineButtons(button1, button2, button3);
+        var combined = Hardware.combineTriggers(button1, button2, button3);
 
         // When all buttons are released, it should be false
         when(s1.isTriggered()).thenReturn(false);
         when(s2.isTriggered()).thenReturn(false);
         when(s3.isTriggered()).thenReturn(false);
 
-        assertFalse(combined.get());
+        assertFalse(combined.getAsBoolean());
 
         // When only one button is pressed, it should be false
         when(s1.isTriggered()).thenReturn(true);
         when(s2.isTriggered()).thenReturn(false);
         when(s3.isTriggered()).thenReturn(false);
 
-        assertFalse(combined.get());
+        assertFalse(combined.getAsBoolean());
 
         // When only two buttons are pressed, it should be false
         when(s1.isTriggered()).thenReturn(false);
         when(s2.isTriggered()).thenReturn(true);
         when(s3.isTriggered()).thenReturn(true);
 
-        assertFalse(combined.get());
+        assertFalse(combined.getAsBoolean());
 
         // When all buttons are pressed, it should be true
         when(s1.isTriggered()).thenReturn(true);
         when(s2.isTriggered()).thenReturn(true);
         when(s3.isTriggered()).thenReturn(true);
 
-        assertTrue(combined.get());
-
-    }
-
-    @Test
-    public void testTriggerToButton(){
-        Switch s = mock(Switch.class);
-        Trigger t = Hardware.switchToTrigger(s);
-        Button b = Hardware.triggerToButton(t);
-
-        assertNotNull(t);
-
-        when(s.isTriggered()).thenReturn(false);
-        assertFalse(b.get());
-
-        when(s.isTriggered()).thenReturn(true);
-        assertTrue(b.get());
+        assertTrue(combined.getAsBoolean());
     }
 
     @Test

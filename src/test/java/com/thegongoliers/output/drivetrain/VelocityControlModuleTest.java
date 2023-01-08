@@ -1,7 +1,7 @@
 package com.thegongoliers.output.drivetrain;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.InOrder;
 
 import static org.mockito.Mockito.*;
@@ -19,7 +19,7 @@ public class VelocityControlModuleTest {
     private InOrder inorder;
     private Clock clock;
 
-    @Before
+    @BeforeEach
     public void setup(){
         drivetrain = mock(Drivetrain.class);
         clock = mock(Clock.class);

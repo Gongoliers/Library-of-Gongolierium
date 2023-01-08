@@ -1,12 +1,13 @@
 package com.thegongoliers.output.elevator;
 
-import org.junit.Before;
-import org.junit.Test;
 import org.mockito.AdditionalMatchers;
 
 import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 
 import static org.mockito.Mockito.*;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import com.thegongoliers.input.switches.Switch;
 
@@ -19,7 +20,7 @@ public class LimitedElevatorTest {
     private MotorController speedController;
     private Switch topLimit, bottomLimit;
 
-    @Before
+    @BeforeEach
     public void setup(){
         speedController = mock(MotorController.class);
         topLimit = mock(Switch.class);

@@ -2,12 +2,12 @@ package com.thegongoliers.output.drivetrain;
 
 import com.thegongoliers.utils.IModule;
 import com.thegongoliers.utils.Resettable;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 import org.mockito.AdditionalMatchers;
 
 
-import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 import java.util.List;
@@ -24,7 +24,7 @@ public class ModularDrivetrainTest {
     private ModularDrivetrain modularDrivetrain;
     private Clock clock;
 
-    @Before
+    @BeforeEach
     public void setup(){
         drivetrain = mock(Drivetrain.class);
         clock = mock(Clock.class);

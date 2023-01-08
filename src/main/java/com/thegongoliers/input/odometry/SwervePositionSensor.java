@@ -6,6 +6,7 @@ import com.thegongoliers.utils.Resettable;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
+import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
 
 public class SwervePositionSensor implements Resettable {
@@ -16,6 +17,7 @@ public class SwervePositionSensor implements Resettable {
     private final SwerveModule backRight;
     private final Gyro gyro;
     private final SwerveDriveOdometry mOdometry;
+    private final SwerveModulePosition[] mPositions;
 
     public SwervePositionSensor(SwerveModule frontLeft, SwerveModule frontRight, SwerveModule backLeft, SwerveModule backRight, Gyro gyro) {
         this.frontLeft = frontLeft;
@@ -23,22 +25,24 @@ public class SwervePositionSensor implements Resettable {
         this.backLeft = backLeft;
         this.backRight = backRight;
         this.gyro = gyro;
+        mPositions = new SwerveModulePosition[4];
+        mPositions[0] = new SwerveModulePosition(frontLeft.getDistance(), Rotation2d.fromDegrees(frontLeft.getAngle()));
+        mPositions[1] = new SwerveModulePosition(frontRight.getDistance(), Rotation2d.fromDegrees(frontRight.getAngle()));
+        mPositions[2] = new SwerveModulePosition(backLeft.getDistance(), Rotation2d.fromDegrees(backLeft.getAngle()));
+        mPositions[3] = new SwerveModulePosition(backRight.getDistance(), Rotation2d.fromDegrees(backRight.getAngle()));
         var kinematics = new SwerveKinematics(frontLeft, frontRight, backLeft, backRight);
-        mOdometry = new SwerveDriveOdometry(kinematics.getKinematics(), gyro.getRotation2d());
+        mOdometry = new SwerveDriveOdometry(kinematics.getKinematics(), gyro.getRotation2d(), mPositions, new Pose2d());
     }
 
     public void update() {
-        mOdometry.update(
-                gyro.getRotation2d(),
-                frontLeft.getState(),
-                frontRight.getState(),
-                backLeft.getState(),
-                backRight.getState());
+        updatePositions();
+        mOdometry.update(gyro.getRotation2d(), mPositions);
     }
 
     @Override
     public void reset() {
-        mOdometry.resetPosition(new Pose2d(0, 0, Rotation2d.fromDegrees(0)), gyro.getRotation2d());
+        updatePositions();
+        mOdometry.resetPosition(gyro.getRotation2d(), mPositions, new Pose2d());
     }
 
     public double getX() {
@@ -51,5 +55,17 @@ public class SwervePositionSensor implements Resettable {
 
     public double getRotation() {
         return gyro.getAngle();
+    }
+
+    private void updatePositions(){
+        mPositions[0].distanceMeters = frontLeft.getDistance();
+        mPositions[1].distanceMeters = frontRight.getDistance();
+        mPositions[2].distanceMeters = backLeft.getDistance();
+        mPositions[3].distanceMeters = backRight.getDistance();
+
+        mPositions[0].angle = Rotation2d.fromDegrees(frontLeft.getAngle());
+        mPositions[1].angle = Rotation2d.fromDegrees(frontRight.getAngle());
+        mPositions[2].angle = Rotation2d.fromDegrees(backLeft.getAngle());
+        mPositions[3].angle = Rotation2d.fromDegrees(backRight.getAngle());
     }
 }

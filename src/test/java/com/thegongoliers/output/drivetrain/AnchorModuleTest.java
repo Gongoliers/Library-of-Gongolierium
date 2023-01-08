@@ -1,11 +1,10 @@
 package com.thegongoliers.output.drivetrain;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 import org.mockito.AdditionalMatchers;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.*;
 
 import com.thegongoliers.input.odometry.EncoderSensor;
@@ -20,7 +19,7 @@ public class AnchorModuleTest {
     private EncoderSensor encoder1, encoder2;
     private Clock clock;
 
-    @Before
+    @BeforeEach
     public void setup(){
         drivetrain = mock(Drivetrain.class);
         clock = mock(Clock.class);

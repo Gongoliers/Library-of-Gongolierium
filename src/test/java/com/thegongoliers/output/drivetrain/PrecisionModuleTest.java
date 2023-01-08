@@ -1,7 +1,7 @@
 package com.thegongoliers.output.drivetrain;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import static org.mockito.Mockito.*;
 
 import com.thegongoliers.input.time.Clock;
@@ -18,7 +18,7 @@ public class PrecisionModuleTest {
 
 
 
-    @Before
+    @BeforeEach
     public void setup(){
         drivetrain = mock(Drivetrain.class);
         modularDrivetrain = new ModularDrivetrain(drivetrain, mock(Clock.class));

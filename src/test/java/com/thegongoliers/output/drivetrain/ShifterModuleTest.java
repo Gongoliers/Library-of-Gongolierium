@@ -1,11 +1,12 @@
 package com.thegongoliers.output.drivetrain;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
+
 import org.mockito.InOrder;
 import org.mockito.Mockito;
 
-import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 
 import com.thegongoliers.input.time.Clock;
@@ -24,7 +25,7 @@ public class ShifterModuleTest {
     private MockGearShifter shifter;
     private InOrder inOrder;
 
-    @Before
+    @BeforeEach
     public void setup(){
         drivetrain = mock(Drivetrain.class);
         clock = mock(Clock.class);

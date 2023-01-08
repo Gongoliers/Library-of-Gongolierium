@@ -1,11 +1,11 @@
 package com.thegongoliers.output.actuators;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 import edu.wpi.first.wpilibj.Solenoid;
 
-import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 public class GPistonTest {
@@ -13,7 +13,7 @@ public class GPistonTest {
     private GPiston piston;
     private Solenoid solenoid;
 
-    @Before
+    @BeforeEach
     public void setup(){
         solenoid = mock(Solenoid.class);
         piston = new GPiston(solenoid);

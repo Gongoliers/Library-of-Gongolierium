@@ -1,10 +1,9 @@
 package com.thegongoliers.math.regression;
 
 import com.kylecorry.geometry.Point;
-import com.thegongoliers.math.regression.SimpleLinearRegression;
-import org.junit.Test;
 
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class SimpleLinearRegressionTest {
 

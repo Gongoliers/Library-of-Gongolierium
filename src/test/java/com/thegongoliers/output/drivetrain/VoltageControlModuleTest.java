@@ -1,7 +1,7 @@
 package com.thegongoliers.output.drivetrain;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.InOrder;
 import org.mockito.Mockito;
 
@@ -19,7 +19,7 @@ public class VoltageControlModuleTest {
     private VoltageSensor voltageSensor;
     private InOrder inorder;
 
-    @Before
+    @BeforeEach
     public void setup(){
         drivetrain = mock(Drivetrain.class);
         modularDrivetrain = new ModularDrivetrain(drivetrain, mock(Clock.class));

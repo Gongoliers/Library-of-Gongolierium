@@ -8,6 +8,7 @@ import com.thegongoliers.output.interfaces.Drivetrain;
 
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.event.EventLoop;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.button.Button;
@@ -20,6 +21,8 @@ import java.util.function.BooleanSupplier;
  */
 public class Hardware {
 
+	public static EventLoop overrideEventLoop = null;
+
 	/**
      * Combines multiple buttons into a single button.
      * @param button1 The first button.
@@ -29,15 +32,32 @@ public class Hardware {
     public static Button combineButtons(Button button1, Button... buttons){
         return new Button(){
             @Override
-            public boolean get() {
+            public boolean getAsBoolean() {
                 for (Button button: buttons){
-                    if (!button.get()){
+                    if (!button.getAsBoolean()){
                         return false;
                     }
                 }
-                return button1.get();
+                return button1.getAsBoolean();
             }
         };
+    }
+
+	/**
+     * Combines multiple triggers into a single trigger.
+     * @param trigger1 The first trigger.
+     * @param triggers The rest of the triggers.
+     * @return A Button which is pressed only when ALL of the triggers are pressed. 
+     */
+    public static Trigger combineTriggers(Trigger trigger1, Trigger... triggers){
+		return makeTrigger(() -> {
+			for (Trigger trigger: triggers){
+				if (!trigger.getAsBoolean()){
+					return false;
+				}
+			}
+			return trigger1.getAsBoolean();
+		});
     }
 
 	/**
@@ -48,7 +68,7 @@ public class Hardware {
 	public static Button makeButton(BooleanSupplier booleanSupplier){
 		return new Button() {
 			@Override
-			public boolean get() {
+			public boolean getAsBoolean() {
 				return booleanSupplier.getAsBoolean();
 			}
 		};
@@ -60,7 +80,7 @@ public class Hardware {
 	 * @return The button which is pressed when the trigger is triggered.
 	 */
 	public static Button triggerToButton(Trigger trigger){
-		return Hardware.makeButton(trigger::get);
+		return Hardware.makeButton(trigger::getAsBoolean);
 	}
 
 	/**
@@ -78,12 +98,10 @@ public class Hardware {
 	 * @return The trigger which is triggered when the boolean supplier is true.
 	 */
 	public static Trigger makeTrigger(BooleanSupplier booleanSupplier){
-		return new Trigger() {
-			@Override
-			public boolean get() {
-				return booleanSupplier.getAsBoolean();
-			}
-		};
+		if (overrideEventLoop != null){
+			return new Trigger(overrideEventLoop, booleanSupplier);
+		}
+		return new Trigger(booleanSupplier);
 	}
 
 	/**

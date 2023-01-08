@@ -1,9 +1,9 @@
 package com.thegongoliers.input.odometry;
 
-import edu.wpi.first.wpilibj.Encoder;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
-import static org.junit.Assert.*;
+import edu.wpi.first.wpilibj.Encoder;
 import static org.mockito.Mockito.*;
 
 public class EncoderUtilsTest {

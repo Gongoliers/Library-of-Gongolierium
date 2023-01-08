@@ -1,11 +1,11 @@
 package com.thegongoliers.input.accelerometer;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 import edu.wpi.first.wpilibj.interfaces.Accelerometer;
 
-import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 public class CollisionSensorTest {
@@ -13,7 +13,7 @@ public class CollisionSensorTest {
     private CollisionSensor collisionSensor;
     private Accelerometer mockAccelerometer;
 
-    @Before
+    @BeforeEach
     public void setup(){
         mockAccelerometer = mock(Accelerometer.class);
         collisionSensor = new CollisionSensor(mockAccelerometer, 10);

@@ -1,9 +1,9 @@
 package com.thegongoliers.math.lookup;
 
 import com.thegongoliers.GongolieriumException;
-import org.junit.Test;
 
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class SimpleLookupTableTest {
 
@@ -32,14 +32,14 @@ public class SimpleLookupTableTest {
         assertEquals(3, lookupTable.get(3), 0.0);
     }
 
-    @Test(expected = GongolieriumException.class)
+    @Test
     public void throwsOnNullArray(){
-        new SimpleLookupTable(null);
+        assertThrows(GongolieriumException.class, () -> new SimpleLookupTable(null));
     }
 
-    @Test(expected = GongolieriumException.class)
+    @Test
     public void throwsOnEmptyArray(){
-        new SimpleLookupTable(new double[]{});
+        assertThrows(GongolieriumException.class, () -> new SimpleLookupTable(new double[]{}));
     }
 
 }

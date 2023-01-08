@@ -1,8 +1,7 @@
 package com.thegongoliers.input.accelerometer;
 
-import org.junit.Test;
-import edu.wpi.first.wpilibj.interfaces.Accelerometer;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;import edu.wpi.first.wpilibj.interfaces.Accelerometer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 

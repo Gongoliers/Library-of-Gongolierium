@@ -1,7 +1,7 @@
 package com.thegongoliers.output.drivetrain;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.mockito.Mockito.*;
 
@@ -19,7 +19,7 @@ public class EncoderStabilityModuleTest {
     private DriveModule module;
     private EncoderSensor encoder1, encoder2;
 
-    @Before
+    @BeforeEach
     public void setup(){
         drivetrain = mock(Drivetrain.class);
         modularDrivetrain = new ModularDrivetrain(drivetrain, mock(Clock.class));

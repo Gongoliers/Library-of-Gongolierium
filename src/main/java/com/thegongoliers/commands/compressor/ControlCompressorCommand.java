@@ -21,7 +21,7 @@ public class ControlCompressorCommand extends CommandBase {
     @Override
     public void execute() {
         var shouldEnable = mShouldEnable.getAsBoolean();
-        var isEnabled = mCompressor.enabled();
+        var isEnabled = mCompressor.isEnabled();
         if (shouldEnable && !isEnabled) {
             mCompressor.enableDigital();
         } else if (!shouldEnable && isEnabled) {

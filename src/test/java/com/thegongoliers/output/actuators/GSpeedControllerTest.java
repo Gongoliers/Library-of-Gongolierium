@@ -1,13 +1,13 @@
 package com.thegongoliers.output.actuators;
 
 import com.thegongoliers.output.control.PIDController;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 import org.mockito.AdditionalMatchers;
 
 import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 
-import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 
 import com.thegongoliers.input.odometry.EncoderSensor;
@@ -20,7 +20,7 @@ public class GSpeedControllerTest {
     private EncoderSensor mockEncoder;
     private Clock mockClock;
 
-    @Before
+    @BeforeEach
     public void setup(){
         mockSpeedController = mock(MotorController.class);
         mockEncoder = mock(EncoderSensor.class);

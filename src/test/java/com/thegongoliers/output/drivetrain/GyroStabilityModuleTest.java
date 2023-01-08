@@ -2,8 +2,8 @@ package com.thegongoliers.output.drivetrain;
 
 import com.thegongoliers.input.time.Clock;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import edu.wpi.first.wpilibj.interfaces.Gyro;
 
@@ -21,7 +21,7 @@ public class GyroStabilityModuleTest {
     private ModularDrivetrain stabilizedDrivetrain;
     private GyroStabilityModule gyroStabilityModule;
 
-    @Before
+    @BeforeEach
     public void setup(){
         drivetrain = mock(Drivetrain.class);
         gyro = mock(Gyro.class);

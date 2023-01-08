@@ -36,10 +36,11 @@ public class OperateWithLockCommand extends SequentialCommandGroup {
         this(subsystem, operate, lockDelaySeconds, true);
     }
 
-    @Override
-    public void end(boolean interrupted) {
-        if (interrupted && mLockWhenInterrupted) {
-            mLockable.lock();
-        }
-    }
+    // TODO: Figure this out
+    // @Override
+    // public void end(boolean interrupted) {
+    //     if (interrupted && mLockWhenInterrupted) {
+    //         mLockable.lock();
+    //     }
+    // }
 }

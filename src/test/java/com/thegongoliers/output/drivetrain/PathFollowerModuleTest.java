@@ -2,15 +2,14 @@ package com.thegongoliers.output.drivetrain;
 
 import com.thegongoliers.input.odometry.AverageEncoderSensor;
 import com.thegongoliers.output.control.PIDController;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 import org.mockito.InOrder;
 import org.mockito.Mockito;
 
 import edu.wpi.first.wpilibj.interfaces.Gyro;
-import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
-import java.util.List;
 
 import com.thegongoliers.input.odometry.EncoderSensor;
 import com.thegongoliers.input.time.Clock;
@@ -27,7 +26,7 @@ public class PathFollowerModuleTest {
     private InOrder inorder;
     private Clock clock;
 
-    @Before
+    @BeforeEach
     public void setup(){
         drivetrain = mock(Drivetrain.class);
         clock = mock(Clock.class);

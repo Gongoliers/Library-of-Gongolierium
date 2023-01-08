@@ -1,13 +1,13 @@
 package com.thegongoliers.input.orientation;
 
 import com.kylecorry.geometry.Orientation;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 import edu.wpi.first.wpilibj.interfaces.Accelerometer;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
 
-import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -18,7 +18,7 @@ public class OrientationSensorTest {
     private OrientationSensor orientationSensor;
     private Orientation orientation;
 
-    @Before
+    @BeforeEach
     public void setup(){
         mockAccelerometer = mock(Accelerometer.class);
         mockGyro = mock(Gyro.class);

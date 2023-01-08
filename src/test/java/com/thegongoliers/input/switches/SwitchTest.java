@@ -1,9 +1,9 @@
 package com.thegongoliers.input.switches;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
-import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -11,7 +11,7 @@ public class SwitchTest {
 
     private Switch switch1, switch2;
 
-    @Before
+    @BeforeEach
     public void setup(){
         switch1 = mock(Switch.class);
         switch2 = mock(Switch.class);
