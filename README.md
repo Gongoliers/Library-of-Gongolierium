@@ -8,7 +8,7 @@ View the [Wiki](https://github.com/Gongoliers/Library-of-Gongolierium/wiki) for 
 
 View the [JavaDocs](https://gongoliers.github.io/Library-of-Gongolierium/).
 
-Up to date with the 2023 FRC build season.
+Up to date with the 2023 FRC build season (beta).
 
 ### Features
 - Use higher level joystick, sensor, and actuator components
@@ -26,7 +26,7 @@ repositories {
 
 dependencies {
     ...
-    compile 'com.github.Gongoliers:Library-of-Gongolierium:v7.0.0'
+    compile 'com.github.Gongoliers:Library-of-Gongolierium:v7.0.0-beta01'
 }
 ```
 
